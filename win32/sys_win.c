@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../qcommon/qcommon.h"
 #include "winquake.h"
-#include "resource.h"
 #include <errno.h>
 #include <float.h>
 #include <fcntl.h>
@@ -475,24 +474,13 @@ void *Sys_GetGameAPI (void *parms)
 	char	name[MAX_OSPATH];
 	char	*path;
 	char	cwd[MAX_OSPATH];
-#if defined _M_IX86
-	const char *gamename = "gamex86.dll";
+
+	const char *gamename = "game.dll";
 
 #ifdef NDEBUG
 	const char *debugdir = "release";
 #else
 	const char *debugdir = "debug";
-#endif
-
-#elif defined _M_ALPHA
-	const char *gamename = "gameaxp.dll";
-
-#ifdef NDEBUG
-	const char *debugdir = "releaseaxp";
-#else
-	const char *debugdir = "debugaxp";
-#endif
-
 #endif
 
 	if (game_library)
@@ -652,7 +640,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 //			Con_Printf ("time:%5.2f - %5.2f = %5.2f\n", newtime, oldtime, time);
 
 		//	_controlfp( ~( _EM_ZERODIVIDE /*| _EM_INVALID*/ ), _MCW_EM );
-		_controlfp( _PC_24, _MCW_PC );
+		
+		// TODO: commented because _MCW_PC is not supported for x86-64
+		// _controlfp( _PC_24, _MCW_PC );
 		Qcommon_Frame (time);
 
 		oldtime = newtime;
