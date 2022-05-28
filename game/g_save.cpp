@@ -116,7 +116,7 @@ field_t fields[] = {
     {"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
     {"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
 
-    {0, 0, 0, 0}
+    {0, 0, F_INT, 0}
 
 };
 

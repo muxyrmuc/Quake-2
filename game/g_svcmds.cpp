@@ -136,9 +136,9 @@ qboolean SV_FilterPacket(char* from) {
 
     for (i = 0; i < numipfilters; i++)
         if ((in & ipfilters[i].mask) == ipfilters[i].compare)
-            return (int)filterban->value;
+            return ((int)filterban->value) ? kTrue : kFalse;
 
-    return (int)!filterban->value;
+    return ((int)!filterban->value) ? kTrue : kFalse;
 }
 
 /*
