@@ -30,7 +30,7 @@ Used to group brushes together just for editor convenience.
 void Use_Areaportal(edict_t* ent, edict_t* other, edict_t* activator) {
     ent->count ^= 1;  // toggle state
                       //	gi.dprintf ("portalstate: %i = %i\n", ent->style, ent->count);
-    gi.SetAreaPortalState(ent->style, ent->count);
+    gi.SetAreaPortalState(ent->style, ent->count ? kTrue : kFalse);
 }
 
 /*QUAKED func_areaportal (0 0 0) ?
@@ -1579,7 +1579,7 @@ void SP_func_clock(edict_t* self) {
 
     func_clock_reset(self);
 
-    self->message = gi.TagMalloc(CLOCK_MESSAGE_SIZE, TAG_LEVEL);
+    self->message = static_cast<char *>(gi.TagMalloc(CLOCK_MESSAGE_SIZE, TAG_LEVEL));
 
     self->think = func_clock_think;
 

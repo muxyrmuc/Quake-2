@@ -196,7 +196,7 @@ void ClientObituary(edict_t* self, edict_t* inflictor, edict_t* attacker) {
         meansOfDeath |= MOD_FRIENDLY_FIRE;
 
     if (deathmatch->value || coop->value) {
-        ff = meansOfDeath & MOD_FRIENDLY_FIRE;
+        ff = (meansOfDeath & MOD_FRIENDLY_FIRE) ? kTrue : kFalse;
         mod = meansOfDeath & ~MOD_FRIENDLY_FIRE;
         message = NULL;
         message2 = "";
@@ -392,7 +392,7 @@ void TossClientWeapon(edict_t* self) {
     if (!((int)(dmflags->value) & DF_QUAD_DROP))
         quad = kFalse;
     else
-        quad = (self->client->quad_framenum > (level.framenum + 10));
+        quad = (self->client->quad_framenum > (level.framenum + 10)) ? kTrue : kFalse;
 
     if (item && quad)
         spread = 22.5;
