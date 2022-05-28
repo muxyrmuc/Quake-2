@@ -491,8 +491,8 @@ qboolean KillBox(edict_t* ent) {
 
         // if we didn't kill it, fail
         if (tr.ent->solid)
-            return false;
+            return kFalse;
     }
 
-    return true;  // all clear
+    return kTrue;  // all clear
 }
