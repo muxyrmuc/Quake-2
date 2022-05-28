@@ -48,14 +48,14 @@ qboolean OnSameTeam(edict_t* ent1, edict_t* ent2) {
     char ent2Team[512];
 
     if (!((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
-        return false;
+        return kFalse;
 
     strcpy(ent1Team, ClientTeam(ent1));
     strcpy(ent2Team, ClientTeam(ent2));
 
     if (strcmp(ent1Team, ent2Team) == 0)
-        return true;
-    return false;
+        return kTrue;
+    return kFalse;
 }
 
 void SelectNextItem(edict_t* ent, int itflags) {
@@ -154,9 +154,9 @@ void Cmd_Give_f(edict_t* ent) {
     name = gi.args();
 
     if (Q_stricmp(name, "all") == 0)
-        give_all = true;
+        give_all = kTrue;
     else
-        give_all = false;
+        give_all = kFalse;
 
     if (give_all || Q_stricmp(gi.argv(1), "health") == 0) {
         if (gi.argc() == 3)
@@ -418,21 +418,21 @@ void Cmd_Inven_f(edict_t* ent) {
 
     cl = ent->client;
 
-    cl->showscores = false;
-    cl->showhelp = false;
+    cl->showscores = kFalse;
+    cl->showhelp = kFalse;
 
     if (cl->showinventory) {
-        cl->showinventory = false;
+        cl->showinventory = kFalse;
         return;
     }
 
-    cl->showinventory = true;
+    cl->showinventory = kTrue;
 
     gi.WriteByte(svc_inventory);
     for (i = 0; i < MAX_ITEMS; i++) {
         gi.WriteShort(cl->pers.inventory[i]);
     }
-    gi.unicast(ent, true);
+    gi.unicast(ent, kTrue);
 }
 
 /*
@@ -595,9 +595,9 @@ Cmd_PutAway_f
 =================
 */
 void Cmd_PutAway_f(edict_t* ent) {
-    ent->client->showscores = false;
-    ent->client->showhelp = false;
-    ent->client->showinventory = false;
+    ent->client->showscores = kFalse;
+    ent->client->showhelp = kFalse;
+    ent->client->showinventory = kFalse;
 }
 
 int PlayerSort(void const* a, void const* b) {
@@ -720,7 +720,7 @@ void Cmd_Say_f(edict_t* ent, qboolean team, qboolean arg0) {
         return;
 
     if (!((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
-        team = false;
+        team = kFalse;
 
     if (team)
         Com_sprintf(text, sizeof(text), "(%s): ", ent->client->pers.netname);
@@ -834,11 +834,11 @@ void ClientCommand(edict_t* ent) {
         return;
     }
     if (Q_stricmp(cmd, "say") == 0) {
-        Cmd_Say_f(ent, false, false);
+        Cmd_Say_f(ent, kFalse, kFalse);
         return;
     }
     if (Q_stricmp(cmd, "say_team") == 0) {
-        Cmd_Say_f(ent, true, false);
+        Cmd_Say_f(ent, kTrue, kFalse);
         return;
     }
     if (Q_stricmp(cmd, "score") == 0) {
@@ -898,5 +898,5 @@ void ClientCommand(edict_t* ent) {
     else if (Q_stricmp(cmd, "playerlist") == 0)
         Cmd_PlayerList_f(ent);
     else  // anything that doesn't match a command will be a chat
-        Cmd_Say_f(ent, false, true);
+        Cmd_Say_f(ent, kFalse, kTrue);
 }
