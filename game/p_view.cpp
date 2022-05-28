@@ -540,8 +540,8 @@ void P_WorldEffects(void) {
     old_waterlevel = current_client->old_waterlevel;
     current_client->old_waterlevel = waterlevel;
 
-    breather = current_client->breather_framenum > level.framenum;
-    envirosuit = current_client->enviro_framenum > level.framenum;
+    breather = (current_client->breather_framenum > level.framenum) ? kTrue : kFalse;
+    envirosuit = (current_client->enviro_framenum > level.framenum) ? kTrue : kFalse;
 
     //
     // if just entered a water volume, play a sound

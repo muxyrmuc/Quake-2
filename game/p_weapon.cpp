@@ -248,7 +248,7 @@ void Think_Weapon(edict_t* ent) {
 
     // call active weapon think routine
     if (ent->client->pers.weapon && ent->client->pers.weapon->weaponthink) {
-        is_quad = (ent->client->quad_framenum > level.framenum);
+        is_quad = (ent->client->quad_framenum > level.framenum) ? kTrue : kFalse;
         if (ent->client->silencer_shots)
             is_silenced = MZ_SILENCED;
         else
