@@ -382,7 +382,7 @@ void R_BlendLightmaps(void) {
                 msurface_t* drawsurf;
 
                 // upload what we have so far
-                LM_UploadBlock(true);
+                LM_UploadBlock(kTrue);
 
                 // draw all surfaces that use this lightmap
                 for (drawsurf = newdrawsurf; drawsurf != surf; drawsurf = drawsurf->lightmapchain) {
@@ -413,7 +413,7 @@ void R_BlendLightmaps(void) {
         ** draw remainder of dynamic lightmaps that haven't been uploaded yet
         */
         if (newdrawsurf)
-            LM_UploadBlock(true);
+            LM_UploadBlock(kTrue);
 
         for (surf = newdrawsurf; surf != 0; surf = surf->lightmapchain) {
             if (surf->polys)
@@ -437,7 +437,7 @@ R_RenderBrushPoly
 void R_RenderBrushPoly(msurface_t* fa) {
     int maps;
     image_t* image;
-    qboolean is_dynamic = false;
+    qboolean is_dynamic = kFalse;
 
     c_brush_polys++;
 
@@ -484,7 +484,7 @@ void R_RenderBrushPoly(msurface_t* fa) {
     dynamic:
         if (gl_dynamic->value) {
             if (!(fa->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP))) {
-                is_dynamic = true;
+                is_dynamic = kTrue;
             }
         }
     }
@@ -609,7 +609,7 @@ void DrawTextureChains(void) {
             }
         }
 
-        GL_EnableMultitexture(false);
+        GL_EnableMultitexture(kFalse);
         for (i = 0, image = gltextures; i < numgltextures; i++, image++) {
             if (!image->registration_sequence)
                 continue;
@@ -624,7 +624,7 @@ void DrawTextureChains(void) {
 
             image->texturechain = NULL;
         }
-        //		GL_EnableMultitexture( true );
+        //		GL_EnableMultitexture( kTrue );
     }
 
     GL_TexEnv(GL_REPLACE);
@@ -635,7 +635,7 @@ static void GL_RenderLightmappedPoly(msurface_t* surf) {
     int map;
     float* v;
     image_t* image = R_TextureAnimation(surf->texinfo);
-    qboolean is_dynamic = false;
+    qboolean is_dynamic = kFalse;
     unsigned lmtex = surf->lightmaptexturenum;
     glpoly_t* p;
 
@@ -649,7 +649,7 @@ static void GL_RenderLightmappedPoly(msurface_t* surf) {
     dynamic:
         if (gl_dynamic->value) {
             if (!(surf->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP))) {
-                is_dynamic = true;
+                is_dynamic = kTrue;
             }
         }
     }
@@ -822,9 +822,9 @@ void R_DrawInlineBModel(void) {
             } else if (qglMTexCoord2fSGIS && !(psurf->flags & SURF_DRAWTURB)) {
                 GL_RenderLightmappedPoly(psurf);
             } else {
-                GL_EnableMultitexture(false);
+                GL_EnableMultitexture(kFalse);
                 R_RenderBrushPoly(psurf);
-                GL_EnableMultitexture(true);
+                GL_EnableMultitexture(kTrue);
             }
         }
     }
@@ -1084,7 +1084,7 @@ void R_DrawWorld(void) {
     R_ClearSkyBox();
 
     if (qglMTexCoord2fSGIS) {
-        GL_EnableMultitexture(true);
+        GL_EnableMultitexture(kTrue);
 
         GL_SelectTexture(GL_TEXTURE0_SGIS);
         GL_TexEnv(GL_REPLACE);
@@ -1097,7 +1097,7 @@ void R_DrawWorld(void) {
 
         R_RecursiveWorldNode(r_worldmodel->nodes);
 
-        GL_EnableMultitexture(false);
+        GL_EnableMultitexture(kFalse);
     } else {
         R_RecursiveWorldNode(r_worldmodel->nodes);
     }
@@ -1369,7 +1369,7 @@ void GL_CreateSurfaceLightmap(msurface_t* surf) {
     tmax = (surf->extents[1] >> 4) + 1;
 
     if (!LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t)) {
-        LM_UploadBlock(false);
+        LM_UploadBlock(kFalse);
         LM_InitBlock();
         if (!LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t)) {
             ri.Sys_Error(ERR_FATAL, "Consecutive calls to LM_AllocBlock(%d,%d) failed\n", smax, tmax);
@@ -1400,7 +1400,7 @@ void GL_BeginBuildingLightmaps(model_t* m) {
 
     r_framecount = 1;  // no dlightcache
 
-    GL_EnableMultitexture(true);
+    GL_EnableMultitexture(kTrue);
     GL_SelectTexture(GL_TEXTURE1_SGIS);
 
     /*
@@ -1474,6 +1474,6 @@ GL_EndBuildingLightmaps
 =======================
 */
 void GL_EndBuildingLightmaps(void) {
-    LM_UploadBlock(false);
-    GL_EnableMultitexture(false);
+    LM_UploadBlock(kFalse);
+    GL_EnableMultitexture(kFalse);
 }
