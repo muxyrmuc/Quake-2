@@ -120,7 +120,7 @@ void GL_ScreenShot_f(void) {
         return;
     }
 
-    buffer = malloc(vid.width * vid.height * 3 + 18);
+    buffer = static_cast<byte*>(malloc(vid.width * vid.height * 3 + 18));
     memset(buffer, 0, 18);
     buffer[2] = 2;  // uncompressed type
     buffer[12] = vid.width & 255;
