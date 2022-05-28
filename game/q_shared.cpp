@@ -922,7 +922,7 @@ void Swap_Init(void) {
 
     // set the byte swapping variables in a portable manner
     if (*(short*)swaptest == 1) {
-        bigendien = false;
+        bigendien = kFalse;
         _BigShort = ShortSwap;
         _LittleShort = ShortNoSwap;
         _BigLong = LongSwap;
@@ -930,7 +930,7 @@ void Swap_Init(void) {
         _BigFloat = FloatSwap;
         _LittleFloat = FloatNoSwap;
     } else {
-        bigendien = true;
+        bigendien = kTrue;
         _BigShort = ShortNoSwap;
         _LittleShort = ShortSwap;
         _BigLong = LongNoSwap;
