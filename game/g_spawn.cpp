@@ -313,7 +313,7 @@ char* ED_NewString(char* string) {
 
     l = strlen(string) + 1;
 
-    newb = gi.TagMalloc(l, TAG_LEVEL);
+    newb = static_cast<char*>(gi.TagMalloc(l, TAG_LEVEL));
 
     new_p = newb;
 
@@ -756,7 +756,7 @@ Only used for the world.
 void SP_worldspawn(edict_t* ent) {
     ent->movetype = MOVETYPE_PUSH;
     ent->solid = SOLID_BSP;
-    ent->inuse = true;      // since the world doesn't use G_Spawn()
+    ent->inuse = kTrue;      // since the world doesn't use G_Spawn()
     ent->s.modelindex = 1;  // world model is always index 1
 
     //---------------

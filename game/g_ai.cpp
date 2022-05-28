@@ -316,7 +316,7 @@ void FoundTarget(edict_t* self) {
         level.sight_entity->light_level = 128;
     }
 
-    self->show_hostile = level.time + 1;  // wake up other monsters
+    self->show_hostile = (level.time + 1) ? kTrue : kFalse;  // wake up other monsters
 
     VectorCopy(self->enemy->s.origin, self->monsterinfo.last_sighting);
     self->monsterinfo.trail_time = level.time;
@@ -690,7 +690,7 @@ qboolean ai_checkattack(edict_t* self, float dist) {
                 if (self->monsterinfo.aiflags & AI_TEMP_STAND_GROUND)
                     self->monsterinfo.aiflags &= ~(AI_STAND_GROUND | AI_TEMP_STAND_GROUND);
             } else {
-                self->show_hostile = level.time + 1;
+                self->show_hostile = (level.time + 1) ? kTrue : kFalse;
                 return kFalse;
             }
         }
@@ -740,7 +740,7 @@ qboolean ai_checkattack(edict_t* self, float dist) {
         }
     }
 
-    self->show_hostile = level.time + 1;  // wake up other monsters
+    self->show_hostile = (level.time + 1) ? kTrue : kFalse;  // wake up other monsters
 
     // check knowledge of enemy
     enemy_vis = visible(self, self->enemy);
