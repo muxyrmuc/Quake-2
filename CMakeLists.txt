@@ -6,18 +6,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(quake2)
 
 add_library(ref_gl SHARED
-    ref_gl/gl_draw.c
-    ref_gl/gl_image.c
-    ref_gl/gl_light.c
-    ref_gl/gl_mesh.c
-    ref_gl/gl_model.c
-    ref_gl/gl_rmain.c
-    ref_gl/gl_rmisc.c
-    ref_gl/gl_rsurf.c
-    ref_gl/gl_warp.c
-    win32/glw_imp.c
-    win32/q_shwin.c
-    win32/qgl_win.c
+    ref_gl/gl_draw.cpp
+    ref_gl/gl_image.cpp
+    ref_gl/gl_light.cpp
+    ref_gl/gl_mesh.cpp
+    ref_gl/gl_model.cpp
+    ref_gl/gl_rmain.cpp
+    ref_gl/gl_rmisc.cpp
+    ref_gl/gl_rsurf.cpp
+    ref_gl/gl_warp.cpp
+    win32/glw_imp.cpp
+    win32/q_shwin.cpp
+    win32/qgl_win.cpp
     game/q_shared.cpp)
 
 add_library(game SHARED
@@ -117,7 +117,7 @@ add_executable(quake2 WIN32
 
     win32/cd_win.c
     win32/net_wins.c
-    win32/q_shwin.c
+    win32/q_shwin.cpp
     win32/snd_win.c
     win32/vid_dll.c
     win32/vid_menu.c
