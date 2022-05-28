@@ -856,13 +856,13 @@ void R_DrawBrushModel(entity_t* e) {
     gl_state.currenttextures[0] = gl_state.currenttextures[1] = -1;
 
     if (e->angles[0] || e->angles[1] || e->angles[2]) {
-        rotated = true;
+        rotated = kTrue;
         for (i = 0; i < 3; i++) {
             mins[i] = e->origin[i] - currentmodel->radius;
             maxs[i] = e->origin[i] + currentmodel->radius;
         }
     } else {
-        rotated = false;
+        rotated = kFalse;
         VectorAdd(e->origin, currentmodel->mins, mins);
         VectorAdd(e->origin, currentmodel->maxs, maxs);
     }
@@ -892,14 +892,14 @@ void R_DrawBrushModel(entity_t* e) {
     e->angles[0] = -e->angles[0];  // stupid quake bug
     e->angles[2] = -e->angles[2];  // stupid quake bug
 
-    GL_EnableMultitexture(true);
+    GL_EnableMultitexture(kTrue);
     GL_SelectTexture(GL_TEXTURE0_SGIS);
     GL_TexEnv(GL_REPLACE);
     GL_SelectTexture(GL_TEXTURE1_SGIS);
     GL_TexEnv(GL_MODULATE);
 
     R_DrawInlineBModel();
-    GL_EnableMultitexture(false);
+    GL_EnableMultitexture(kFalse);
 
     qglPopMatrix();
 }
@@ -1273,12 +1273,12 @@ static qboolean LM_AllocBlock(int w, int h, int* x, int* y) {
     }
 
     if (best + h > BLOCK_HEIGHT)
-        return false;
+        return kFalse;
 
     for (i = 0; i < w; i++)
         gl_lms.allocated[*x + i] = best + h;
 
-    return true;
+    return kTrue;
 }
 
 /*

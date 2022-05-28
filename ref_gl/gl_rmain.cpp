@@ -1130,11 +1130,11 @@ int R_Init(void* hinstance, void* hWnd) {
 
     if (gl_config.renderer & GL_RENDERER_3DLABS) {
         if (gl_3dlabs_broken->value)
-            gl_config.allow_cds = false;
+            gl_config.allow_cds = kFalse;
         else
-            gl_config.allow_cds = true;
+            gl_config.allow_cds = kTrue;
     } else {
-        gl_config.allow_cds = true;
+        gl_config.allow_cds = kTrue;
     }
 
     if (gl_config.allow_cds)
@@ -1259,12 +1259,12 @@ void R_BeginFrame(float camera_separation) {
         cvar_t* ref;
 
         ref = ri.Cvar_Get("vid_ref", "gl", 0);
-        ref->modified = true;
+        ref->modified = kTrue;
     }
 
     if (gl_log->modified) {
         GLimp_EnableLogging(gl_log->value);
-        gl_log->modified = false;
+        gl_log->modified = kFalse;
     }
 
     if (gl_log->value) {
@@ -1276,7 +1276,7 @@ void R_BeginFrame(float camera_separation) {
     ** after tweaking this value
     */
     if (vid_gamma->modified) {
-        vid_gamma->modified = false;
+        vid_gamma->modified = kFalse;
 
         if (gl_config.renderer & (GL_RENDERER_VOODOO)) {
             char envbuffer[1024];

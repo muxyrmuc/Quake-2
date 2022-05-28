@@ -215,7 +215,7 @@ void GL_SetDefaultState(void) {
 
 void GL_UpdateSwapInterval(void) {
     if (gl_swapinterval->modified) {
-        gl_swapinterval->modified = false;
+        gl_swapinterval->modified = kFalse;
 
         if (!gl_state.stereo_enabled) {
 #ifdef _WIN32

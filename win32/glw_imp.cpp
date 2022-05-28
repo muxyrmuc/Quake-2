@@ -51,8 +51,8 @@ static qboolean VerifyDriver(void) {
     strlwr(buffer);
     if (strcmp(buffer, "gdi generic") == 0)
         if (!glw_state.mcd_accelerated)
-            return false;
-    return true;
+            return kFalse;
+    return kTrue;
 }
 
 /*
@@ -198,11 +198,11 @@ rserr_t GLimp_SetMode(int* pwidth, int* pheight, int mode, qboolean fullscreen) 
             *pwidth = width;
             *pheight = height;
 
-            gl_state.fullscreen = true;
+            gl_state.fullscreen = kTrue;
 
             ri.Con_Printf(PRINT_ALL, "ok\n");
 
-            if (!VID_CreateWindow(width, height, true))
+            if (!VID_CreateWindow(width, height, kTrue))
                 return rserr_invalid_mode;
 
             return rserr_ok;
@@ -236,16 +236,16 @@ rserr_t GLimp_SetMode(int* pwidth, int* pheight, int mode, qboolean fullscreen) 
 
                 *pwidth = width;
                 *pheight = height;
-                gl_state.fullscreen = false;
-                if (!VID_CreateWindow(width, height, false))
+                gl_state.fullscreen = kFalse;
+                if (!VID_CreateWindow(width, height, kFalse))
                     return rserr_invalid_mode;
                 return rserr_invalid_fullscreen;
             } else {
                 ri.Con_Printf(PRINT_ALL, " ok\n");
-                if (!VID_CreateWindow(width, height, true))
+                if (!VID_CreateWindow(width, height, kTrue))
                     return rserr_invalid_mode;
 
-                gl_state.fullscreen = true;
+                gl_state.fullscreen = kTrue;
                 return rserr_ok;
             }
         }
@@ -257,7 +257,7 @@ rserr_t GLimp_SetMode(int* pwidth, int* pheight, int mode, qboolean fullscreen) 
         *pwidth = width;
         *pheight = height;
         gl_state.fullscreen = false;
-        if (!VID_CreateWindow(width, height, false))
+        if (!VID_CreateWindow(width, height, kFalse))
             return rserr_invalid_mode;
     }
 
