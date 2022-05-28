@@ -1304,7 +1304,7 @@ void GL_BuildPolygonFromSurface(msurface_t* fa) {
     //
     // draw texture
     //
-    poly = Hunk_Alloc(sizeof(glpoly_t) + (lnumverts - 4) * VERTEXSIZE * sizeof(float));
+    poly = static_cast<glpoly_t*>(Hunk_Alloc(sizeof(glpoly_t) + (lnumverts - 4) * VERTEXSIZE * sizeof(float)));
     poly->next = fa->polys;
     poly->flags = fa->flags;
     fa->polys = poly;

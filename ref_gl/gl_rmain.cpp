@@ -1149,8 +1149,8 @@ int R_Init(void* hinstance, void* hWnd) {
     if (strstr(gl_config.extensions_string, "GL_EXT_compiled_vertex_array") ||
         strstr(gl_config.extensions_string, "GL_SGI_compiled_vertex_array")) {
         ri.Con_Printf(PRINT_ALL, "...enabling GL_EXT_compiled_vertex_array\n");
-        qglLockArraysEXT = (void*)qwglGetProcAddress("glLockArraysEXT");
-        qglUnlockArraysEXT = (void*)qwglGetProcAddress("glUnlockArraysEXT");
+        qglLockArraysEXT = reinterpret_cast<decltype(qglLockArraysEXT)>(qwglGetProcAddress("glLockArraysEXT"));
+        qglUnlockArraysEXT = reinterpret_cast<decltype(qglUnlockArraysEXT)>(qwglGetProcAddress("glUnlockArraysEXT"));
     } else {
         ri.Con_Printf(PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n");
     }
@@ -1189,8 +1189,8 @@ int R_Init(void* hinstance, void* hWnd) {
     if (strstr(gl_config.extensions_string, "GL_SGIS_multitexture")) {
         if (gl_ext_multitexture->value) {
             ri.Con_Printf(PRINT_ALL, "...using GL_SGIS_multitexture\n");
-            qglMTexCoord2fSGIS = (void*)qwglGetProcAddress("glMTexCoord2fSGIS");
-            qglSelectTextureSGIS = (void*)qwglGetProcAddress("glSelectTextureSGIS");
+            qglMTexCoord2fSGIS = reinterpret_cast<decltype(qglMTexCoord2fSGIS)>(qwglGetProcAddress("glMTexCoord2fSGIS"));
+            qglSelectTextureSGIS = reinterpret_cast<decltype(qglSelectTextureSGIS)>(qwglGetProcAddress("glSelectTextureSGIS"));
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_SGIS_multitexture\n");
         }

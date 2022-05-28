@@ -267,7 +267,7 @@ void Mod_LoadLighting(lump_t* l) {
         loadmodel->lightdata = NULL;
         return;
     }
-    loadmodel->lightdata = Hunk_Alloc(l->filelen);
+    loadmodel->lightdata = static_cast<byte*>(Hunk_Alloc(l->filelen));
     memcpy(loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
 }
 
@@ -283,7 +283,7 @@ void Mod_LoadVisibility(lump_t* l) {
         loadmodel->vis = NULL;
         return;
     }
-    loadmodel->vis = Hunk_Alloc(l->filelen);
+    loadmodel->vis = static_cast<dvis_t*>(Hunk_Alloc(l->filelen));
     memcpy(loadmodel->vis, mod_base + l->fileofs, l->filelen);
 
     loadmodel->vis->numclusters = LittleLong(loadmodel->vis->numclusters);
@@ -303,11 +303,11 @@ void Mod_LoadVertexes(lump_t* l) {
     mvertex_t* out;
     int i, count;
 
-    in = (void*)(mod_base + l->fileofs);
+    in = (dvertex_t*)(mod_base + l->fileofs);
     if (l->filelen % sizeof(*in))
         ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s", loadmodel->name);
     count = l->filelen / sizeof(*in);
-    out = Hunk_Alloc(count * sizeof(*out));
+    out = reinterpret_cast<mvertex_t*>(Hunk_Alloc(count * sizeof(*out)));
 
     loadmodel->vertexes = out;
     loadmodel->numvertexes = count;
@@ -345,11 +345,11 @@ void Mod_LoadSubmodels(lump_t* l) {
     mmodel_t* out;
     int i, j, count;
 
-    in = (void*)(mod_base + l->fileofs);
+    in = (dmodel_t*)(mod_base + l->fileofs);
     if (l->filelen % sizeof(*in))
         ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s", loadmodel->name);
     count = l->filelen / sizeof(*in);
-    out = Hunk_Alloc(count * sizeof(*out));
+    out = static_cast<mmodel_t*>(Hunk_Alloc(count * sizeof(*out)));
 
     loadmodel->submodels = out;
     loadmodel->numsubmodels = count;

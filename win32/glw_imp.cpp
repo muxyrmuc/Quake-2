@@ -76,7 +76,7 @@ qboolean VID_CreateWindow(int width, int height, qboolean fullscreen) {
     wc.hInstance = glw_state.hInstance;
     wc.hIcon = 0;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (void*)COLOR_GRAYTEXT;
+    wc.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_GRAYTEXT);
     wc.lpszMenuName = 0;
     wc.lpszClassName = WINDOW_CLASS_NAME;
 
