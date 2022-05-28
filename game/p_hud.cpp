@@ -29,7 +29,7 @@ INTERMISSION
 
 void MoveClientToIntermission(edict_t* ent) {
     if (deathmatch->value || coop->value)
-        ent->client->showscores = true;
+        ent->client->showscores = kTrue;
     VectorCopy(level.intermission_origin, ent->s.origin);
     ent->client->ps.pmove.origin[0] = level.intermission_origin[0] * 8;
     ent->client->ps.pmove.origin[1] = level.intermission_origin[1] * 8;
@@ -45,7 +45,7 @@ void MoveClientToIntermission(edict_t* ent) {
     ent->client->invincible_framenum = 0;
     ent->client->breather_framenum = 0;
     ent->client->enviro_framenum = 0;
-    ent->client->grenade_blew_up = false;
+    ent->client->grenade_blew_up = kFalse;
     ent->client->grenade_time = 0;
 
     ent->viewheight = 0;
@@ -61,7 +61,7 @@ void MoveClientToIntermission(edict_t* ent) {
 
     if (deathmatch->value || coop->value) {
         DeathmatchScoreboardMessage(ent, NULL);
-        gi.unicast(ent, true);
+        gi.unicast(ent, kTrue);
     }
 }
 
@@ -72,7 +72,7 @@ void BeginIntermission(edict_t* targ) {
     if (level.intermissiontime)
         return;  // already activated
 
-    game.autosaved = false;
+    game.autosaved = kFalse;
 
     // respawn any dead clients
     for (i = 0; i < maxclients->value; i++) {
@@ -234,7 +234,7 @@ Note that it isn't that hard to overflow the 1400 byte message limit!
 */
 void DeathmatchScoreboard(edict_t* ent) {
     DeathmatchScoreboardMessage(ent, ent->enemy);
-    gi.unicast(ent, true);
+    gi.unicast(ent, kTrue);
 }
 
 /*
@@ -245,18 +245,18 @@ Display the scoreboard
 ==================
 */
 void Cmd_Score_f(edict_t* ent) {
-    ent->client->showinventory = false;
-    ent->client->showhelp = false;
+    ent->client->showinventory = kFalse;
+    ent->client->showhelp = kFalse;
 
     if (!deathmatch->value && !coop->value)
         return;
 
     if (ent->client->showscores) {
-        ent->client->showscores = false;
+        ent->client->showscores = kFalse;
         return;
     }
 
-    ent->client->showscores = true;
+    ent->client->showscores = kTrue;
     DeathmatchScoreboard(ent);
 }
 
@@ -299,7 +299,7 @@ void HelpComputer(edict_t* ent) {
 
     gi.WriteByte(svc_layout);
     gi.WriteString(string);
-    gi.unicast(ent, true);
+    gi.unicast(ent, kTrue);
 }
 
 /*
@@ -316,15 +316,15 @@ void Cmd_Help_f(edict_t* ent) {
         return;
     }
 
-    ent->client->showinventory = false;
-    ent->client->showscores = false;
+    ent->client->showinventory = kFalse;
+    ent->client->showscores = kFalse;
 
     if (ent->client->showhelp && (ent->client->pers.game_helpchanged == game.helpchanged)) {
-        ent->client->showhelp = false;
+        ent->client->showhelp = kFalse;
         return;
     }
 
-    ent->client->showhelp = true;
+    ent->client->showhelp = kTrue;
     ent->client->pers.helpchanged = 0;
     HelpComputer(ent);
 }
