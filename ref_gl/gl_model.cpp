@@ -1028,7 +1028,7 @@ void R_BeginRegistration(char* model) {
     flushmap = ri.Cvar_Get("flushmap", "0", 0);
     if (strcmp(mod_known[0].name, fullname) || flushmap->value)
         Mod_Free(&mod_known[0]);
-    r_worldmodel = Mod_ForName(fullname, true);
+    r_worldmodel = Mod_ForName(fullname, kTrue);
 
     r_viewcluster = -1;
 }
@@ -1045,7 +1045,7 @@ struct model_s* R_RegisterModel(char* name) {
     dsprite_t* sprout;
     dmdl_t* pheader;
 
-    mod = Mod_ForName(name, false);
+    mod = Mod_ForName(name, kFalse);
     if (mod) {
         mod->registration_sequence = registration_sequence;
 

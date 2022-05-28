@@ -419,14 +419,14 @@ void LoadPCX(char* filename, byte** pic, byte** palette, int* width, int* height
         return;
     }
 
-    out = malloc((pcx->ymax + 1) * (pcx->xmax + 1));
+    out = static_cast<byte*>(malloc((pcx->ymax + 1) * (pcx->xmax + 1)));
 
     *pic = out;
 
     pix = out;
 
     if (palette) {
-        *palette = malloc(768);
+        *palette = static_cast<byte*>(malloc(768));
         memcpy(*palette, (byte*)pcx + len - 768, 768);
     }
 
@@ -543,7 +543,7 @@ void LoadTGA(char* name, byte** pic, int* width, int* height) {
     if (height)
         *height = rows;
 
-    targa_rgba = malloc(numPixels * 4);
+    targa_rgba = static_cast<byte*>(malloc(numPixels * 4));
     *pic = targa_rgba;
 
     if (targa_header.id_length != 0)
@@ -1027,7 +1027,7 @@ done:;
         qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
     }
 
-    return (samples == gl_alpha_format);
+    return (samples == gl_alpha_format) ? kTrue : kFalse;
 }
 
 /*
