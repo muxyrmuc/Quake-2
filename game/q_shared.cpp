@@ -1215,10 +1215,10 @@ can mess up the server's parsing
 */
 qboolean Info_Validate(char* s) {
     if (strstr(s, "\""))
-        return false;
+        return kFalse;
     if (strstr(s, ";"))
-        return false;
-    return true;
+        return kFalse;
+    return kTrue;
 }
 
 void Info_SetValueForKey(char* s, char* key, char* value) {
