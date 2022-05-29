@@ -962,7 +962,7 @@ qboolean PM_GoodPosition(void) {
         origin[i] = end[i] = pm->s.origin[i] * 0.125;
     trace = pm->trace(origin, pm->mins, pm->maxs, end);
 
-    return !trace.allsolid;
+    return (kFalse == trace.allsolid) ? kTrue : kFalse;
 }
 
 /*
