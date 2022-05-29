@@ -196,7 +196,7 @@ void CL_Record_f(void) {
     //
     // write out messages to hold the startup information
     //
-    SZ_Init(&buf, buf_data, sizeof(buf_data));
+    SZ_Init(&buf, reinterpret_cast<byte*>(buf_data), sizeof(buf_data));
 
     // send the serverdata
     MSG_WriteByte(&buf, svc_serverdata);
