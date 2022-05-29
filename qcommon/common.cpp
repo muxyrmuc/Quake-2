@@ -796,7 +796,7 @@ void SZ_Init(sizebuf_t* buf, byte* data, int length) {
 
 void SZ_Clear(sizebuf_t* buf) {
     buf->cursize = 0;
-    buf->overflowed = false;
+    buf->overflowed = kFalse;
 }
 
 void* SZ_GetSpace(sizebuf_t* buf, int length) {
@@ -811,7 +811,7 @@ void* SZ_GetSpace(sizebuf_t* buf, int length) {
 
         Com_Printf("SZ_GetSpace: overflow\n");
         SZ_Clear(buf);
-        buf->overflowed = true;
+        buf->overflowed = kTrue;
     }
 
     data = buf->data + buf->cursize;
@@ -920,7 +920,7 @@ int memsearch(byte* start, int count, int search) {
 char* CopyString(char* in) {
     char* out;
 
-    out = Z_Malloc(strlen(in) + 1);
+    out = static_cast<char*>(Z_Malloc(strlen(in) + 1));
     strcpy(out, in);
     return out;
 }
@@ -1039,7 +1039,7 @@ void* Z_TagMalloc(int size, int tag) {
     zhead_t* z;
 
     size = size + sizeof(zhead_t);
-    z = malloc(size);
+    z = static_cast<zhead_t*>(malloc(size));
     if (!z)
         Com_Error(ERR_FATAL, "Z_Malloc: failed on allocation of %i bytes", size);
     memset(z, 0, size);

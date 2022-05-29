@@ -156,7 +156,7 @@ void IN_ActivateMouse(void) {
     mouseactive = kTrue;
 
     if (mouseparmsvalid)
-        restore_spi = SystemParametersInfo(SPI_SETMOUSE, 0, newmouseparms, 0);
+        restore_spi = SystemParametersInfo(SPI_SETMOUSE, 0, newmouseparms, 0) ? kTrue : kFalse;
 
     width = GetSystemMetrics(SM_CXSCREEN);
     height = GetSystemMetrics(SM_CYSCREEN);
@@ -222,7 +222,7 @@ void IN_StartupMouse(void) {
         return;
 
     mouseinitialized = kTrue;
-    mouseparmsvalid = SystemParametersInfo(SPI_GETMOUSE, 0, originalmouseparms, 0);
+    mouseparmsvalid = SystemParametersInfo(SPI_GETMOUSE, 0, originalmouseparms, 0) ? kTrue : kFalse;
     mouse_buttons = 3;
 }
 
@@ -494,7 +494,7 @@ void IN_StartupJoystick(void) {
 
     // save the joystick's number of buttons and POV status
     joy_numbuttons = jc.wNumButtons;
-    joy_haspov = jc.wCaps & JOYCAPS_HASPOV;
+    joy_haspov = (jc.wCaps & JOYCAPS_HASPOV) ? kTrue : kFalse;
 
     // old button and POV states default to no buttons pressed
     joy_oldbuttonstate = joy_oldpovstate = 0;
