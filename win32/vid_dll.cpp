@@ -315,7 +315,7 @@ LONG WINAPI MainWndProc(
             AppActivate(fActive != WA_INACTIVE, fMinimized);
 
             if (reflib_active)
-                re.AppActivate(!(fActive == WA_INACTIVE));
+                re.AppActivate((fActive != WA_INACTIVE) ? kTrue : kFalse);
         }
             return DefWindowProc(hWnd, uMsg, wParam, lParam);
 

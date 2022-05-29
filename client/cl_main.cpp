@@ -239,7 +239,7 @@ void CL_Record_f(void) {
         }
 
         MSG_WriteByte(&buf, svc_spawnbaseline);
-        MSG_WriteDeltaEntity(&nullstate, &cl_entities[i].baseline, &buf, true, true);
+        MSG_WriteDeltaEntity(&nullstate, &cl_entities[i].baseline, &buf, kTrue, kTrue);
     }
 
     MSG_WriteByte(&buf, svc_stufftext);
@@ -626,7 +626,7 @@ void CL_Packet_f(void) {
         return;
     }
 
-    NET_Config(true);  // allow remote
+    NET_Config(kTrue);  // allow remote
 
     if (!NET_StringToAdr(Cmd_Argv(1), &adr)) {
         Com_Printf("Bad address\n");
@@ -734,7 +734,7 @@ void CL_PingServers_f(void) {
     cvar_t* noudp;
     cvar_t* noipx;
 
-    NET_Config(true);  // allow remote
+    NET_Config(kTrue);  // allow remote
 
     // send a broadcast packet
     Com_Printf("pinging broadcast...\n");
@@ -807,7 +807,7 @@ void CL_ConnectionlessPacket(void) {
 
     s = MSG_ReadStringLine(&net_message);
 
-    Cmd_TokenizeString(s, false);
+    Cmd_TokenizeString(s, kFalse);
 
     c = Cmd_Argv(0);
 

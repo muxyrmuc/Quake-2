@@ -310,7 +310,7 @@ qboolean Cbuf_AddLateCommands(void) {
         }
     }
 
-    ret = (build[0] != 0);
+    ret = (build[0] != 0) ? kTrue : kFalse;
     if (ret)
         Cbuf_AddText(build);
 
