@@ -88,21 +88,21 @@ void SockadrToNetadr(struct sockaddr* s, netadr_t* a) {
 
 qboolean NET_CompareAdr(netadr_t a, netadr_t b) {
     if (a.type != b.type)
-        return false;
+        return kFalse;
 
     if (a.type == NA_LOOPBACK)
         return TRUE;
 
     if (a.type == NA_IP) {
         if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
-            return true;
-        return false;
+            return kTrue;
+        return kFalse;
     }
 
     if (a.type == NA_IPX) {
         if ((memcmp(a.ipx, b.ipx, 10) == 0) && a.port == b.port)
-            return true;
-        return false;
+            return kTrue;
+        return kFalse;
     }
 }
 
@@ -115,21 +115,21 @@ Compares without the port
 */
 qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b) {
     if (a.type != b.type)
-        return false;
+        return kFalse;
 
     if (a.type == NA_LOOPBACK)
         return TRUE;
 
     if (a.type == NA_IP) {
         if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
-            return true;
-        return false;
+            return kTrue;
+        return kFalse;
     }
 
     if (a.type == NA_IPX) {
         if ((memcmp(a.ipx, b.ipx, 10) == 0))
-            return true;
-        return false;
+            return kTrue;
+        return kFalse;
     }
 }
 
@@ -209,7 +209,7 @@ qboolean NET_StringToSockaddr(char* s, struct sockaddr* sadr) {
         }
     }
 
-    return true;
+    return kTrue;
 }
 
 #undef DO
@@ -231,15 +231,15 @@ qboolean NET_StringToAdr(char* s, netadr_t* a) {
     if (!strcmp(s, "localhost")) {
         memset(a, 0, sizeof(*a));
         a->type = NA_LOOPBACK;
-        return true;
+        return kTrue;
     }
 
     if (!NET_StringToSockaddr(s, &sadr))
-        return false;
+        return kFalse;
 
     SockadrToNetadr(&sadr, a);
 
-    return true;
+    return kTrue;
 }
 
 qboolean NET_IsLocalAddress(netadr_t adr) {
@@ -264,7 +264,7 @@ qboolean NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_mes
         loop->get = loop->send - MAX_LOOPBACK;
 
     if (loop->get >= loop->send)
-        return false;
+        return kFalse;
 
     i = loop->get & (MAX_LOOPBACK - 1);
     loop->get++;
@@ -273,7 +273,7 @@ qboolean NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_mes
     net_message->cursize = loop->msgs[i].datalen;
     memset(net_from, 0, sizeof(*net_from));
     net_from->type = NA_LOOPBACK;
-    return true;
+    return kTrue;
 }
 
 void NET_SendLoopPacket(netsrc_t sock, int length, void* data, netadr_t to) {
@@ -300,7 +300,7 @@ qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message
     int err;
 
     if (NET_GetLoopPacket(sock, net_from, net_message))
-        return true;
+        return kTrue;
 
     for (protocol = 0; protocol < 2; protocol++) {
         if (protocol == 0)
@@ -333,10 +333,10 @@ qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message
         }
 
         net_message->cursize = ret;
-        return true;
+        return kTrue;
     }
 
-    return false;
+    return kFalse;
 }
 
 //=============================================================================
@@ -407,7 +407,7 @@ NET_Socket
 int NET_IPSocket(char* net_interface, int port) {
     int newsocket;
     struct sockaddr_in address;
-    qboolean _true = true;
+    qboolean _true = kTrue;
     int i = 1;
     int err;
 
@@ -676,7 +676,7 @@ NET_Shutdown
 ====================
 */
 void NET_Shutdown(void) {
-    NET_Config(false);  // close sockets
+    NET_Config(kFalse);  // close sockets
 
     WSACleanup();
 }
