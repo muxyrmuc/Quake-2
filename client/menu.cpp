@@ -1982,7 +1982,6 @@ SAVEGAME MENU
 
 =============================================================================
 */
-static menuframework_s s_savegame_menu;
 static menuaction_s s_savegame_actions[MAX_SAVEGAMES];
 
 void SaveGameCallback(void* self) {
