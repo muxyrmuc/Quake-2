@@ -189,7 +189,7 @@ Con_MessageMode_f
 ================
 */
 void Con_MessageMode_f(void) {
-    chat_team = false;
+    chat_team = kFalse;
     cls.key_dest = key_message;
 }
 
@@ -199,7 +199,7 @@ Con_MessageMode2_f
 ================
 */
 void Con_MessageMode2_f(void) {
-    chat_team = true;
+    chat_team = kTrue;
     cls.key_dest = key_message;
 }
 
@@ -283,7 +283,7 @@ void Con_Init(void) {
     Cmd_AddCommand("messagemode2", Con_MessageMode2_f);
     Cmd_AddCommand("clear", Con_Clear_f);
     Cmd_AddCommand("condump", Con_Dump_f);
-    con.initialized = true;
+    con.initialized = kTrue;
 }
 
 /*

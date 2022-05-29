@@ -618,9 +618,9 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t* sfx, float f
 
     if (origin) {
         VectorCopy(origin, ps->origin);
-        ps->fixed_origin = true;
+        ps->fixed_origin = kTrue;
     } else
-        ps->fixed_origin = false;
+        ps->fixed_origin = kFalse;
 
     ps->entnum = entnum;
     ps->entchannel = entchannel;
@@ -809,7 +809,7 @@ void S_AddLoopSounds(void) {
             right_total = 255;
         ch->leftvol = left_total;
         ch->rightvol = right_total;
-        ch->autosound = true;  // remove next frame
+        ch->autosound = kTrue;  // remove next frame
         ch->sfx = sfx;
         ch->pos = paintedtime % sc->length;
         ch->end = paintedtime + sc->length - ch->pos;

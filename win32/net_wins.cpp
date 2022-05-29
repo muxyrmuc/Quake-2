@@ -204,7 +204,7 @@ qboolean NET_StringToSockaddr(char* s, struct sockaddr* sadr) {
             *(int*)&((struct sockaddr_in*)sadr)->sin_addr = inet_addr(copy);
         } else {
             if (!(h = gethostbyname(copy)))
-                return 0;
+                return kFalse;
             *(int*)&((struct sockaddr_in*)sadr)->sin_addr = *(int*)h->h_addr_list[0];
         }
     }

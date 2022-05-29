@@ -490,27 +490,27 @@ should be skipped
 */
 qboolean SCR_DrawCinematic(void) {
     if (cl.cinematictime <= 0) {
-        return false;
+        return kFalse;
     }
 
     if (cls.key_dest == key_menu) {  // blank screen and pause if menu is up
         re.CinematicSetPalette(NULL);
-        cl.cinematicpalette_active = false;
-        return true;
+        cl.cinematicpalette_active = kFalse;
+        return kTrue;
     }
 
     if (!cl.cinematicpalette_active) {
         re.CinematicSetPalette(cl.cinematicpalette);
-        cl.cinematicpalette_active = true;
+        cl.cinematicpalette_active = kTrue;
     }
 
     if (!cin.pic)
-        return true;
+        return kTrue;
 
     re.DrawStretchRaw(0, 0, viddef.width, viddef.height,
                       cin.width, cin.height, cin.pic);
 
-    return true;
+    return kTrue;
 }
 
 /*
@@ -577,7 +577,7 @@ void SCR_PlayCinematic(char* arg) {
     // switch up to 22 khz sound if necessary
     old_khz = Cvar_VariableValue("s_khz");
     if (old_khz != cin.s_rate / 1000) {
-        cin.restart_sound = true;
+        cin.restart_sound = kTrue;
         Cvar_SetValue("s_khz", cin.s_rate / 1000);
         CL_Snd_Restart_f();
         Cvar_SetValue("s_khz", old_khz);
