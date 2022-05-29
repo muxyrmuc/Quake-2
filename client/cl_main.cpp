@@ -558,7 +558,7 @@ This is also called on Com_Error, so it shouldn't cause any errors
 =====================
 */
 void CL_Disconnect(void) {
-    byte final[32];
+    byte final_msg[32];
 
     if (cls.state == ca_disconnected)
         return;
@@ -585,11 +585,11 @@ void CL_Disconnect(void) {
         CL_Stop_f();
 
     // send a disconnect message to the server
-    final[0] = clc_stringcmd;
-    strcpy((char*) final + 1, "disconnect");
-    Netchan_Transmit(&cls.netchan, strlen(final), final);
-    Netchan_Transmit(&cls.netchan, strlen(final), final);
-    Netchan_Transmit(&cls.netchan, strlen(final), final);
+    final_msg[0] = clc_stringcmd;
+    strcpy((char*)final_msg + 1, "disconnect");
+    Netchan_Transmit(&cls.netchan, strlen(reinterpret_cast<char*>(final_msg)), final_msg);
+    Netchan_Transmit(&cls.netchan, strlen(reinterpret_cast<char*>(final_msg)), final_msg);
+    Netchan_Transmit(&cls.netchan, strlen(reinterpret_cast<char*>(final_msg)), final_msg);
 
     CL_ClearState();
 
