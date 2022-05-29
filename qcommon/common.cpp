@@ -72,7 +72,7 @@ void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)) {
     rd_target = target;
     rd_buffer = buffer;
     rd_buffersize = buffersize;
-    rd_flush = flush;
+    rd_flush = reinterpret_cast<decltype(rd_flush)>(flush);
 
     *rd_buffer = 0;
 }

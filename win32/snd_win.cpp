@@ -351,7 +351,7 @@ sndinitstat SNDDMA_InitDirect(void) {
         }
 
         Com_DPrintf("ok\n");
-        pDirectSoundCreate = (void*)GetProcAddress(hInstDS, "DirectSoundCreate");
+        pDirectSoundCreate = (decltype(pDirectSoundCreate))GetProcAddress(hInstDS, "DirectSoundCreate");
 
         if (!pDirectSoundCreate) {
             Com_Printf("*** couldn't get DS proc addr ***\n");
