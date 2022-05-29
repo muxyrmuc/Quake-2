@@ -247,7 +247,6 @@ SYSTEM SPECIFIC
 extern int curtime;  // time returned by last Sys_Milliseconds
 
 int Sys_Milliseconds(void);
-void Sys_Mkdir(char* path);
 
 // large block stack allocation routines
 void* Hunk_Begin(int maxsize);
@@ -261,13 +260,6 @@ int Hunk_End(void);
 #define SFF_RDONLY 0x04
 #define SFF_SUBDIR 0x08
 #define SFF_SYSTEM 0x10
-
-/*
-** pass in an attribute mask of things you wish to REJECT
-*/
-char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave);
-char* Sys_FindNext(unsigned musthave, unsigned canthave);
-void Sys_FindClose(void);
 
 // this is only here so the functions in q_shared.c and q_shwin.c can link
 void Sys_Error(char* error, ...);

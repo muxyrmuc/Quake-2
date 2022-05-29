@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl_local.h"
 
+#include <filesystem>
+
 /*
 ==================
 R_InitParticleTexture
@@ -99,7 +101,7 @@ void GL_ScreenShot_f(void) {
 
     // create the scrnshots directory if it doesn't exist
     Com_sprintf(checkname, sizeof(checkname), "%s/scrnshot", ri.FS_Gamedir());
-    Sys_Mkdir(checkname);
+    std::filesystem::create_directory(checkname);
 
     //
     // find a file name to save it to

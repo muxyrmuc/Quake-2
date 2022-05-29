@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "server.h"
 
+#include <filesystem>
+
 /*
 ===============================================================================
 
@@ -158,6 +160,7 @@ void SV_WipeSavegame(char* savename) {
         s = Sys_FindNext(0, 0);
     }
     Sys_FindClose();
+    
     Com_sprintf(name, sizeof(name), "%s/save/%s/*.sv2", FS_Gamedir(), savename);
     s = Sys_FindFirst(name, 0, 0);
     while (s) {

@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "qcommon.h"
 
+#include <filesystem>
+
 // define this to dissalow any data but the demo pak file
 //#define	NO_ADDONS
 
@@ -120,7 +122,7 @@ void FS_CreatePath(char* path) {
     for (ofs = path + 1; *ofs; ofs++) {
         if (*ofs == '/') {  // create the directory
             *ofs = 0;
-            Sys_Mkdir(path);
+            std::filesystem::create_directory(path);
             *ofs = '/';
         }
     }
@@ -519,9 +521,8 @@ void FS_ExecAutoexec(void) {
         Com_sprintf(name, sizeof(name), "%s/%s/autoexec.cfg", fs_basedir->string, dir);
     else
         Com_sprintf(name, sizeof(name), "%s/%s/autoexec.cfg", fs_basedir->string, BASEDIRNAME);
-    if (Sys_FindFirst(name, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM))
+    if (std::filesystem::is_regular_file(name))
         Cbuf_AddText("exec autoexec.cfg\n");
-    Sys_FindClose();
 }
 
 /*

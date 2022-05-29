@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+
+#include <filesystem>
 #include <ctype.h>
 #ifdef _WIN32
 #include <io.h>
@@ -3200,13 +3202,11 @@ static qboolean PlayerConfig_ScanDirectories(void) {
         // verify the existence of tris.md2
         strcpy(scratch, dirnames[i]);
         strcat(scratch, "/tris.md2");
-        if (!Sys_FindFirst(scratch, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM)) {
+        if (!std::filesystem::is_regular_file(scratch)) {
             free(dirnames[i]);
             dirnames[i] = 0;
-            Sys_FindClose();
             continue;
         }
-        Sys_FindClose();
 
         // verify the existence of at least one pcx skin
         strcpy(scratch, dirnames[i]);
