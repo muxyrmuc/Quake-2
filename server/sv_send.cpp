@@ -154,7 +154,7 @@ void SV_Multicast(vec3_t origin, multicast_t to) {
     qboolean reliable;
     int area1, area2;
 
-    reliable = false;
+    reliable = kFalse;
 
     if (to != MULTICAST_ALL_R && to != MULTICAST_ALL) {
         leafnum = CM_PointLeafnum(origin);
@@ -170,14 +170,14 @@ void SV_Multicast(vec3_t origin, multicast_t to) {
 
     switch (to) {
         case MULTICAST_ALL_R:
-            reliable = true;  // intentional fallthrough
+            reliable = kTrue;  // intentional fallthrough
         case MULTICAST_ALL:
             leafnum = 0;
             mask = NULL;
             break;
 
         case MULTICAST_PHS_R:
-            reliable = true;  // intentional fallthrough
+            reliable = kTrue;  // intentional fallthrough
         case MULTICAST_PHS:
             leafnum = CM_PointLeafnum(origin);
             cluster = CM_LeafCluster(leafnum);
@@ -185,7 +185,7 @@ void SV_Multicast(vec3_t origin, multicast_t to) {
             break;
 
         case MULTICAST_PVS_R:
-            reliable = true;  // intentional fallthrough
+            reliable = kTrue;  // intentional fallthrough
         case MULTICAST_PVS:
             leafnum = CM_PointLeafnum(origin);
             cluster = CM_LeafCluster(leafnum);
@@ -275,10 +275,10 @@ void SV_StartSound(vec3_t origin, edict_t* entity, int channel,
 
     if (channel & 8)  // no PHS flag
     {
-        use_phs = false;
+        use_phs = kFalse;
         channel &= 7;
     } else
-        use_phs = true;
+        use_phs = kTrue;
 
     sendchan = (ent << 3) | (channel & 7);
 
@@ -330,7 +330,7 @@ void SV_StartSound(vec3_t origin, edict_t* entity, int channel,
     // if the sound doesn't attenuate,send it to everyone
     // (global radio chatter, voiceovers, etc)
     if (attenuation == ATTN_NONE)
-        use_phs = false;
+        use_phs = kFalse;
 
     if (channel & CHAN_RELIABLE) {
         if (use_phs)
@@ -365,7 +365,7 @@ qboolean SV_SendClientDatagram(client_t* client) {
     SV_BuildClientFrame(client);
 
     SZ_Init(&msg, msg_buf, sizeof(msg_buf));
-    msg.allowoverflow = true;
+    msg.allowoverflow = kTrue;
 
     // send over all the relevant entity_state_t
     // and the player_state_t
@@ -392,7 +392,7 @@ qboolean SV_SendClientDatagram(client_t* client) {
     // record the size for rate estimation
     client->message_size[sv.framenum % RATE_MESSAGES] = msg.cursize;
 
-    return true;
+    return kTrue;
 }
 
 /*
@@ -412,7 +412,7 @@ void SV_DemoCompleted(void) {
 =======================
 SV_RateDrop
 
-Returns true if the client is over its current
+Returns kTrue if the client is over its current
 bandwidth estimation and should not be sent another packet
 =======================
 */
@@ -422,7 +422,7 @@ qboolean SV_RateDrop(client_t* c) {
 
     // never drop over the loopback
     if (c->netchan.remote_address.type == NA_LOOPBACK)
-        return false;
+        return kFalse;
 
     total = 0;
 
@@ -433,10 +433,10 @@ qboolean SV_RateDrop(client_t* c) {
     if (total > c->rate) {
         c->surpressCount++;
         c->message_size[sv.framenum % RATE_MESSAGES] = 0;
-        return true;
+        return kTrue;
     }
 
-    return false;
+    return kFalse;
 }
 
 /*
