@@ -106,7 +106,7 @@ Netchan_OutOfBand
 Sends an out-of-band datagram
 ================
 */
-void Netchan_OutOfBand(int net_socket, netadr_t adr, int length, byte* data) {
+void Netchan_OutOfBand(netsrc_t net_socket, netadr_t adr, int length, byte* data) {
     sizebuf_t send;
     byte send_buf[MAX_MSGLEN];
 
@@ -127,7 +127,7 @@ Netchan_OutOfBandPrint
 Sends a text message in an out-of-band datagram
 ================
 */
-void Netchan_OutOfBandPrint(int net_socket, netadr_t adr, char* format, ...) {
+void Netchan_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, char* format, ...) {
     va_list argptr;
     static char string[MAX_MSGLEN - 4];
 
