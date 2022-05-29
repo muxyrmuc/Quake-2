@@ -71,9 +71,9 @@ void Action_Draw(menuaction_s* a) {
 qboolean Field_DoEnter(menufield_s* f) {
     if (f->generic.callback) {
         f->generic.callback(f);
-        return true;
+        return kTrue;
     }
-    return false;
+    return kFalse;
 }
 
 void Field_Draw(menufield_s* f) {
@@ -170,7 +170,7 @@ qboolean Field_Key(menufield_s* f, int key) {
         switch (key) {
             case K_DEL:
             default:
-                return false;
+                return kFalse;
         }
     }
 
@@ -192,7 +192,7 @@ qboolean Field_Key(menufield_s* f, int key) {
 
             free(cbd);
         }
-        return true;
+        return kTrue;
     }
 
     switch (key) {
@@ -218,12 +218,12 @@ qboolean Field_Key(menufield_s* f, int key) {
         case K_ENTER:
         case K_ESCAPE:
         case K_TAB:
-            return false;
+            return kFalse;
 
         case K_SPACE:
         default:
             if (!isdigit(key) && (f->generic.flags & QMF_NUMBERSONLY))
-                return false;
+                return kFalse;
 
             if (f->cursor < f->length) {
                 f->buffer[f->cursor++] = key;
@@ -235,7 +235,7 @@ qboolean Field_Key(menufield_s* f, int key) {
             }
     }
 
-    return true;
+    return kTrue;
 }
 
 void Menu_AddItem(menuframework_s* menu, void* item) {
@@ -426,16 +426,16 @@ qboolean Menu_SelectItem(menuframework_s* s) {
                 return Field_DoEnter((menufield_s*)item);
             case MTYPE_ACTION:
                 Action_DoEnter((menuaction_s*)item);
-                return true;
+                return kTrue;
             case MTYPE_LIST:
                 //			Menulist_DoEnter( ( menulist_s * ) item );
-                return false;
+                return kFalse;
             case MTYPE_SPINCONTROL:
                 //			SpinControl_DoEnter( ( menulist_s * ) item );
-                return false;
+                return kFalse;
         }
     }
-    return false;
+    return kFalse;
 }
 
 void Menu_SetStatusBar(menuframework_s* m, const char* string) {
