@@ -163,7 +163,7 @@ void SV_EmitPacketEntities(client_frame_t* from, client_frame_t* to, sizebuf_t* 
             // in any bytes being emited if the entity has not changed at all
             // note that players are always 'newentities', this updates their oldorigin always
             // and prevents warping
-            MSG_WriteDeltaEntity(oldent, newent, msg, kFalse, newent->number <= maxclients->value);
+            MSG_WriteDeltaEntity(oldent, newent, msg, kFalse, (newent->number <= maxclients->value) ? kTrue : kFalse);
             oldindex++;
             newindex++;
             continue;

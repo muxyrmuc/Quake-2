@@ -312,7 +312,7 @@ qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message
             continue;
 
         fromlen = sizeof(from);
-        ret = recvfrom(net_socket, net_message->data, net_message->maxsize, 0, (struct sockaddr*)&from, &fromlen);
+        ret = recvfrom(net_socket, reinterpret_cast<char*>(net_message->data), net_message->maxsize, 0, (struct sockaddr*)&from, &fromlen);
         if (ret == -1) {
             err = WSAGetLastError();
 
@@ -372,7 +372,7 @@ void NET_SendPacket(netsrc_t sock, int length, void* data, netadr_t to) {
 
     NetadrToSockadr(&to, &addr);
 
-    ret = sendto(net_socket, data, length, 0, &addr, sizeof(addr));
+    ret = sendto(net_socket, static_cast<char*>(data), length, 0, &addr, sizeof(addr));
     if (ret == -1) {
         int err = WSAGetLastError();
 
@@ -407,7 +407,7 @@ NET_Socket
 int NET_IPSocket(char* net_interface, int port) {
     int newsocket;
     struct sockaddr_in address;
-    qboolean _true = kTrue;
+    u_long _true = 1;
     int i = 1;
     int err;
 
@@ -442,7 +442,7 @@ int NET_IPSocket(char* net_interface, int port) {
 
     address.sin_family = AF_INET;
 
-    if (bind(newsocket, (void*)&address, sizeof(address)) == -1) {
+    if (bind(newsocket, (const sockaddr*)&address, sizeof(address)) == -1) {
         Com_Printf("WARNING: UDP_OpenSocket: bind: %s\n", NET_ErrorString());
         closesocket(newsocket);
         return 0;
@@ -514,7 +514,7 @@ int NET_IPXSocket(int port) {
     }
 
     // make it non-blocking
-    if (ioctlsocket(newsocket, FIONBIO, &_true) == -1) {
+    if (ioctlsocket(newsocket, FIONBIO, reinterpret_cast<u_long*>(&_true)) == -1) {
         Com_Printf("WARNING: IPX_Socket: ioctl FIONBIO: %s\n", NET_ErrorString());
         return 0;
     }
@@ -533,7 +533,7 @@ int NET_IPXSocket(int port) {
     else
         address.sa_socket = htons((short)port);
 
-    if (bind(newsocket, (void*)&address, sizeof(address)) == -1) {
+    if (bind(newsocket, (const sockaddr*)&address, sizeof(address)) == -1) {
         Com_Printf("WARNING: IPX_Socket: bind: %s\n", NET_ErrorString());
         closesocket(newsocket);
         return 0;

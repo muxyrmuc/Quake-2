@@ -143,7 +143,7 @@ Cbuf_InsertFromDefer
 ============
 */
 void Cbuf_InsertFromDefer(void) {
-    Cbuf_InsertText(defer_text_buf);
+    Cbuf_InsertText(reinterpret_cast<char*>(defer_text_buf));
     defer_text_buf[0] = 0;
 }
 
