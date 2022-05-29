@@ -103,7 +103,7 @@ void M_PushMenu(void (*draw)(void), const char* (*key)(int k)) {
     m_drawfunc = draw;
     m_keyfunc = key;
 
-    m_entersound = true;
+    m_entersound = kTrue;
 
     cls.key_dest = key_menu;
 }
@@ -292,7 +292,7 @@ void M_DrawCursor(int x, int y, int f) {
 
             re.RegisterPic(cursorname);
         }
-        cached = true;
+        cached = kTrue;
     }
 
     Com_sprintf(cursorname, sizeof(cursorname), "m_cursor%d", f);
@@ -412,7 +412,7 @@ const char* M_Main_Key(int key) {
 
         case K_KP_ENTER:
         case K_ENTER:
-            m_entersound = true;
+            m_entersound = kTrue;
 
             switch (m_main_cursor) {
                 case 0:
@@ -663,7 +663,7 @@ static void KeyBindingFunc(void* self) {
     if (keys[1] != -1)
         M_UnbindCommand(bindnames[a->generic.localdata[0]][0]);
 
-    bind_grab = true;
+    bind_grab = kTrue;
 
     Menu_SetStatusBar(&s_keys_menu, "press a key or button for this action");
 }
@@ -907,7 +907,7 @@ static const char* Keys_MenuKey(int key) {
         }
 
         Menu_SetStatusBar(&s_keys_menu, "enter to change, backspace to clear");
-        bind_grab = false;
+        bind_grab = kFalse;
         return menu_out_sound;
     }
 
@@ -1074,10 +1074,10 @@ static void ConsoleFunc(void* unused) {
 static void UpdateSoundQualityFunc(void* unused) {
     if (s_options_quality_list.curvalue) {
         Cvar_SetValue("s_khz", 22);
-        Cvar_SetValue("s_loadas8bit", false);
+        Cvar_SetValue("s_loadas8bit", kFalse);
     } else {
         Cvar_SetValue("s_khz", 11);
-        Cvar_SetValue("s_loadas8bit", true);
+        Cvar_SetValue("s_loadas8bit", kTrue);
     }
 
     Cvar_SetValue("s_primary", s_options_compatibility_list.curvalue);
@@ -1655,16 +1655,16 @@ void M_Credits_MenuDraw(void) {
     */
     for (i = 0, y = viddef.height - ((cls.realtime - credits_start_time) / 40.0F); credits[i] && y < viddef.height; y += 10, i++) {
         int j, stringoffset = 0;
-        int bold = false;
+        int bold = kFalse;
 
         if (y <= -8)
             continue;
 
         if (credits[i][0] == '+') {
-            bold = true;
+            bold = kTrue;
             stringoffset = 1;
         } else {
-            bold = false;
+            bold = kFalse;
             stringoffset = 0;
         }
 
@@ -1912,11 +1912,11 @@ void Create_Savestrings(void) {
         f = fopen(name, "rb");
         if (!f) {
             strcpy(m_savestrings[i], "<EMPTY>");
-            m_savevalid[i] = false;
+            m_savevalid[i] = kFalse;
         } else {
             FS_Read(m_savestrings[i], sizeof(m_savestrings[i]), f);
             fclose(f);
-            m_savevalid[i] = true;
+            m_savevalid[i] = kTrue;
         }
     }
 }
@@ -2278,7 +2278,7 @@ void StartServerActionFunc(void* self) {
         Cvar_SetValue("coop", s_rules_box.curvalue);
         Cvar_SetValue("gamerules", 0);
     } else {
-        Cvar_SetValue("deathmatch", 1);  // deathmatch is always true for rogue games, right?
+        Cvar_SetValue("deathmatch", 1);  // deathmatch is always kTrue for rogue games, right?
         Cvar_SetValue("coop", 0);        // FIXME - this might need to depend on which game we're running
         Cvar_SetValue("gamerules", s_rules_box.curvalue);
     }
@@ -3148,10 +3148,10 @@ static qboolean IconOfSkinExists(char* skin, char** pcxfiles, int npcxfiles) {
 
     for (i = 0; i < npcxfiles; i++) {
         if (strcmp(pcxfiles[i], scratch) == 0)
-            return true;
+            return kTrue;
     }
 
-    return false;
+    return kFalse;
 }
 
 static qboolean PlayerConfig_ScanDirectories(void) {
@@ -3178,7 +3178,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
     } while (path);
 
     if (!dirnames)
-        return false;
+        return kFalse;
 
     /*
     ** go through the subdirectories
@@ -3321,7 +3321,7 @@ qboolean PlayerConfig_MenuInit(void) {
     PlayerConfig_ScanDirectories();
 
     if (s_numplayermodels == 0)
-        return false;
+        return kFalse;
 
     if (hand->value < 0 || hand->value > 2)
         Cvar_SetValue("hand", 0);
@@ -3452,7 +3452,7 @@ qboolean PlayerConfig_MenuInit(void) {
     Menu_AddItem(&s_player_config_menu, &s_player_rate_box);
     Menu_AddItem(&s_player_config_menu, &s_player_download_action);
 
-    return true;
+    return kTrue;
 }
 
 void PlayerConfig_MenuDraw(void) {
@@ -3661,7 +3661,7 @@ void M_Draw(void) {
     // caching images
     if (m_entersound) {
         S_StartLocalSound(menu_in_sound);
-        m_entersound = false;
+        m_entersound = kFalse;
     }
 }
 
