@@ -203,7 +203,7 @@ model_t* Mod_ForName(char* name, qboolean crash) {
     //
     // load the file
     //
-    modfilelen = ri.FS_LoadFile(mod->name, &buf);
+    modfilelen = ri.FS_LoadFile(mod->name, reinterpret_cast<void**>(&buf));
     if (!buf) {
         if (crash)
             ri.Sys_Error(ERR_DROP, "Mod_NumForName: %s not found", mod->name);
