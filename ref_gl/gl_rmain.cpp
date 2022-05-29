@@ -993,14 +993,14 @@ qboolean R_SetMode(void) {
     vid_fullscreen->modified = kFalse;
     gl_mode->modified = kFalse;
 
-    if ((err = GLimp_SetMode(&vid.width, &vid.height, gl_mode->value, fullscreen)) == rserr_ok) {
+    if ((err = GLimp_SetMode(reinterpret_cast<int*>(&vid.width), reinterpret_cast<int*>(&vid.height), gl_mode->value, fullscreen)) == rserr_ok) {
         gl_state.prev_mode = gl_mode->value;
     } else {
         if (err == rserr_invalid_fullscreen) {
             ri.Cvar_SetValue("vid_fullscreen", 0);
             vid_fullscreen->modified = kFalse;
             ri.Con_Printf(PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n");
-            if ((err = GLimp_SetMode(&vid.width, &vid.height, gl_mode->value, kFalse)) == rserr_ok)
+            if ((err = GLimp_SetMode(reinterpret_cast<int*>(&vid.width), reinterpret_cast<int*>(&vid.height), gl_mode->value, kFalse)) == rserr_ok)
                 return kTrue;
         } else if (err == rserr_invalid_mode) {
             ri.Cvar_SetValue("gl_mode", gl_state.prev_mode);
@@ -1009,7 +1009,7 @@ qboolean R_SetMode(void) {
         }
 
         // try setting it back to something safe
-        if ((err = GLimp_SetMode(&vid.width, &vid.height, gl_state.prev_mode, kFalse)) != rserr_ok) {
+        if ((err = GLimp_SetMode(reinterpret_cast<int*>(&vid.width), reinterpret_cast<int*>(&vid.height), gl_state.prev_mode, kFalse)) != rserr_ok) {
             ri.Con_Printf(PRINT_ALL, "ref_gl::R_SetMode() - could not revert to safe mode\n");
             return kFalse;
         }
@@ -1263,7 +1263,7 @@ void R_BeginFrame(float camera_separation) {
     }
 
     if (gl_log->modified) {
-        GLimp_EnableLogging(gl_log->value);
+        GLimp_EnableLogging((0 != gl_log->value) ? kTrue : kFalse);
         gl_log->modified = kFalse;
     }
 
