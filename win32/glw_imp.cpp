@@ -47,7 +47,7 @@ extern cvar_t* vid_ref;
 static qboolean VerifyDriver(void) {
     char buffer[1024];
 
-    strcpy(buffer, qglGetString(GL_RENDERER));
+    strcpy(buffer, reinterpret_cast<const char*>(qglGetString(GL_RENDERER)));
     strlwr(buffer);
     if (strcmp(buffer, "gdi generic") == 0)
         if (!glw_state.mcd_accelerated)

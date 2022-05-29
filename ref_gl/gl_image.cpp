@@ -880,15 +880,15 @@ qboolean GL_Upload32(unsigned* data, int width, int height, qboolean mipmap) {
 
     for (scaled_width = 1; scaled_width < width; scaled_width <<= 1)
         ;
-    if (gl_round_down->value && scaled_width > width && mipmap)
+    if (gl_round_down->value && scaled_width > width && (kFalse != mipmap))
         scaled_width >>= 1;
     for (scaled_height = 1; scaled_height < height; scaled_height <<= 1)
         ;
-    if (gl_round_down->value && scaled_height > height && mipmap)
+    if (gl_round_down->value && scaled_height > height && (kFalse != mipmap))
         scaled_height >>= 1;
 
     // let people sample down the world textures for speed
-    if (mipmap) {
+    if (kFalse != mipmap) {
         scaled_width >>= (int)gl_picmip->value;
         scaled_height >>= (int)gl_picmip->value;
     }
@@ -968,7 +968,7 @@ qboolean GL_Upload32(unsigned* data, int width, int height, qboolean mipmap) {
     } else
         GL_ResampleTexture(data, width, height, scaled, scaled_width, scaled_height);
 
-    GL_LightScaleTexture(scaled, scaled_width, scaled_height, !mipmap);
+    GL_LightScaleTexture(scaled, scaled_width, scaled_height, (kFalse == mipmap) ? kTrue : kFalse);
 
     if (qglColorTableEXT && gl_ext_palettedtexture->value && (samples == gl_solid_format)) {
         uploaded_paletted = kTrue;
@@ -986,7 +986,7 @@ qboolean GL_Upload32(unsigned* data, int width, int height, qboolean mipmap) {
         qglTexImage2D(GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
     }
 
-    if (mipmap) {
+    if (kFalse != mipmap) {
         int miplevel;
 
         miplevel = 0;
@@ -1019,7 +1019,7 @@ qboolean GL_Upload32(unsigned* data, int width, int height, qboolean mipmap) {
 done:;
 #endif
 
-    if (mipmap) {
+    if (kFalse != mipmap) {
         qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
         qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
     } else {
@@ -1172,9 +1172,13 @@ image_t* GL_LoadPic(char* name, byte* pic, int width, int height, imagetype_t ty
         image->texnum = TEXNUM_IMAGES + (image - gltextures);
         GL_Bind(image->texnum);
         if (bits == 8)
-            image->has_alpha = GL_Upload8(pic, width, height, (image->type != it_pic && image->type != it_sky), image->type == it_sky);
+            image->has_alpha = GL_Upload8(pic,
+                                          width,
+                                          height,
+                                          (image->type != it_pic && image->type != it_sky) ? kTrue : kFalse,
+                                          (image->type == it_sky) ? kTrue : kFalse);
         else
-            image->has_alpha = GL_Upload32((unsigned*)pic, width, height, (image->type != it_pic && image->type != it_sky));
+            image->has_alpha = GL_Upload32((unsigned*)pic, width, height, (image->type != it_pic && image->type != it_sky) ? kTrue : kFalse);
         image->upload_width = upload_width;  // after power of 2 and scales
         image->upload_height = upload_height;
         image->paletted = uploaded_paletted;

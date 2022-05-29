@@ -988,7 +988,7 @@ qboolean R_SetMode(void) {
         vid_fullscreen->modified = kFalse;
     }
 
-    fullscreen = vid_fullscreen->value;
+    fullscreen = (0 != vid_fullscreen->value) ? kTrue : kFalse;
 
     vid_fullscreen->modified = kFalse;
     gl_mode->modified = kFalse;
