@@ -59,15 +59,15 @@ int SV_FindIndex(char* name, int start, int max, qboolean create) {
 }
 
 int SV_ModelIndex(char* name) {
-    return SV_FindIndex(name, CS_MODELS, MAX_MODELS, true);
+    return SV_FindIndex(name, CS_MODELS, MAX_MODELS, kTrue);
 }
 
 int SV_SoundIndex(char* name) {
-    return SV_FindIndex(name, CS_SOUNDS, MAX_SOUNDS, true);
+    return SV_FindIndex(name, CS_SOUNDS, MAX_SOUNDS, kTrue);
 }
 
 int SV_ImageIndex(char* name) {
-    return SV_FindIndex(name, CS_IMAGES, MAX_IMAGES, true);
+    return SV_FindIndex(name, CS_IMAGES, MAX_IMAGES, kTrue);
 }
 
 /*
@@ -205,11 +205,11 @@ void SV_SpawnServer(char* server, char* spawnpoint, server_state_t serverstate, 
     strcpy(sv.configstrings[CS_NAME], server);
 
     if (serverstate != ss_game) {
-        sv.models[1] = CM_LoadMap("", false, &checksum);  // no real map
+        sv.models[1] = CM_LoadMap("", kFalse, &checksum);  // no real map
     } else {
         Com_sprintf(sv.configstrings[CS_MODELS + 1], sizeof(sv.configstrings[CS_MODELS + 1]),
                     "maps/%s.bsp", server);
-        sv.models[1] = CM_LoadMap(sv.configstrings[CS_MODELS + 1], false, &checksum);
+        sv.models[1] = CM_LoadMap(sv.configstrings[CS_MODELS + 1], kFalse, &checksum);
     }
     Com_sprintf(sv.configstrings[CS_MAPCHECKSUM], sizeof(sv.configstrings[CS_MAPCHECKSUM]),
                 "%i", checksum);
@@ -271,7 +271,7 @@ void SV_InitGame(void) {
 
     if (svs.initialized) {
         // cause any connected clients to reconnect
-        SV_Shutdown("Server restarted\n", true);
+        SV_Shutdown("Server restarted\n", kTrue);
     } else {
         // make sure the client is down
         CL_Drop();
@@ -281,7 +281,7 @@ void SV_InitGame(void) {
     // get any latched variable changes (maxclients, etc)
     Cvar_GetLatchedVars();
 
-    svs.initialized = true;
+    svs.initialized = kTrue;
 
     if (Cvar_VariableValue("coop") && Cvar_VariableValue("deathmatch")) {
         Com_Printf("Deathmatch and Coop both set, disabling Coop\n");
