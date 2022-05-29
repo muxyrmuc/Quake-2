@@ -139,7 +139,7 @@ void CL_Stop_f(void) {
     fwrite(&len, 4, 1, cls.demofile);
     fclose(cls.demofile);
     cls.demofile = NULL;
-    cls.demorecording = false;
+    cls.demorecording = kFalse;
     Com_Printf("Stopped demo.\n");
 }
 
@@ -188,7 +188,7 @@ void CL_Record_f(void) {
         Com_Printf("ERROR: couldn't open.\n");
         return;
     }
-    cls.demorecording = true;
+    cls.demorecording = kTrue;
 
     // don't start saving messages until a non-delta compressed message is received
     cls.demowaiting = true;
@@ -393,7 +393,7 @@ void CL_SendConnectPacket(void) {
         adr.port = BigShort(PORT_SERVER);
 
     port = Cvar_VariableValue("qport");
-    userinfo_modified = false;
+    userinfo_modified = kFalse;
 
     Netchan_OutOfBandPrint(NS_CLIENT, adr, "connect %i %i %i \"%s\"\n",
                            PROTOCOL_VERSION, port, cls.challenge, Cvar_Userinfo());
@@ -457,14 +457,14 @@ void CL_Connect_f(void) {
     }
 
     if (Com_ServerState()) {  // if running a local server, kill it and reissue
-        SV_Shutdown(va("Server quit\n", msg), false);
+        SV_Shutdown(va("Server quit\n", msg), kFalse);
     } else {
         CL_Disconnect();
     }
 
     server = Cmd_Argv(1);
 
-    NET_Config(true);  // allow remote
+    NET_Config(kTrue);  // allow remote
 
     CL_Disconnect();
 
@@ -499,7 +499,7 @@ void CL_Rcon_f(void) {
     message[3] = (char)255;
     message[4] = 0;
 
-    NET_Config(true);  // allow remote
+    NET_Config(kTrue);  // allow remote
 
     strcat(message, "rcon ");
 
@@ -951,7 +951,7 @@ void CL_FixUpGender(void) {
     if (gender_auto->value) {
         if (gender->modified) {
             // was set directly, don't override the user
-            gender->modified = false;
+            gender->modified = kFalse;
             return;
         }
 
@@ -964,7 +964,7 @@ void CL_FixUpGender(void) {
             Cvar_Set("gender", "female");
         else
             Cvar_Set("gender", "none");
-        gender->modified = false;
+        gender->modified = kFalse;
     }
 }
 
@@ -1201,7 +1201,7 @@ void CL_RequestNextDownload(void) {
     if (precache_check == ENV_CNT) {
         precache_check = ENV_CNT + 1;
 
-        CM_LoadMap(cl.configstrings[CS_MODELS + 1], true, &map_checksum);
+        CM_LoadMap(cl.configstrings[CS_MODELS + 1], kTrue, &map_checksum);
 
         if (map_checksum != atoi(cl.configstrings[CS_MAPCHECKSUM])) {
             Com_Error(ERR_DROP, "Local map version differs from server: %i != '%s'\n",
@@ -1273,7 +1273,7 @@ void CL_Precache_f(void) {
     if (Cmd_Argc() < 2) {
         unsigned map_checksum;  // for detecting cheater maps
 
-        CM_LoadMap(cl.configstrings[CS_MODELS + 1], true, &map_checksum);
+        CM_LoadMap(cl.configstrings[CS_MODELS + 1], kTrue, &map_checksum);
         CL_RegisterSounds();
         CL_PrepRefresh();
         return;
@@ -1369,7 +1369,7 @@ void CL_InitLocal(void) {
     fov = Cvar_Get("fov", "90", CVAR_USERINFO | CVAR_ARCHIVE);
     gender = Cvar_Get("gender", "male", CVAR_USERINFO | CVAR_ARCHIVE);
     gender_auto = Cvar_Get("gender_auto", "1", CVAR_ARCHIVE);
-    gender->modified = false;  // clear this so we know when user sets it manually
+    gender->modified = kFalse;  // clear this so we know when user sets it manually
 
     cl_vwep = Cvar_Get("cl_vwep", "1", CVAR_ARCHIVE);
 
@@ -1685,13 +1685,13 @@ to run quit through here before the final handoff to the sys code.
 ===============
 */
 void CL_Shutdown(void) {
-    static qboolean isdown = false;
+    static qboolean isdown = kFalse;
 
     if (isdown) {
         printf("recursive shutdown\n");
         return;
     }
-    isdown = true;
+    isdown = kTrue;
 
     CL_WriteConfiguration();
 

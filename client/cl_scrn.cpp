@@ -403,7 +403,7 @@ void SCR_Init(void) {
     Cmd_AddCommand("sizedown", SCR_SizeDown_f);
     Cmd_AddCommand("sky", SCR_Sky_f);
 
-    scr_initialized = true;
+    scr_initialized = kTrue;
 }
 
 /*
@@ -516,7 +516,7 @@ SCR_BeginLoadingPlaque
 */
 void SCR_BeginLoadingPlaque(void) {
     S_StopAllSounds();
-    cl.sound_prepped = false;  // don't play ambients
+    cl.sound_prepped = kFalse;  // don't play ambients
     CDAudio_Stop();
     if (cls.disable_screen)
         return;
@@ -1203,7 +1203,7 @@ void SCR_UpdateScreen(void) {
             if (cls.key_dest == key_menu) {
                 if (cl.cinematicpalette_active) {
                     re.CinematicSetPalette(NULL);
-                    cl.cinematicpalette_active = false;
+                    cl.cinematicpalette_active = kFalse;
                 }
                 M_Draw();
                 //				re.EndFrame();
@@ -1211,7 +1211,7 @@ void SCR_UpdateScreen(void) {
             } else if (cls.key_dest == key_console) {
                 if (cl.cinematicpalette_active) {
                     re.CinematicSetPalette(NULL);
-                    cl.cinematicpalette_active = false;
+                    cl.cinematicpalette_active = kFalse;
                 }
                 SCR_DrawConsole();
                 //				re.EndFrame();
@@ -1225,7 +1225,7 @@ void SCR_UpdateScreen(void) {
             // make sure the game palette is active
             if (cl.cinematicpalette_active) {
                 re.CinematicSetPalette(NULL);
-                cl.cinematicpalette_active = false;
+                cl.cinematicpalette_active = kFalse;
             }
 
             // do 3D refresh drawing, and then update the screen

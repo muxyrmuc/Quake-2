@@ -325,11 +325,11 @@ void CL_PrepRefresh(void) {
     Con_ClearNotify();
 
     SCR_UpdateScreen();
-    cl.refresh_prepped = true;
-    cl.force_refdef = true;  // make sure we have a valid refdef
+    cl.refresh_prepped = kTrue;
+    cl.force_refdef = kTrue;  // make sure we have a valid refdef
 
     // start the cd track
-    CDAudio_Play(atoi(cl.configstrings[CS_CDTRACK]), true);
+    CDAudio_Play(atoi(cl.configstrings[CS_CDTRACK]), kTrue);
 }
 
 /*
@@ -391,7 +391,7 @@ void SCR_DrawCrosshair(void) {
         return;
 
     if (crosshair->modified) {
-        crosshair->modified = false;
+        crosshair->modified = kFalse;
         SCR_TouchPics();
     }
 
@@ -425,7 +425,7 @@ void V_RenderView(float stereo_separation) {
     // an invalid frame will just use the exact previous refdef
     // we can't use the old frame if the video mode has changed, though...
     if (cl.frame.valid && (cl.force_refdef || !cl_paused->value)) {
-        cl.force_refdef = false;
+        cl.force_refdef = kFalse;
 
         V_ClearScene();
 

@@ -110,7 +110,7 @@ void WinError(void) {
         NULL);
 
     // Display the string.
-    MessageBox(NULL, lpMsgBuf, "GetLastError", MB_OK | MB_ICONINFORMATION);
+    MessageBox(NULL, static_cast<LPCSTR>(lpMsgBuf), "GetLastError", MB_OK | MB_ICONINFORMATION);
 
     // Free the buffer.
     LocalFree(lpMsgBuf);
@@ -143,7 +143,7 @@ char* Sys_ScanForCD(void) {
     drive[2] = '\\';
     drive[3] = 0;
 
-    done = true;
+    done = kTrue;
 
     // scan the drives
     for (drive[0] = 'c'; drive[0] <= 'z'; drive[0]++) {
@@ -222,7 +222,7 @@ void Sys_Init(void) {
     if (vinfo.dwPlatformId == VER_PLATFORM_WIN32s)
         Sys_Error("Quake2 doesn't run on Win32s");
     else if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-        s_win95 = true;
+        s_win95 = kTrue;
 
     if (dedicated->value) {
         if (!AllocConsole())
@@ -247,7 +247,8 @@ char* Sys_ConsoleInput(void) {
     INPUT_RECORD recs[1024];
     DWORD dummy;
     DWORD numread;
-    int ch, numevents;
+    DWORD numevents;
+    int ch;
 
     if (!dedicated || !dedicated->value)
         return NULL;
@@ -369,8 +370,8 @@ char* Sys_GetClipboardData(void) {
         HANDLE hClipboardData;
 
         if ((hClipboardData = GetClipboardData(CF_TEXT)) != 0) {
-            if ((cliptext = GlobalLock(hClipboardData)) != 0) {
-                data = malloc(GlobalSize(hClipboardData) + 1);
+            if ((cliptext = static_cast<char*>(GlobalLock(hClipboardData))) != 0) {
+                data = static_cast<char*>(malloc(GlobalSize(hClipboardData) + 1));
                 strcpy(data, cliptext);
                 GlobalUnlock(hClipboardData);
             }

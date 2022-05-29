@@ -70,11 +70,11 @@ qboolean CL_CheckOrDownloadFile(char* filename) {
 
     if (strstr(filename, "..")) {
         Com_Printf("Refusing to download a path with ..\n");
-        return true;
+        return kTrue;
     }
 
     if (FS_LoadFile(filename, NULL) != -1) {  // it exists, no need to download
-        return true;
+        return kTrue;
     }
 
     strcpy(cls.downloadname, filename);
@@ -114,7 +114,7 @@ qboolean CL_CheckOrDownloadFile(char* filename) {
 
     cls.downloadnumber++;
 
-    return false;
+    return kFalse;
 }
 
 /*
@@ -321,7 +321,7 @@ void CL_ParseServerData(void) {
         Com_Printf("%c%s\n", 2, str);
 
         // need to prep refresh at next oportunity
-        cl.refresh_prepped = false;
+        cl.refresh_prepped = kFalse;
     }
 }
 
@@ -494,7 +494,7 @@ void CL_ParseConfigString(void) {
         CL_SetLightstyle(i - CS_LIGHTS);
     else if (i == CS_CDTRACK) {
         if (cl.refresh_prepped)
-            CDAudio_Play(atoi(cl.configstrings[CS_CDTRACK]), true);
+            CDAudio_Play(atoi(cl.configstrings[CS_CDTRACK]), kTrue);
     } else if (i >= CS_MODELS && i < CS_MODELS + MAX_MODELS) {
         if (cl.refresh_prepped) {
             cl.model_draw[i - CS_MODELS] = re.RegisterModel(cl.configstrings[i]);
