@@ -229,7 +229,7 @@ void AppActivate(BOOL fActive, BOOL minimize) {
         ActiveApp = kFalse;
 
     // minimize/restore mouse-capture on demand
-    if (!ActiveApp) {
+    if (kFalse == ActiveApp) {
         IN_Activate(kFalse);
         CDAudio_Activate(kFalse);
         S_Activate(kFalse);
@@ -340,7 +340,7 @@ LONG WINAPI MainWndProc(
                 Cvar_SetValue("vid_ypos", yPos + r.top);
                 vid_xpos->modified = kFalse;
                 vid_ypos->modified = kFalse;
-                if (ActiveApp)
+                if (kFalse != ActiveApp)
                     IN_Activate(kTrue);
             }
         }

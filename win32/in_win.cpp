@@ -420,7 +420,7 @@ IN_Move
 void IN_Move(usercmd_t* cmd) {
     IN_MouseMove(cmd);
 
-    if (ActiveApp)
+    if (kFalse != ActiveApp)
         IN_JoyMove(cmd);
 }
 
