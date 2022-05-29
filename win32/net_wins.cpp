@@ -243,7 +243,7 @@ qboolean NET_StringToAdr(char* s, netadr_t* a) {
 }
 
 qboolean NET_IsLocalAddress(netadr_t adr) {
-    return adr.type == NA_LOOPBACK;
+    return (adr.type == NA_LOOPBACK) ? kTrue : kFalse;
 }
 
 /*

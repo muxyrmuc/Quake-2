@@ -40,7 +40,7 @@ int s_registration_sequence;
 
 channel_t channels[MAX_CHANNELS];
 
-qboolean snd_initialized = false;
+qboolean snd_initialized = kFalse;
 int sound_started = 0;
 
 dma_t dma;
@@ -271,7 +271,7 @@ S_BeginRegistration
 */
 void S_BeginRegistration(void) {
     s_registration_sequence++;
-    s_registering = true;
+    s_registering = kTrue;
 }
 
 /*
@@ -286,7 +286,7 @@ sfx_t* S_RegisterSound(char* name) {
     if (!sound_started)
         return NULL;
 
-    sfx = S_FindName(name, true);
+    sfx = S_FindName(name, kTrue);
     sfx->registration_sequence = s_registration_sequence;
 
     if (!s_registering)
@@ -329,7 +329,7 @@ void S_EndRegistration(void) {
         S_LoadSound(sfx);
     }
 
-    s_registering = false;
+    s_registering = kFalse;
 }
 
 //=============================================================================
@@ -557,7 +557,7 @@ struct sfx_s* S_RegisterSexedSound(entity_state_t* ent, char* base) {
 
     // see if we already know of the model specific sound
     Com_sprintf(sexedFilename, sizeof(sexedFilename), "#players/%s/%s", model, base + 1);
-    sfx = S_FindName(sexedFilename, false);
+    sfx = S_FindName(sexedFilename, kFalse);
 
     if (!sfx) {
         // no, so see if it exists
