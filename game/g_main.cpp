@@ -103,6 +103,8 @@ Returns a pointer to the structure with all entry points
 and global variables
 =================
 */
+extern "C" {
+
 __declspec(dllexport) game_export_t* GetGameAPI(game_import_t* import) {
     gi = *import;
 
@@ -130,6 +132,8 @@ __declspec(dllexport) game_export_t* GetGameAPI(game_import_t* import) {
     globals.edict_size = sizeof(edict_t);
 
     return &globals;
+}
+
 }
 
 #ifndef GAME_HARD_LINKED

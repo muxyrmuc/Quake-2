@@ -1474,6 +1474,8 @@ GetRefAPI
 
 @@@@@@@@@@@@@@@@@@@@@
 */
+extern "C" {
+
 __declspec(dllexport) refexport_t GetRefAPI(refimport_t rimp) {
     refexport_t re;
 
@@ -1512,6 +1514,8 @@ __declspec(dllexport) refexport_t GetRefAPI(refimport_t rimp) {
     Swap_Init();
 
     return re;
+}
+
 }
 
 #ifndef REF_HARD_LINKED
