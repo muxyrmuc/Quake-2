@@ -379,7 +379,7 @@ sndinitstat SNDDMA_InitDirect(void) {
 
     dscaps.dwSize = sizeof(dscaps);
 
-    if (DS_OK != pDS->lpVtbl->GetCaps(pDS, &dscaps)) {
+    if (DS_OK != pDS->GetCaps(&dscaps)) {
         Com_Printf("*** couldn't get DS caps ***\n");
     }
 
@@ -473,7 +473,7 @@ qboolean SNDDMA_InitWav(void) {
     Com_DPrintf("ok\n");
 
     Com_DPrintf("...locking waveform buffer: ");
-    lpData = GlobalLock(hData);
+    lpData = static_cast<HPSTR>(GlobalLock(hData));
     if (!lpData) {
         Com_Printf(" failed\n");
         FreeSound();
@@ -550,7 +550,7 @@ int SNDDMA_Init(void) {
 
     s_wavonly = Cvar_Get("s_wavonly", "0", 0);
 
-    dsound_init = wav_init = 0;
+    dsound_init = wav_init = kFalse;
 
     stat = SIS_FAILURE;  // assume DirectSound won't initialize
 
@@ -654,7 +654,7 @@ void SNDDMA_BeginPainting(void) {
         Com_Printf("Couldn't get sound buffer status\n");
 
     if (dwStatus & DSBSTATUS_BUFFERLOST)
-        pDSBuf->Restore(;
+        pDSBuf->Restore();
 
     if (!(dwStatus & DSBSTATUS_PLAYING))
         pDSBuf->Play(0, 0, DSBPLAY_LOOPING);

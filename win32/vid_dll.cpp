@@ -48,7 +48,7 @@ cvar_t* vid_fullscreen;
 // Global variables used internally by this module
 viddef_t viddef;           // global video state; used by other modules
 HINSTANCE reflib_library;  // Handle to refresh DLL
-qboolean reflib_active = 0;
+qboolean reflib_active = kFalse;
 
 HWND cl_hwnd;  // Main window handle for life of program
 
