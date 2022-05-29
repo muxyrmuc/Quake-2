@@ -191,7 +191,7 @@ void CL_Record_f(void) {
     cls.demorecording = kTrue;
 
     // don't start saving messages until a non-delta compressed message is received
-    cls.demowaiting = true;
+    cls.demowaiting = kTrue;
 
     //
     // write out messages to hold the startup information

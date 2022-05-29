@@ -88,14 +88,14 @@ void SCR_LoadPCX(char* filename, byte** pic, byte** palette, int* width, int* he
         return;
     }
 
-    out = Z_Malloc((pcx->ymax + 1) * (pcx->xmax + 1));
+    out = static_cast<byte*>(Z_Malloc((pcx->ymax + 1) * (pcx->xmax + 1)));
 
     *pic = out;
 
     pix = out;
 
     if (palette) {
-        *palette = Z_Malloc(768);
+        *palette = static_cast<byte*>(Z_Malloc(768));
         memcpy(*palette, (byte*)pcx + len - 768, 768);
     }
 
@@ -147,7 +147,7 @@ void SCR_StopCinematic(void) {
     }
     if (cl.cinematicpalette_active) {
         re.CinematicSetPalette(NULL);
-        cl.cinematicpalette_active = false;
+        cl.cinematicpalette_active = kFalse;
     }
     if (cl.cinematic_file) {
         fclose(cl.cinematic_file);
@@ -160,7 +160,7 @@ void SCR_StopCinematic(void) {
 
     // switch back down to 11 khz sound if necessary
     if (cin.restart_sound) {
-        cin.restart_sound = false;
+        cin.restart_sound = kFalse;
         CL_Snd_Restart_f();
     }
 }
@@ -500,7 +500,7 @@ qboolean SCR_DrawCinematic(void) {
     }
 
     if (!cl.cinematicpalette_active) {
-        re.CinematicSetPalette(cl.cinematicpalette);
+        re.CinematicSetPalette(reinterpret_cast<unsigned char*>(cl.cinematicpalette));
         cl.cinematicpalette_active = kTrue;
     }
 

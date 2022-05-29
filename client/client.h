@@ -413,7 +413,7 @@ void CL_WidowSplash(vec3_t org);
 // PGM
 // ========
 
-int CL_ParseEntityBits(unsigned* bits);
+int CL_ParseEntityBits(int* bits);
 void CL_ParseDelta(entity_state_t* from, entity_state_t* to, int number, int bits);
 void CL_ParseFrame(void);
 
