@@ -30,12 +30,12 @@ Cvar_InfoValidate
 */
 static qboolean Cvar_InfoValidate(char* s) {
     if (strstr(s, "\\"))
-        return false;
+        return kFalse;
     if (strstr(s, "\""))
-        return false;
+        return kFalse;
     if (strstr(s, ";"))
-        return false;
-    return true;
+        return kFalse;
+    return kTrue;
 }
 
 /*
@@ -145,7 +145,7 @@ cvar_t* Cvar_Get(char* var_name, char* var_value, int flags) {
     var = Z_Malloc(sizeof(*var));
     var->name = CopyString(var_name);
     var->string = CopyString(var_value);
-    var->modified = true;
+    var->modified = kTrue;
     var->value = atof(var->string);
 
     // link the variable in
@@ -216,10 +216,10 @@ cvar_t* Cvar_Set2(char* var_name, char* value, qboolean force) {
     if (!strcmp(value, var->string))
         return var;  // not changed
 
-    var->modified = true;
+    var->modified = kTrue;
 
     if (var->flags & CVAR_USERINFO)
-        userinfo_modified = true;  // transmit at next oportunity
+        userinfo_modified = kTrue;  // transmit at next oportunity
 
     Z_Free(var->string);  // free the old value string
 
@@ -235,7 +235,7 @@ Cvar_ForceSet
 ============
 */
 cvar_t* Cvar_ForceSet(char* var_name, char* value) {
-    return Cvar_Set2(var_name, value, true);
+    return Cvar_Set2(var_name, value, kTrue);
 }
 
 /*
@@ -244,7 +244,7 @@ Cvar_Set
 ============
 */
 cvar_t* Cvar_Set(char* var_name, char* value) {
-    return Cvar_Set2(var_name, value, false);
+    return Cvar_Set2(var_name, value, kFalse);
 }
 
 /*
@@ -260,10 +260,10 @@ cvar_t* Cvar_FullSet(char* var_name, char* value, int flags) {
         return Cvar_Get(var_name, value, flags);
     }
 
-    var->modified = true;
+    var->modified = kTrue;
 
     if (var->flags & CVAR_USERINFO)
-        userinfo_modified = true;  // transmit at next oportunity
+        userinfo_modified = kTrue;  // transmit at next oportunity
 
     Z_Free(var->string);  // free the old value string
 
@@ -326,16 +326,16 @@ qboolean Cvar_Command(void) {
     // check variables
     v = Cvar_FindVar(Cmd_Argv(0));
     if (!v)
-        return false;
+        return kFalse;
 
     // perform a variable print or set
     if (Cmd_Argc() == 1) {
         Com_Printf("\"%s\" is \"%s\"\n", v->name, v->string);
-        return true;
+        return kTrue;
     }
 
     Cvar_Set(v->name, Cmd_Argv(1));
-    return true;
+    return kTrue;
 }
 
 /*
@@ -374,7 +374,7 @@ void Cvar_Set_f(void) {
 Cvar_WriteVariables
 
 Appends lines containing "set variable value" for all variables
-with the archive flag set to true.
+with the archive flag set to kTrue.
 ============
 */
 void Cvar_WriteVariables(char* path) {
