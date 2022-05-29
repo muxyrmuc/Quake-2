@@ -135,7 +135,7 @@ const char* Default_MenuKey(menuframework_s* m, int key) {
     menucommon_s* item;
 
     if (m) {
-        if ((item = Menu_ItemAtCursor(m)) != 0) {
+        if ((item = static_cast<menucommon_s*>(Menu_ItemAtCursor(m))) != 0) {
             if (item->type == MTYPE_FIELD) {
                 if (Field_Key((menufield_s*)item, key))
                     return NULL;

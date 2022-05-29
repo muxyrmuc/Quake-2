@@ -218,7 +218,7 @@ int MapKey(int key) {
 }
 
 void AppActivate(BOOL fActive, BOOL minimize) {
-    Minimized = minimize;
+    Minimized = minimize ? kTrue : kFalse;
 
     Key_ClearStates();
 

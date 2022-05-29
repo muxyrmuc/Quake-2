@@ -473,7 +473,7 @@ void* Sys_GetGameAPI(void* parms) {
         }
     }
 
-    GetGameAPI = (void*)GetProcAddress(game_library, "GetGameAPI");
+    GetGameAPI = (decltype(GetGameAPI))GetProcAddress(game_library, "GetGameAPI");
     if (!GetGameAPI) {
         Sys_UnloadGame();
         return NULL;

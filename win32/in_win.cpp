@@ -382,7 +382,7 @@ between a deactivate and an activate.
 */
 void IN_Activate(qboolean active) {
     in_appactive = active;
-    mouseactive = !active;  // force a new window check or turn off
+    mouseactive = (kFalse == active) ? kTrue : kFalse;  // force a new window check or turn off
 }
 
 /*

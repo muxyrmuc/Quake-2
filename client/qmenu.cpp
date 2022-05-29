@@ -265,7 +265,7 @@ void Menu_AdjustCursor(menuframework_s* m, int dir) {
     ** see if it's in a valid spot
     */
     if (m->cursor >= 0 && m->cursor < m->nitems) {
-        if ((citem = Menu_ItemAtCursor(m)) != 0) {
+        if ((citem = static_cast<menucommon_s*>(Menu_ItemAtCursor(m))) != 0) {
             if (citem->type != MTYPE_SEPARATOR)
                 return;
         }
@@ -277,7 +277,7 @@ void Menu_AdjustCursor(menuframework_s* m, int dir) {
     */
     if (dir == 1) {
         while (1) {
-            citem = Menu_ItemAtCursor(m);
+            citem = static_cast<menucommon_s*>(Menu_ItemAtCursor(m));
             if (citem)
                 if (citem->type != MTYPE_SEPARATOR)
                     break;
@@ -287,7 +287,7 @@ void Menu_AdjustCursor(menuframework_s* m, int dir) {
         }
     } else {
         while (1) {
-            citem = Menu_ItemAtCursor(m);
+            citem = static_cast<menucommon_s*>(Menu_ItemAtCursor(m));
             if (citem)
                 if (citem->type != MTYPE_SEPARATOR)
                     break;
@@ -337,7 +337,7 @@ void Menu_Draw(menuframework_s* menu) {
         }
     }
 
-    item = Menu_ItemAtCursor(menu);
+    item = static_cast<menucommon_s*>(Menu_ItemAtCursor(menu));
 
     if (item && item->cursordraw) {
         item->cursordraw(item);
