@@ -507,7 +507,7 @@ char* Cmd_MacroExpandString(char* text) {
 
     for (i = 0; i < len; i++) {
         if (scan[i] == '"')
-            inquote ^= 1;
+            inquote = (kFalse == inquote) ? kTrue : kFalse;
         if (inquote)
             continue;  // don't expand inside quotes
         if (scan[i] != '$')

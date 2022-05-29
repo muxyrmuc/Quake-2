@@ -332,7 +332,15 @@ void CL_DeltaEntity(frame_t* frame, int newnum, entity_state_t* old, int bits) {
     CL_ParseDelta(old, state, newnum, bits);
 
     // some data changes will force no lerping
-    if (state->modelindex != ent->current.modelindex || state->modelindex2 != ent->current.modelindex2 || state->modelindex3 != ent->current.modelindex3 || state->modelindex4 != ent->current.modelindex4 || abs(state->origin[0] - ent->current.origin[0]) > 512 || abs(state->origin[1] - ent->current.origin[1]) > 512 || abs(state->origin[2] - ent->current.origin[2]) > 512 || state->event == EV_PLAYER_TELEPORT || state->event == EV_OTHER_TELEPORT) {
+    if (state->modelindex != ent->current.modelindex ||
+        state->modelindex2 != ent->current.modelindex2 ||
+        state->modelindex3 != ent->current.modelindex3 ||
+        state->modelindex4 != ent->current.modelindex4 ||
+        abs(static_cast<int>(state->origin[0] - ent->current.origin[0])) > 512 ||
+        abs(static_cast<int>(state->origin[1] - ent->current.origin[1])) > 512 ||
+        abs(static_cast<int>(state->origin[2] - ent->current.origin[2])) > 512 ||
+        state->event == EV_PLAYER_TELEPORT ||
+        state->event == EV_OTHER_TELEPORT) {
         ent->serverframe = -99;
     }
 
