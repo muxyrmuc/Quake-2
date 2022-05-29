@@ -244,4 +244,6 @@ typedef struct
     int max_edicts;
 } game_export_t;
 
-__declspec(dllexport) game_export_t* GetGameApi(game_import_t* import);
+extern "C" {
+    __declspec(dllexport) game_export_t* GetGameApi(game_import_t* import);
+}

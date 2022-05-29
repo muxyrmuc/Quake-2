@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "ref.h"
 
@@ -413,7 +414,7 @@ void CL_WidowSplash(vec3_t org);
 // PGM
 // ========
 
-int CL_ParseEntityBits(unsigned* bits);
+int CL_ParseEntityBits(int* bits);
 void CL_ParseDelta(entity_state_t* from, entity_state_t* to, int number, int bits);
 void CL_ParseFrame(void);
 
