@@ -140,7 +140,7 @@ sfxcache_t* S_LoadSound(sfx_t* s) {
 
     len = len * info.width * info.channels;
 
-    sc = s->cache = Z_Malloc(len + sizeof(sfxcache_t));
+    sc = s->cache = static_cast<sfxcache_t*>(Z_Malloc(len + sizeof(sfxcache_t)));
     if (!sc) {
         FS_FreeFile(data);
         return NULL;

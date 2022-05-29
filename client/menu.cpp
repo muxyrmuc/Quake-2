@@ -2355,7 +2355,7 @@ void StartServer_MenuInit(void) {
         length = ftell(fp);
         fseek(fp, 0, SEEK_SET);
 #endif
-        buffer = malloc(length);
+        buffer = static_cast<char*>(malloc(length));
         fread(buffer, length, 1, fp);
     }
 
@@ -2371,7 +2371,7 @@ void StartServer_MenuInit(void) {
     if (nummaps == 0)
         Com_Error(ERR_DROP, "no maps in maps.lst\n");
 
-    mapnames = malloc(sizeof(char*) * (nummaps + 1));
+    mapnames = static_cast<char**>(malloc(sizeof(char*) * (nummaps + 1)));
     memset(mapnames, 0, sizeof(char*) * (nummaps + 1));
 
     s = buffer;
@@ -2389,7 +2389,7 @@ void StartServer_MenuInit(void) {
         strcpy(longname, COM_Parse(&s));
         Com_sprintf(scratch, sizeof(scratch), "%s\n%s", longname, shortname);
 
-        mapnames[i] = malloc(strlen(scratch) + 1);
+        mapnames[i] = static_cast<char*>(malloc(strlen(scratch) + 1));
         strcpy(mapnames[i], scratch);
     }
     mapnames[nummaps] = 0;
@@ -3231,7 +3231,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
         if (!nskins)
             continue;
 
-        skinnames = malloc(sizeof(char*) * (nskins + 1));
+        skinnames = static_cast<char**>(malloc(sizeof(char*) * (nskins + 1)));
         memset(skinnames, 0, sizeof(char*) * (nskins + 1));
 
         // copy the valid skins

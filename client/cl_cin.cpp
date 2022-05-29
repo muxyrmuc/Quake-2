@@ -223,7 +223,7 @@ void Huff1TableInit(void) {
     byte counts[256];
     int numhnodes;
 
-    cin.hnodes1 = Z_Malloc(256 * 256 * 2 * 4);
+    cin.hnodes1 = static_cast<int*>(Z_Malloc(256 * 256 * 2 * 4));
     memset(cin.hnodes1, 0, 256 * 256 * 2 * 4);
 
     for (prev = 0; prev < 256; prev++) {
@@ -277,7 +277,7 @@ cblock_t Huff1Decompress(cblock_t in) {
     // get decompressed count
     count = in.data[0] + (in.data[1] << 8) + (in.data[2] << 16) + (in.data[3] << 24);
     input = in.data + 4;
-    out_p = out.data = Z_Malloc(count);
+    out_p = out.data = static_cast<byte*>(Z_Malloc(count));
 
     // read bits
 
@@ -405,7 +405,7 @@ byte* SCR_ReadNextFrame(void) {
 
     if (command == 1) {  // read palette
         FS_Read(cl.cinematicpalette, sizeof(cl.cinematicpalette), cl.cinematic_file);
-        cl.cinematicpalette_active = 0;  // dubious....  exposes an edge case
+        cl.cinematicpalette_active = kFalse;  // dubious....  exposes an edge case
     }
 
     // decompress the next frame

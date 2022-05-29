@@ -827,7 +827,7 @@ void Key_ClearStates(void) {
     for (i = 0; i < 256; i++) {
         if (keydown[i] || key_repeats[i])
             Key_Event(i, kFalse, 0);
-        keydown[i] = 0;
+        keydown[i] = kFalse;
         key_repeats[i] = 0;
     }
 }
