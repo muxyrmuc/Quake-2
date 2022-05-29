@@ -127,7 +127,7 @@ void S_Init(void) {
         Cmd_AddCommand("soundlist", S_SoundList);
         Cmd_AddCommand("soundinfo", S_SoundInfo_f);
 
-        if (!SNDDMA_Init())
+        if (kFalse == SNDDMA_Init())
             return;
 
         S_InitScaletable();
