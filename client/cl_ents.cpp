@@ -58,7 +58,7 @@ void CL_ClearProjectiles (void)
 	for (i = 0; i < MAX_PROJECTILES; i++) {
 //		if (cl_projectiles[i].present)
 //			Com_DPrintf("PROJ: %d CLEARED\n", cl_projectiles[i].num);
-		cl_projectiles[i].present = false;
+		cl_projectiles[i].present = kFalse;
 	}
 }
 
@@ -76,7 +76,7 @@ void CL_ParseProjectiles (void)
 	byte	b;
 	projectile_t	pr;
 	int lastempty = -1;
-	qboolean old = false;
+	qboolean old = kFalse;
 
 	c = MSG_ReadByte (&net_message);
 	for (i=0 ; i<c ; i++)
@@ -97,7 +97,7 @@ void CL_ParseProjectiles (void)
 			pr.effects = 0;
 
 		if (bits[4] & 128) {
-			old = true;
+			old = kTrue;
 			bits[0] = MSG_ReadByte (&net_message);
 			bits[1] = MSG_ReadByte (&net_message);
 			bits[2] = MSG_ReadByte (&net_message);
@@ -121,7 +121,7 @@ void CL_ParseProjectiles (void)
 		if (b & 128) // extra entity number byte
 			pr.num |= (MSG_ReadByte (&net_message) << 7);
 
-		pr.present = true;
+		pr.present = kTrue;
 
 		// find if this projectile already exists from previous frame 
 		for (j = 0; j < MAX_PROJECTILES; j++) {
@@ -635,9 +635,9 @@ void CL_ParseFrame(void) {
     // the frame, but not use it, then ask for a non-compressed
     // message
     if (cl.frame.deltaframe <= 0) {
-        cl.frame.valid = true;  // uncompressed frame
+        cl.frame.valid = kTrue;  // uncompressed frame
         old = NULL;
-        cls.demowaiting = false;  // we can start recording now
+        cls.demowaiting = kFalse;  // we can start recording now
     } else {
         old = &cl.frames[cl.frame.deltaframe & UPDATE_MASK];
         if (!old->valid) {  // should never happen
@@ -649,7 +649,7 @@ void CL_ParseFrame(void) {
         } else if (cl.parse_entities - old->parse_entities > MAX_PARSE_ENTITIES - 128) {
             Com_Printf("Delta parse_entities too old.\n");
         } else
-            cl.frame.valid = true;  // valid delta parse
+            cl.frame.valid = kTrue;  // valid delta parse
     }
 
     // clamp time
@@ -688,7 +688,7 @@ void CL_ParseFrame(void) {
         // getting a valid frame message ends the connection process
         if (cls.state != ca_active) {
             cls.state = ca_active;
-            cl.force_refdef = true;
+            cl.force_refdef = kTrue;
             cl.predicted_origin[0] = cl.frame.playerstate.pmove.origin[0] * 0.125;
             cl.predicted_origin[1] = cl.frame.playerstate.pmove.origin[1] * 0.125;
             cl.predicted_origin[2] = cl.frame.playerstate.pmove.origin[2] * 0.125;
@@ -696,7 +696,7 @@ void CL_ParseFrame(void) {
             if (cls.disable_servercount != cl.servercount && cl.refresh_prepped)
                 SCR_EndLoadingPlaque();  // get rid of loading plaque
         }
-        cl.sound_prepped = true;  // can start mixing ambient sounds
+        cl.sound_prepped = kTrue;  // can start mixing ambient sounds
 
         // fire entity events
         CL_FireEntityEvents(&cl.frame);
