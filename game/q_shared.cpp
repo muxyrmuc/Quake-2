@@ -1096,6 +1096,10 @@ int Q_strcasecmp(char* s1, char* s2) {
     return Q_strncasecmp(s1, s2, 99999);
 }
 
+bool Q_StringEndsWith(std::string_view haystack, std::string_view needle) {
+    return haystack.size() >= needle.size() && haystack.compare(haystack.size() - needle.size(), needle.size(), needle);
+}
+
 void Com_sprintf(char* dest, int size, char* fmt, ...) {
     int len;
     va_list argptr;

@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string_view>
 
 #if (defined _M_IX86 || defined __i386__) && !defined C_ONLY && !defined __sun__
 #define id386 1
@@ -209,6 +210,7 @@ void Com_PageInMemory(byte* buffer, int size);
 int Q_stricmp(char* s1, char* s2);
 int Q_strcasecmp(char* s1, char* s2);
 int Q_strncasecmp(char* s1, char* s2, int n);
+bool Q_StringEndsWith(std::string_view haystack, std::string_view needle);
 
 //=============================================
 

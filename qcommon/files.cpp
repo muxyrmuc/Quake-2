@@ -517,12 +517,16 @@ void FS_ExecAutoexec(void) {
     char name[MAX_QPATH];
 
     dir = Cvar_VariableString("gamedir");
-    if (*dir)
+    
+    if (*dir) {
         Com_sprintf(name, sizeof(name), "%s/%s/autoexec.cfg", fs_basedir->string, dir);
-    else
+    } else {
         Com_sprintf(name, sizeof(name), "%s/%s/autoexec.cfg", fs_basedir->string, BASEDIRNAME);
-    if (std::filesystem::is_regular_file(name))
+    }
+    
+    if (std::filesystem::is_regular_file(name)) {
         Cbuf_AddText("exec autoexec.cfg\n");
+    }
 }
 
 /*

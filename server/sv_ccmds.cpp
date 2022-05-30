@@ -153,21 +153,19 @@ void SV_WipeSavegame(char* savename) {
     Com_sprintf(name, sizeof(name), "%s/save/%s/game.ssv", FS_Gamedir(), savename);
     remove(name);
 
-    Com_sprintf(name, sizeof(name), "%s/save/%s/*.sav", FS_Gamedir(), savename);
-    s = Sys_FindFirst(name, 0, 0);
-    while (s) {
-        remove(s);
-        s = Sys_FindNext(0, 0);
+    Com_sprintf(name, sizeof(name), "%s/save/%s", FS_Gamedir(), savename);
+    for (const auto& entry : std::filesystem::directory_iterator(name)) {
+        if (Q_StringEndsWith(entry.path().string(), ".sav")) {
+            std::filesystem::remove(entry.path());
+        }
     }
-    Sys_FindClose();
     
-    Com_sprintf(name, sizeof(name), "%s/save/%s/*.sv2", FS_Gamedir(), savename);
-    s = Sys_FindFirst(name, 0, 0);
-    while (s) {
-        remove(s);
-        s = Sys_FindNext(0, 0);
+    Com_sprintf(name, sizeof(name), "%s/save/%s", FS_Gamedir(), savename);
+    for (const auto& entry : std::filesystem::directory_iterator(name)) {
+        if (Q_StringEndsWith(entry.path().string(), ".sv2")) {
+            std::filesystem::remove(entry.path());
+        }
     }
-    Sys_FindClose();
 }
 
 /*
