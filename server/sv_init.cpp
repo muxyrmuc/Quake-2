@@ -304,17 +304,9 @@ void SV_InitGame(void) {
     } else if (Cvar_VariableValue("coop")) {
         if (maxclients->value <= 1 || maxclients->value > 4)
             Cvar_FullSet("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
-#ifdef COPYPROTECT
-        if (!sv.attractloop && !dedicated->value)
-            Sys_CopyProtect();
-#endif
     } else  // non-deathmatch, non-coop is one player
     {
         Cvar_FullSet("maxclients", "1", CVAR_SERVERINFO | CVAR_LATCH);
-#ifdef COPYPROTECT
-        if (!sv.attractloop)
-            Sys_CopyProtect();
-#endif
     }
 
     svs.spawncount = rand();
