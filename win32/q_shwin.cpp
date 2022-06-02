@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <direct.h>
 #include <io.h>
 #include <conio.h>
+#include <chrono>
 
 //===============================================================================
 
@@ -77,6 +78,13 @@ void Hunk_Free(void* base) {
 
 //===============================================================================
 
+static inline int NowMilliseconds() {
+    static_assert(std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den <= 1 / 1000,
+                  "steady_clock precision is too low");
+
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+
 /*
 ================
 Sys_Milliseconds
@@ -88,10 +96,10 @@ int Sys_Milliseconds(void) {
     static qboolean initialized = kFalse;
 
     if (!initialized) {  // let base retain 16 bits of effectively random data
-        base = timeGetTime() & 0xffff0000;
+        base = NowMilliseconds() & 0xffff0000;
         initialized = kTrue;
     }
-    curtime = timeGetTime() - base;
+    curtime = NowMilliseconds() - base;
 
     return curtime;
 }
