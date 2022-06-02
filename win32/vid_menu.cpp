@@ -157,26 +157,9 @@ static void ApplyChanges(void* unused) {
     ** has been modified
     */
     if (stricmp(vid_ref->string, "gl") == 0) {
-        if (vid_gamma->modified) {
+        if (vid_gamma->modified || gl_driver->modified) {
             vid_ref->modified = kTrue;
-            if (stricmp(gl_driver->string, "3dfxgl") == 0) {
-                char envbuffer[1024];
-                float g;
-
-                vid_ref->modified = kTrue;
-
-                g = 2.00 * (0.8 - (vid_gamma->value - 0.5)) + 1.0F;
-                Com_sprintf(envbuffer, sizeof(envbuffer), "SSTV2_GAMMA=%f", g);
-                putenv(envbuffer);
-                Com_sprintf(envbuffer, sizeof(envbuffer), "SST_GAMMA=%f", g);
-                putenv(envbuffer);
-
-                vid_gamma->modified = kFalse;
-            }
         }
-
-        if (gl_driver->modified)
-            vid_ref->modified = kTrue;
     }
 
     M_ForceMenuOff();
