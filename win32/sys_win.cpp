@@ -46,8 +46,6 @@ static HANDLE hinput, houtput;
 unsigned sys_msg_time;
 unsigned sys_frame_time;
 
-static HANDLE qwclsemaphore;
-
 #define MAX_NUM_ARGVS 128
 int argc;
 char* argv[MAX_NUM_ARGVS];
@@ -73,9 +71,6 @@ void Sys_Error(char* error, ...) {
 
     MessageBox(NULL, text, "Error", 0 /* MB_OK */);
 
-    if (qwclsemaphore)
-        CloseHandle(qwclsemaphore);
-
     // shut down QHOST hooks if necessary
     DeinitConProc();
 
@@ -87,7 +82,7 @@ void Sys_Quit(void) {
 
     CL_Shutdown();
     Qcommon_Shutdown();
-    CloseHandle(qwclsemaphore);
+
     if (dedicated && dedicated->value)
         FreeConsole();
 
@@ -173,26 +168,6 @@ Sys_Init
 */
 void Sys_Init(void) {
     OSVERSIONINFO vinfo;
-
-#if 0
-	// allocate a named semaphore on the client so the
-	// front end can tell if it is alive
-
-	// mutex will fail if semephore already exists
-    qwclsemaphore = CreateMutex(
-        NULL,         /* Security attributes */
-        0,            /* owner       */
-        "qwcl"); /* Semaphore name      */
-	if (!qwclsemaphore)
-		Sys_Error ("QWCL is already running on this system");
-	CloseHandle (qwclsemaphore);
-
-    qwclsemaphore = CreateSemaphore(
-        NULL,         /* Security attributes */
-        0,            /* Initial count       */
-        1,            /* Maximum count       */
-        "qwcl"); /* Semaphore name      */
-#endif
 
     timeBeginPeriod(1);
 
