@@ -33,10 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MINIMUM_WIN_MEMORY 0x0a00000
 #define MAXIMUM_WIN_MEMORY 0x1000000
 
-//#define DEMO
-
-qboolean s_win95;
-
 int starttime;
 qboolean ActiveApp;
 qboolean Minimized;
@@ -167,21 +163,7 @@ Sys_Init
 ================
 */
 void Sys_Init(void) {
-    OSVERSIONINFO vinfo;
-
     timeBeginPeriod(1);
-
-    vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-
-    if (!GetVersionEx(&vinfo))
-        Sys_Error("Couldn't get OS info");
-
-    if (vinfo.dwMajorVersion < 4)
-        Sys_Error("Quake2 requires windows version 4 or greater");
-    if (vinfo.dwPlatformId == VER_PLATFORM_WIN32s)
-        Sys_Error("Quake2 doesn't run on Win32s");
-    else if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-        s_win95 = kTrue;
 
     if (dedicated->value) {
         if (!AllocConsole())
