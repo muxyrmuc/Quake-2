@@ -125,7 +125,7 @@ void Sys_SendKeyEvents(void) {
     }
 
     // grab frame time
-    sys_frame_time = timeGetTime();  // FIXME: should this be at start?
+    sys_frame_time = Sys_NowMilliseconds();  // FIXME: should this be at start?
 }
 
 /*

@@ -78,7 +78,7 @@ void Hunk_Free(void* base) {
 
 //===============================================================================
 
-static inline int NowMilliseconds() {
+int Sys_NowMilliseconds() {
     static_assert(std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den <= 1 / 1000,
                   "steady_clock precision is too low");
 
@@ -96,10 +96,10 @@ int Sys_Milliseconds(void) {
     static qboolean initialized = kFalse;
 
     if (!initialized) {  // let base retain 16 bits of effectively random data
-        base = NowMilliseconds() & 0xffff0000;
+        base = Sys_NowMilliseconds() & 0xffff0000;
         initialized = kTrue;
     }
-    curtime = NowMilliseconds() - base;
+    curtime = Sys_NowMilliseconds() - base;
 
     return curtime;
 }
