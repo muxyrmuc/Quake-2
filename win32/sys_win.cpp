@@ -395,7 +395,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     /* main window message loop */
     while (1) {
         // if at a full screen console, don't update unless needed
-        if (Minimized || (dedicated && dedicated->value)) {
+        if (Minimized) {
             Sleep(1);
         }
 

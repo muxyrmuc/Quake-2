@@ -1319,10 +1319,7 @@ void Qcommon_Init(int argc, char** argv) {
 
     // add + commands from command line
     if (!Cbuf_AddLateCommands()) {  // if the user didn't give any commands, run default action
-        if (!dedicated->value)
-            Cbuf_AddText("d1\n");
-        else
-            Cbuf_AddText("dedicated_start\n");
+        Cbuf_AddText("d1\n");
         Cbuf_Execute();
     } else {  // the user asked for something explicit
         // so drop the loading plaque
