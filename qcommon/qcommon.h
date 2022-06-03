@@ -739,7 +739,6 @@ float frand(void);  // 0 ti 1
 float crand(void);  // -1 to 1
 
 extern cvar_t* developer;
-extern cvar_t* dedicated;
 extern cvar_t* host_speeds;
 extern cvar_t* log_stats;
 
