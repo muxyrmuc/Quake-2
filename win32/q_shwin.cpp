@@ -112,7 +112,7 @@ void Sys_Mkdir(char* path) {
 
 char findbase[MAX_OSPATH];
 char findpath[MAX_OSPATH];
-int findhandle;
+std::intptr_t findhandle;
 
 static qboolean CompareAttributes(unsigned found, unsigned musthave, unsigned canthave) {
     if ((found & _A_RDONLY) && (canthave & SFF_RDONLY))
