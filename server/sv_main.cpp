@@ -52,8 +52,6 @@ cvar_t* public_server;  // should heartbeats be sent
 
 cvar_t* sv_reconnect_limit;  // minimum seconds between connect messages
 
-void Master_Shutdown(void);
-
 //============================================================================
 
 /*
@@ -727,77 +725,8 @@ void SV_Frame(int msec) {
     // save the entire world state if recording a serverdemo
     SV_RecordDemoMessage();
 
-    // send a heartbeat to the master if needed
-    Master_Heartbeat();
-
     // clear teleport flags, etc for next frame
     SV_PrepWorldFrame();
-}
-
-//============================================================================
-
-/*
-================
-Master_Heartbeat
-
-Send a message to the master every few minutes to
-let it know we are alive, and log information
-================
-*/
-#define HEARTBEAT_SECONDS 300
-void Master_Heartbeat(void) {
-    char* string;
-    int i;
-
-    if (!dedicated->value)
-        return;  // only dedicated servers send heartbeats
-
-    if (!public_server->value)
-        return;  // a private dedicated game
-
-    // check for time wraparound
-    if (svs.last_heartbeat > svs.realtime)
-        svs.last_heartbeat = svs.realtime;
-
-    if (svs.realtime - svs.last_heartbeat < HEARTBEAT_SECONDS * 1000)
-        return;  // not time to send yet
-
-    svs.last_heartbeat = svs.realtime;
-
-    // send the same string that we would give for a status OOB command
-    string = SV_StatusString();
-
-    // send to group master
-    for (i = 0; i < MAX_MASTERS; i++)
-        if (master_adr[i].port) {
-            Com_Printf("Sending heartbeat to %s\n", NET_AdrToString(master_adr[i]));
-            Netchan_OutOfBandPrint(NS_SERVER, master_adr[i], "heartbeat\n%s", string);
-        }
-}
-
-/*
-=================
-Master_Shutdown
-
-Informs all masters that this server is going down
-=================
-*/
-void Master_Shutdown(void) {
-    int i;
-
-    if (!dedicated->value)
-        return;  // only dedicated servers send heartbeats
-
-    if (!public_server->value)
-        return;  // a private dedicated game
-
-    // send to group master
-    for (i = 0; i < MAX_MASTERS; i++)
-        if (master_adr[i].port) {
-            if (i > 0)
-                Com_Printf("Sending heartbeat to %s\n", NET_AdrToString(master_adr[i]));
-            Netchan_OutOfBandPrint(NS_SERVER, master_adr[i], "shutdown");
-        }
 }
 
 //============================================================================
@@ -937,7 +866,6 @@ void SV_Shutdown(char* finalmsg, qboolean reconnect) {
     if (svs.clients)
         SV_FinalMessage(finalmsg, reconnect);
 
-    Master_Shutdown();
     SV_ShutdownGameProgs();
 
     // free current level

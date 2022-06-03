@@ -122,7 +122,6 @@ add_executable(quake2 WIN32
     win32/vid_dll.cpp
     win32/vid_menu.cpp
     win32/sys_win.cpp
-    win32/conproc.cpp
     win32/in_win.cpp
 )
 

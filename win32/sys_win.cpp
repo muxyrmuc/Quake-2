@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <direct.h>
 #include <io.h>
 #include <conio.h>
-#include "../win32/conproc.h"
 
 #define MINIMUM_WIN_MEMORY 0x0a00000
 #define MAXIMUM_WIN_MEMORY 0x1000000
@@ -36,8 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int starttime;
 qboolean ActiveApp;
 qboolean Minimized;
-
-static HANDLE hinput, houtput;
 
 unsigned sys_msg_time;
 unsigned sys_frame_time;
@@ -67,23 +64,12 @@ void Sys_Error(char* error, ...) {
 
     MessageBox(NULL, text, "Error", 0 /* MB_OK */);
 
-    // shut down QHOST hooks if necessary
-    DeinitConProc();
-
     exit(1);
 }
 
 void Sys_Quit(void) {
-    timeEndPeriod(1);
-
     CL_Shutdown();
     Qcommon_Shutdown();
-
-    if (dedicated && dedicated->value)
-        FreeConsole();
-
-    // shut down QHOST hooks if necessary
-    DeinitConProc();
 
     exit(0);
 }
@@ -163,17 +149,6 @@ Sys_Init
 ================
 */
 void Sys_Init(void) {
-    timeBeginPeriod(1);
-
-    if (dedicated->value) {
-        if (!AllocConsole())
-            Sys_Error("Couldn't create dedicated server console");
-        hinput = GetStdHandle(STD_INPUT_HANDLE);
-        houtput = GetStdHandle(STD_OUTPUT_HANDLE);
-
-        // let QHOST hook in
-        InitConProc(argc, argv);
-    }
 }
 
 static char console_text[256];
@@ -185,65 +160,6 @@ Sys_ConsoleInput
 ================
 */
 char* Sys_ConsoleInput(void) {
-    INPUT_RECORD recs[1024];
-    DWORD dummy;
-    DWORD numread;
-    DWORD numevents;
-    int ch;
-
-    if (!dedicated || !dedicated->value)
-        return NULL;
-
-    for (;;) {
-        if (!GetNumberOfConsoleInputEvents(hinput, &numevents))
-            Sys_Error("Error getting # of console events");
-
-        if (numevents <= 0)
-            break;
-
-        if (!ReadConsoleInput(hinput, recs, 1, &numread))
-            Sys_Error("Error reading console input");
-
-        if (numread != 1)
-            Sys_Error("Couldn't read console input");
-
-        if (recs[0].EventType == KEY_EVENT) {
-            if (!recs[0].Event.KeyEvent.bKeyDown) {
-                ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
-
-                switch (ch) {
-                    case '\r':
-                        WriteFile(houtput, "\r\n", 2, &dummy, NULL);
-
-                        if (console_textlen) {
-                            console_text[console_textlen] = 0;
-                            console_textlen = 0;
-                            return console_text;
-                        }
-                        break;
-
-                    case '\b':
-                        if (console_textlen) {
-                            console_textlen--;
-                            WriteFile(houtput, "\b \b", 3, &dummy, NULL);
-                        }
-                        break;
-
-                    default:
-                        if (ch >= ' ') {
-                            if (console_textlen < sizeof(console_text) - 2) {
-                                WriteFile(houtput, &ch, 1, &dummy, NULL);
-                                console_text[console_textlen] = ch;
-                                console_textlen++;
-                            }
-                        }
-
-                        break;
-                }
-            }
-        }
-    }
-
     return NULL;
 }
 
@@ -255,24 +171,6 @@ Print text to the dedicated console
 ================
 */
 void Sys_ConsoleOutput(char* string) {
-    DWORD dummy;
-    char text[256];
-
-    if (!dedicated || !dedicated->value)
-        return;
-
-    if (console_textlen) {
-        text[0] = '\r';
-        memset(&text[1], ' ', console_textlen);
-        text[console_textlen + 1] = '\r';
-        text[console_textlen + 2] = 0;
-        WriteFile(houtput, text, console_textlen + 2, &dummy, NULL);
-    }
-
-    WriteFile(houtput, string, strlen(string), &dummy, NULL);
-
-    if (console_textlen)
-        WriteFile(houtput, console_text, console_textlen, &dummy, NULL);
 }
 
 /*
@@ -497,7 +395,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     /* main window message loop */
     while (1) {
         // if at a full screen console, don't update unless needed
-        if (Minimized || (dedicated && dedicated->value)) {
+        if (Minimized) {
             Sleep(1);
         }
 

@@ -318,10 +318,8 @@ qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message
 
             if (err == WSAEWOULDBLOCK)
                 continue;
-            if (dedicated->value)  // let dedicated servers continue after errors
-                Com_Printf("NET_GetPacket: %s", NET_ErrorString());
-            else
-                Com_Error(ERR_DROP, "NET_GetPacket: %s", NET_ErrorString());
+            
+            Com_Error(ERR_DROP, "NET_GetPacket: %s", NET_ErrorString());
             continue;
         }
 
@@ -384,15 +382,10 @@ void NET_SendPacket(netsrc_t sock, int length, void* data, netadr_t to) {
         if ((err == WSAEADDRNOTAVAIL) && ((to.type == NA_BROADCAST) || (to.type == NA_BROADCAST_IPX)))
             return;
 
-        if (dedicated->value)  // let dedicated servers continue after errors
-        {
-            Com_Printf("NET_SendPacket ERROR: %s\n", NET_ErrorString());
+        if (err == WSAEADDRNOTAVAIL) {
+            Com_DPrintf("NET_SendPacket Warning: %s : %s\n", NET_ErrorString(), NET_AdrToString(to));
         } else {
-            if (err == WSAEADDRNOTAVAIL) {
-                Com_DPrintf("NET_SendPacket Warning: %s : %s\n", NET_ErrorString(), NET_AdrToString(to));
-            } else {
-                Com_Error(ERR_DROP, "NET_SendPacket ERROR: %s\n", NET_ErrorString());
-            }
+            Com_Error(ERR_DROP, "NET_SendPacket ERROR: %s\n", NET_ErrorString());
         }
     }
 }
@@ -549,9 +542,6 @@ NET_OpenIPX
 */
 void NET_OpenIPX(void) {
     int port;
-    int dedicated;
-
-    dedicated = Cvar_VariableValue("dedicated");
 
     if (!ipx_sockets[NS_SERVER]) {
         port = Cvar_Get("ipx_hostport", "0", CVAR_NOSET)->value;
@@ -563,10 +553,6 @@ void NET_OpenIPX(void) {
         }
         ipx_sockets[NS_SERVER] = NET_IPXSocket(port);
     }
-
-    // dedicated servers don't need client ports
-    if (dedicated)
-        return;
 
     if (!ipx_sockets[NS_CLIENT]) {
         port = Cvar_Get("ipx_clientport", "0", CVAR_NOSET)->value;
@@ -618,28 +604,7 @@ void NET_Config(qboolean multiplayer) {
 
 // sleeps msec or until net socket is ready
 void NET_Sleep(int msec) {
-    struct timeval timeout;
-    fd_set fdset;
-    extern cvar_t* dedicated;
-    int i;
-
-    if (!dedicated || !dedicated->value)
-        return;  // we're not a server, just run full speed
-
-    FD_ZERO(&fdset);
-    i = 0;
-    if (ip_sockets[NS_SERVER]) {
-        FD_SET(ip_sockets[NS_SERVER], &fdset);  // network socket
-        i = ip_sockets[NS_SERVER];
-    }
-    if (ipx_sockets[NS_SERVER]) {
-        FD_SET(ipx_sockets[NS_SERVER], &fdset);  // network socket
-        if (ipx_sockets[NS_SERVER] > i)
-            i = ipx_sockets[NS_SERVER];
-    }
-    timeout.tv_sec = msec / 1000;
-    timeout.tv_usec = (msec % 1000) * 1000;
-    select(i + 1, &fdset, NULL, NULL, &timeout);
+    // we're not a server, just run full speed
 }
 
 //===================================================================

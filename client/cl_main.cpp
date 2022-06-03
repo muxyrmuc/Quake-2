@@ -1551,9 +1551,6 @@ void CL_Frame(int msec) {
     static int extratime;
     static int lasttimecalled;
 
-    if (dedicated->value)
-        return;
-
     extratime += msec;
 
     if (!cl_timedemo->value) {
@@ -1643,9 +1640,6 @@ CL_Init
 ====================
 */
 void CL_Init(void) {
-    if (dedicated->value)
-        return;  // nothing running on the client
-
     // all archived variables will now be loaded
 
     Con_Init();

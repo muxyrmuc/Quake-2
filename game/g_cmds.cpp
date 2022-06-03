@@ -770,9 +770,6 @@ void Cmd_Say_f(edict_t* ent, qboolean team, qboolean arg0) {
         cl->flood_when[cl->flood_whenhead] = level.time;
     }
 
-    if (dedicated->value)
-        gi.cprintf(NULL, PRINT_CHAT, "%s", text);
-
     for (j = 1; j <= game.maxclients; j++) {
         other = &g_edicts[j];
         if (!other->inuse)

@@ -41,7 +41,6 @@ cvar_t* timescale;
 cvar_t* fixedtime;
 cvar_t* logfile_active;  // 1 = buffer log, 2 = flush after each print
 cvar_t* showtrace;
-cvar_t* dedicated;
 
 FILE* logfile;
 
@@ -1306,17 +1305,9 @@ void Qcommon_Init(int argc, char** argv) {
     fixedtime = Cvar_Get("fixedtime", "0", 0);
     logfile_active = Cvar_Get("logfile", "0", 0);
     showtrace = Cvar_Get("showtrace", "0", 0);
-#ifdef DEDICATED_ONLY
-    dedicated = Cvar_Get("dedicated", "1", CVAR_NOSET);
-#else
-    dedicated = Cvar_Get("dedicated", "0", CVAR_NOSET);
-#endif
 
     s = va("%4.2f %s %s %s", VERSION, CPUSTRING, __DATE__, BUILDSTRING);
     Cvar_Get("version", s, CVAR_SERVERINFO | CVAR_NOSET);
-
-    if (dedicated->value)
-        Cmd_AddCommand("quit", Com_Quit);
 
     Sys_Init();
 
@@ -1328,10 +1319,7 @@ void Qcommon_Init(int argc, char** argv) {
 
     // add + commands from command line
     if (!Cbuf_AddLateCommands()) {  // if the user didn't give any commands, run default action
-        if (!dedicated->value)
-            Cbuf_AddText("d1\n");
-        else
-            Cbuf_AddText("dedicated_start\n");
+        Cbuf_AddText("d1\n");
         Cbuf_Execute();
     } else {  // the user asked for something explicit
         // so drop the loading plaque
