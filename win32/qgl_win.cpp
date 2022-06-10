@@ -3101,7 +3101,7 @@ qboolean QGL_Init(const char* dllname) {
     return kTrue;
 }
 
-void GLimp_EnableLogging(qboolean enable) {
+void GLimp_EnableLogging(bool enable) {
     if (enable) {
         if (!glw_state.log_fp) {
             struct tm* newtime;

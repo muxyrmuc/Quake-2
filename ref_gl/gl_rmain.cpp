@@ -1263,7 +1263,7 @@ void R_BeginFrame(float camera_separation) {
     }
 
     if (gl_log->modified) {
-        GLimp_EnableLogging((0 != gl_log->value) ? kTrue : kFalse);
+        GLimp_EnableLogging(0 != gl_log->value);
         gl_log->modified = kFalse;
     }
 
