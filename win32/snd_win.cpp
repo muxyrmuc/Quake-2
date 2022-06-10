@@ -99,7 +99,7 @@ static const char* DSoundError(int error) {
 /*
 ** DS_CreateBuffers
 */
-static qboolean DS_CreateBuffers(void) {
+static bool DS_CreateBuffers(void) {
     DSBUFFERDESC dsbuf;
     DSBCAPS dsbcaps;
     WAVEFORMATEX pformat, format;
@@ -120,7 +120,7 @@ static qboolean DS_CreateBuffers(void) {
     if (DS_OK != pDS->SetCooperativeLevel(cl_hwnd, DSSCL_EXCLUSIVE)) {
         Com_Printf("failed\n");
         FreeSound();
-        return kFalse;
+        return false;
     }
     Com_DPrintf("ok\n");
 
@@ -168,7 +168,7 @@ static qboolean DS_CreateBuffers(void) {
         if (DS_OK != pDS->CreateSoundBuffer(&dsbuf, &pDSBuf, NULL)) {
             Com_Printf("failed\n");
             FreeSound();
-            return kFalse;
+            return false;
         }
         Com_DPrintf("ok\n");
 
@@ -179,7 +179,7 @@ static qboolean DS_CreateBuffers(void) {
         if (DS_OK != pDSBuf->GetCaps(&dsbcaps)) {
             Com_Printf("*** GetCaps failed ***\n");
             FreeSound();
-            return kFalse;
+            return false;
         }
 
         Com_Printf("...using secondary sound buffer\n");
@@ -190,13 +190,13 @@ static qboolean DS_CreateBuffers(void) {
         if (DS_OK != pDS->SetCooperativeLevel(cl_hwnd, DSSCL_WRITEPRIMARY)) {
             Com_Printf("failed\n");
             FreeSound();
-            return kFalse;
+            return false;
         }
         Com_DPrintf("ok\n");
 
         if (DS_OK != pDSPBuf->GetCaps(&dsbcaps)) {
             Com_Printf("*** GetCaps failed ***\n");
-            return kFalse;
+            return false;
         }
 
         pDSBuf = pDSPBuf;
@@ -227,7 +227,7 @@ static qboolean DS_CreateBuffers(void) {
     dma.buffer = (unsigned char*)lpData;
     sample16 = (dma.samplebits / 8) - 1;
 
-    return kTrue;
+    return true;
 }
 
 /*
@@ -542,10 +542,10 @@ bool SNDDMA_InitWav(void) {
 SNDDMA_Init
 
 Try to find a sound device to mix for.
-Returns kFalse if nothing is found.
+Returns false if nothing is found.
 ==================
 */
-qboolean SNDDMA_Init(void) {
+bool SNDDMA_Init(void) {
     sndinitstat stat;
 
     memset((void*)&dma, 0, sizeof(dma));
@@ -598,10 +598,10 @@ qboolean SNDDMA_Init(void) {
         if (snd_firsttime)
             Com_Printf("*** No sound device initialized ***\n");
 
-        return kFalse;
+        return false;
     }
 
-    return kTrue;
+    return true;
 }
 
 /*
