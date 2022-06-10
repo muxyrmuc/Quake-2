@@ -40,10 +40,12 @@ typedef enum { SIS_SUCCESS,
 
 cvar_t* s_wavonly;
 
-static qboolean dsound_init;
-static qboolean wav_init;
-static qboolean snd_firsttime = kTrue, snd_isdirect, snd_iswave;
-static qboolean primary_format_set;
+static bool dsound_init;
+static bool wav_init;
+static bool snd_firsttime = true;
+static bool snd_isdirect;
+static bool snd_iswave;
+static bool primary_format_set;
 
 // starts at 0 for disabled
 static int snd_buffer_count = 0;
@@ -75,7 +77,7 @@ LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
 HINSTANCE hInstDS;
 
 sndinitstat SNDDMA_InitDirect(void);
-qboolean SNDDMA_InitWav(void);
+bool SNDDMA_InitWav(void);
 
 void FreeSound(void);
 
@@ -132,7 +134,7 @@ static qboolean DS_CreateBuffers(void) {
 
     memset(&dsbcaps, 0, sizeof(dsbcaps));
     dsbcaps.dwSize = sizeof(dsbcaps);
-    primary_format_set = kFalse;
+    primary_format_set = false;
 
     Com_DPrintf("...creating primary buffer: ");
     if (DS_OK == pDS->CreateSoundBuffer(&dsbuf, &pDSPBuf, NULL)) {
@@ -146,7 +148,7 @@ static qboolean DS_CreateBuffers(void) {
             if (snd_firsttime)
                 Com_DPrintf("...setting primary sound format: ok\n");
 
-            primary_format_set = kTrue;
+            primary_format_set = true;
         }
     } else
         Com_Printf("failed\n");
@@ -313,8 +315,8 @@ void FreeSound(void) {
     hWaveHdr = 0;
     lpData = NULL;
     lpWaveHdr = NULL;
-    dsound_init = kFalse;
-    wav_init = kFalse;
+    dsound_init = false;
+    wav_init = false;
 }
 
 /*
@@ -392,7 +394,7 @@ sndinitstat SNDDMA_InitDirect(void) {
     if (!DS_CreateBuffers())
         return SIS_FAILURE;
 
-    dsound_init = kTrue;
+    dsound_init = true;
 
     Com_DPrintf("...completed successfully\n");
 
@@ -406,7 +408,7 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-qboolean SNDDMA_InitWav(void) {
+bool SNDDMA_InitWav(void) {
     WAVEFORMATEX format;
     int i;
     HRESULT hr;
@@ -442,7 +444,7 @@ qboolean SNDDMA_InitWav(void) {
                              0, 0L, CALLBACK_NULL)) != MMSYSERR_NOERROR) {
         if (hr != MMSYSERR_ALLOCATED) {
             Com_Printf("failed\n");
-            return kFalse;
+            return false;
         }
 
         if (MessageBox(NULL,
@@ -451,7 +453,7 @@ qboolean SNDDMA_InitWav(void) {
                        "Sound not available",
                        MB_RETRYCANCEL | MB_SETFOREGROUND | MB_ICONEXCLAMATION) != IDRETRY) {
             Com_Printf("hw in use\n");
-            return kFalse;
+            return false;
         }
     }
     Com_DPrintf("ok\n");
@@ -468,7 +470,7 @@ qboolean SNDDMA_InitWav(void) {
     if (!hData) {
         Com_Printf(" failed\n");
         FreeSound();
-        return kFalse;
+        return false;
     }
     Com_DPrintf("ok\n");
 
@@ -477,7 +479,7 @@ qboolean SNDDMA_InitWav(void) {
     if (!lpData) {
         Com_Printf(" failed\n");
         FreeSound();
-        return kFalse;
+        return false;
     }
     memset(lpData, 0, gSndBufSize);
     Com_DPrintf("ok\n");
@@ -494,7 +496,7 @@ qboolean SNDDMA_InitWav(void) {
     if (hWaveHdr == NULL) {
         Com_Printf("failed\n");
         FreeSound();
-        return kFalse;
+        return false;
     }
     Com_DPrintf("ok\n");
 
@@ -504,7 +506,7 @@ qboolean SNDDMA_InitWav(void) {
     if (lpWaveHdr == NULL) {
         Com_Printf("failed\n");
         FreeSound();
-        return kFalse;
+        return false;
     }
     memset(lpWaveHdr, 0, sizeof(WAVEHDR) * WAV_BUFFERS);
     Com_DPrintf("ok\n");
@@ -519,7 +521,7 @@ qboolean SNDDMA_InitWav(void) {
             MMSYSERR_NOERROR) {
             Com_Printf("failed\n");
             FreeSound();
-            return kFalse;
+            return false;
         }
     }
     Com_DPrintf("ok\n");
@@ -530,9 +532,9 @@ qboolean SNDDMA_InitWav(void) {
     dma.buffer = (unsigned char*)lpData;
     sample16 = (dma.samplebits / 8) - 1;
 
-    wav_init = kTrue;
+    wav_init = true;
 
-    return kTrue;
+    return true;
 }
 
 /*
@@ -550,7 +552,7 @@ qboolean SNDDMA_Init(void) {
 
     s_wavonly = Cvar_Get("s_wavonly", "0", 0);
 
-    dsound_init = wav_init = kFalse;
+    dsound_init = wav_init = false;
 
     stat = SIS_FAILURE;  // assume DirectSound won't initialize
 
@@ -560,12 +562,12 @@ qboolean SNDDMA_Init(void) {
             stat = SNDDMA_InitDirect();
 
             if (stat == SIS_SUCCESS) {
-                snd_isdirect = kTrue;
+                snd_isdirect = true;
 
                 if (snd_firsttime)
                     Com_Printf("dsound init succeeded\n");
             } else {
-                snd_isdirect = kFalse;
+                snd_isdirect = false;
                 Com_Printf("*** dsound init failed ***\n");
             }
         }
@@ -588,7 +590,7 @@ qboolean SNDDMA_Init(void) {
         }
     }
 
-    snd_firsttime = kFalse;
+    snd_firsttime = false;
 
     snd_buffer_count = 1;
 
@@ -763,7 +765,7 @@ The window have been destroyed and recreated
 between a deactivate and an activate.
 ===========
 */
-void S_Activate(qboolean active) {
+void S_Activate(bool active) {
     if (active) {
         if (pDS && cl_hwnd && snd_isdirect) {
             DS_CreateBuffers();
