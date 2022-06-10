@@ -425,14 +425,14 @@ vidmode_t vid_modes[] =
         {"Mode 8: 1280x960", 1280, 960, 8},
         {"Mode 9: 1600x1200", 1600, 1200, 9}};
 
-qboolean VID_GetModeInfo(int* width, int* height, int mode) {
+bool VID_GetModeInfo(int* width, int* height, int mode) {
     if (mode < 0 || mode >= VID_NUM_MODES)
-        return kFalse;
+        return false;
 
     *width = vid_modes[mode].width;
     *height = vid_modes[mode].height;
 
-    return kTrue;
+    return true;
 }
 
 /*
