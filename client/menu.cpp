@@ -3137,7 +3137,7 @@ static void FreeFileList(char** list, int n) {
     free(list);
 }
 
-static qboolean IconOfSkinExists(char* skin, char** pcxfiles, int npcxfiles) {
+static bool IconOfSkinExists(char* skin, char** pcxfiles, int npcxfiles) {
     int i;
     char scratch[1024];
 
@@ -3147,13 +3147,13 @@ static qboolean IconOfSkinExists(char* skin, char** pcxfiles, int npcxfiles) {
 
     for (i = 0; i < npcxfiles; i++) {
         if (strcmp(pcxfiles[i], scratch) == 0)
-            return kTrue;
+            return true;
     }
 
-    return kFalse;
+    return false;
 }
 
-static qboolean PlayerConfig_ScanDirectories(void) {
+static void PlayerConfig_ScanDirectories(void) {
     char findname[1024];
     char scratch[1024];
     int ndirs = 0, npms = 0;
@@ -3177,7 +3177,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
     } while (path);
 
     if (!dirnames)
-        return kFalse;
+        return;
 
     /*
     ** go through the subdirectories
