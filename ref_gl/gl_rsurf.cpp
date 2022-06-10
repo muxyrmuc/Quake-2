@@ -59,7 +59,7 @@ static gllightmapstate_t gl_lms;
 
 static void LM_InitBlock(void);
 static void LM_UploadBlock(qboolean dynamic);
-static qboolean LM_AllocBlock(int w, int h, int* x, int* y);
+static bool LM_AllocBlock(int w, int h, int* x, int* y);
 
 extern void R_SetCacheState(msurface_t* surf);
 extern void R_BuildLightMap(msurface_t* surf, byte* dest, int stride);
@@ -1251,7 +1251,7 @@ static void LM_UploadBlock(qboolean dynamic) {
 }
 
 // returns a texture number and the position inside it
-static qboolean LM_AllocBlock(int w, int h, int* x, int* y) {
+static bool LM_AllocBlock(int w, int h, int* x, int* y) {
     int i, j;
     int best, best2;
 
@@ -1273,12 +1273,12 @@ static qboolean LM_AllocBlock(int w, int h, int* x, int* y) {
     }
 
     if (best + h > BLOCK_HEIGHT)
-        return kFalse;
+        return false;
 
     for (i = 0; i < w; i++)
         gl_lms.allocated[*x + i] = best + h;
 
-    return kTrue;
+    return true;
 }
 
 /*

@@ -28,14 +28,14 @@ cvar_t* cvar_vars;
 Cvar_InfoValidate
 ============
 */
-static qboolean Cvar_InfoValidate(char* s) {
+static bool Cvar_InfoValidate(char* s) {
     if (strstr(s, "\\"))
-        return kFalse;
+        return false;
     if (strstr(s, "\""))
-        return kFalse;
+        return false;
     if (strstr(s, ";"))
-        return kFalse;
-    return kTrue;
+        return false;
+    return true;
 }
 
 /*
