@@ -215,7 +215,7 @@ void AppActivate(BOOL fActive, BOOL minimize) {
 
     // minimize/restore mouse-capture on demand
     if (kFalse == ActiveApp) {
-        IN_Activate(kFalse);
+        IN_Activate(false);
         CDAudio_Activate(false);
         S_Activate(false);
 
@@ -223,7 +223,7 @@ void AppActivate(BOOL fActive, BOOL minimize) {
             WIN_EnableAltTab();
         }
     } else {
-        IN_Activate(kTrue);
+        IN_Activate(true);
         CDAudio_Activate(true);
         S_Activate(true);
         if (win_noalttab->value) {
@@ -326,7 +326,7 @@ LONG WINAPI MainWndProc(
                 vid_xpos->modified = kFalse;
                 vid_ypos->modified = kFalse;
                 if (kFalse != ActiveApp)
-                    IN_Activate(kTrue);
+                    IN_Activate(true);
             }
         }
             return DefWindowProc(hWnd, uMsg, wParam, lParam);
