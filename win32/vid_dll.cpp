@@ -48,7 +48,7 @@ cvar_t* vid_fullscreen;
 // Global variables used internally by this module
 viddef_t viddef;           // global video state; used by other modules
 HINSTANCE reflib_library;  // Handle to refresh DLL
-qboolean reflib_active = kFalse;
+static bool reflib_active = false;
 
 HWND cl_hwnd;  // Main window handle for life of program
 
@@ -472,7 +472,7 @@ void VID_FreeReflib(void) {
         Com_Error(ERR_FATAL, "Reflib FreeLibrary failed");
     memset(&re, 0, sizeof(re));
     reflib_library = NULL;
-    reflib_active = kFalse;
+    reflib_active = false;
 }
 
 /*
@@ -480,7 +480,7 @@ void VID_FreeReflib(void) {
 VID_LoadRefresh
 ==============
 */
-qboolean VID_LoadRefresh(char* name) {
+static bool VID_LoadRefresh(char* name) {
     refimport_t ri;
     GetRefAPI_t GetRefAPI;
 
@@ -494,7 +494,7 @@ qboolean VID_LoadRefresh(char* name) {
     if ((reflib_library = LoadLibrary(name)) == 0) {
         Com_Printf("LoadLibrary(\"%s\") failed\n", name);
 
-        return kFalse;
+        return false;
     }
 
     ri.Cmd_AddCommand = Cmd_AddCommand;
@@ -527,11 +527,11 @@ qboolean VID_LoadRefresh(char* name) {
     if (re.Init(global_hInstance, MainWndProc) == -1) {
         re.Shutdown();
         VID_FreeReflib();
-        return kFalse;
+        return false;
     }
 
     Com_Printf("------------------------------------\n");
-    reflib_active = kTrue;
+    reflib_active = true;
 
     //======
     // PGM
@@ -545,7 +545,7 @@ qboolean VID_LoadRefresh(char* name) {
     // PGM
     //======
 
-    return kTrue;
+    return true;
 }
 
 /*
