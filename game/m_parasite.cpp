@@ -263,22 +263,22 @@ void parasite_pain(edict_t* self, edict_t* other, float kick, int damage) {
     self->monsterinfo.currentmove = &parasite_move_pain1;
 }
 
-static qboolean parasite_drain_attack_ok(vec3_t start, vec3_t end) {
+static bool parasite_drain_attack_ok(vec3_t start, vec3_t end) {
     vec3_t dir, angles;
 
     // check for max distance
     VectorSubtract(start, end, dir);
     if (VectorLength(dir) > 256)
-        return kFalse;
+        return false;
 
     // check for min/max pitch
     vectoangles(dir, angles);
     if (angles[0] < -180)
         angles[0] += 360;
     if (fabs(angles[0]) > 30)
-        return kFalse;
+        return false;
 
-    return kTrue;
+    return true;
 }
 
 void parasite_drain_attack(edict_t* self) {
