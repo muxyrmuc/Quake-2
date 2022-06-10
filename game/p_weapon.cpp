@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 #include "m_player.h"
 
-static qboolean is_quad;
+static bool is_quad;
 static byte is_silenced;
 
 void weapon_grenade_fire(edict_t* ent, qboolean held);
@@ -248,7 +248,7 @@ void Think_Weapon(edict_t* ent) {
 
     // call active weapon think routine
     if (ent->client->pers.weapon && ent->client->pers.weapon->weaponthink) {
-        is_quad = (ent->client->quad_framenum > level.framenum) ? kTrue : kFalse;
+        is_quad = ent->client->quad_framenum > level.framenum;
         if (ent->client->silencer_shots)
             is_silenced = MZ_SILENCED;
         else
