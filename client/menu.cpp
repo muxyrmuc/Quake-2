@@ -282,7 +282,7 @@ and both above and below y.
 */
 void M_DrawCursor(int x, int y, int f) {
     char cursorname[80];
-    static qboolean cached;
+    static bool cached = false;
 
     if (!cached) {
         int i;
@@ -292,7 +292,7 @@ void M_DrawCursor(int x, int y, int f) {
 
             re.RegisterPic(cursorname);
         }
-        cached = kTrue;
+        cached = true;
     }
 
     Com_sprintf(cursorname, sizeof(cursorname), "m_cursor%d", f);
