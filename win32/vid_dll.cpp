@@ -56,7 +56,7 @@ HWND cl_hwnd;  // Main window handle for life of program
 
 LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-static qboolean s_alttab_disabled;
+static bool s_alttab_disabled;
 
 extern unsigned sys_msg_time;
 
@@ -70,7 +70,7 @@ static void WIN_DisableAltTab(void) {
     RegisterHotKey(0, 0, MOD_ALT, VK_TAB);
     RegisterHotKey(0, 1, MOD_ALT, VK_RETURN);
 
-    s_alttab_disabled = kTrue;
+    s_alttab_disabled = true;
 }
 
 static void WIN_EnableAltTab(void) {
@@ -78,7 +78,7 @@ static void WIN_EnableAltTab(void) {
         UnregisterHotKey(0, 0);
         UnregisterHotKey(0, 1);
 
-        s_alttab_disabled = kFalse;
+        s_alttab_disabled = false;
     }
 }
 
@@ -94,7 +94,6 @@ DLL GLUE
 void VID_Printf(int print_level, char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
-    static qboolean inupdate;
 
     va_start(argptr, fmt);
     vsprintf(msg, fmt, argptr);
@@ -113,7 +112,6 @@ void VID_Printf(int print_level, char* fmt, ...) {
 void VID_Error(int err_level, char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
-    static qboolean inupdate;
 
     va_start(argptr, fmt);
     vsprintf(msg, fmt, argptr);
