@@ -574,9 +574,9 @@ NET_Config
 A single player game will only use the loopback code
 ====================
 */
-void NET_Config(qboolean multiplayer) {
+void NET_Config(bool multiplayer) {
     int i;
-    static qboolean old_config;
+    static bool old_config;
 
     if (old_config == multiplayer)
         return;
@@ -641,7 +641,7 @@ NET_Shutdown
 ====================
 */
 void NET_Shutdown(void) {
-    NET_Config(kFalse);  // close sockets
+    NET_Config(false);  // close sockets
 
     WSACleanup();
 }

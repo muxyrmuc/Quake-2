@@ -464,7 +464,7 @@ void CL_Connect_f(void) {
 
     server = Cmd_Argv(1);
 
-    NET_Config(kTrue);  // allow remote
+    NET_Config(true);  // allow remote
 
     CL_Disconnect();
 
@@ -499,7 +499,7 @@ void CL_Rcon_f(void) {
     message[3] = (char)255;
     message[4] = 0;
 
-    NET_Config(kTrue);  // allow remote
+    NET_Config(true);  // allow remote
 
     strcat(message, "rcon ");
 
@@ -626,7 +626,7 @@ void CL_Packet_f(void) {
         return;
     }
 
-    NET_Config(kTrue);  // allow remote
+    NET_Config(true);  // allow remote
 
     if (!NET_StringToAdr(Cmd_Argv(1), &adr)) {
         Com_Printf("Bad address\n");
@@ -734,7 +734,7 @@ void CL_PingServers_f(void) {
     cvar_t* noudp;
     cvar_t* noipx;
 
-    NET_Config(kTrue);  // allow remote
+    NET_Config(true);  // allow remote
 
     // send a broadcast packet
     Com_Printf("pinging broadcast...\n");

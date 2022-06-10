@@ -844,7 +844,7 @@ void SV_KillServer_f(void) {
     if (!svs.initialized)
         return;
     SV_Shutdown("Server was killed.\n", kFalse);
-    NET_Config(kFalse);  // close network sockets
+    NET_Config(false);  // close network sockets
 }
 
 /*

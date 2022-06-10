@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ** GLimp_EndFrame
 ** GLimp_Init
 ** GLimp_Shutdown
-** GLimp_SwitchFullscreen
 **
 */
 #include <assert.h>
@@ -36,7 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "glw_win.h"
 #include "winquake.h"
 
-static qboolean GLimp_SwitchFullscreen(int width, int height);
 qboolean GLimp_InitGL(void);
 
 glwstate_t glw_state;
@@ -44,15 +42,15 @@ glwstate_t glw_state;
 extern cvar_t* vid_fullscreen;
 extern cvar_t* vid_ref;
 
-static qboolean VerifyDriver(void) {
+static bool VerifyDriver(void) {
     char buffer[1024];
 
     strcpy(buffer, reinterpret_cast<const char*>(qglGetString(GL_RENDERER)));
     strlwr(buffer);
     if (strcmp(buffer, "gdi generic") == 0)
         if (!glw_state.mcd_accelerated)
-            return kFalse;
-    return kTrue;
+            return false;
+    return true;
 }
 
 /*

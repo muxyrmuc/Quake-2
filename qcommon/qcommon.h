@@ -538,7 +538,7 @@ typedef struct
 void NET_Init(void);
 void NET_Shutdown(void);
 
-void NET_Config(qboolean multiplayer);
+void NET_Config(bool multiplayer);
 
 qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message);
 void NET_SendPacket(netsrc_t sock, int length, void* data, netadr_t to);
