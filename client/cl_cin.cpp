@@ -488,15 +488,15 @@ Returns true if a cinematic is active, meaning the view rendering
 should be skipped
 ==================
 */
-qboolean SCR_DrawCinematic(void) {
+bool SCR_DrawCinematic(void) {
     if (cl.cinematictime <= 0) {
-        return kFalse;
+        return false;
     }
 
     if (cls.key_dest == key_menu) {  // blank screen and pause if menu is up
         re.CinematicSetPalette(NULL);
         cl.cinematicpalette_active = kFalse;
-        return kTrue;
+        return true;
     }
 
     if (!cl.cinematicpalette_active) {
@@ -505,12 +505,12 @@ qboolean SCR_DrawCinematic(void) {
     }
 
     if (!cin.pic)
-        return kTrue;
+        return true;
 
     re.DrawStretchRaw(0, 0, viddef.width, viddef.height,
                       cin.width, cin.height, cin.pic);
 
-    return kTrue;
+    return true;
 }
 
 /*
