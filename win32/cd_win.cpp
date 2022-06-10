@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../client/client.h"
 
-void CDAudio_Play(int track, qboolean looping) {
+void CDAudio_Play(int track, bool looping) {
 }
 
 void CDAudio_Stop(void) {
@@ -43,5 +43,5 @@ int CDAudio_Init(void) {
 void CDAudio_Shutdown(void) {
 }
 
-void CDAudio_Activate(qboolean active) {
+void CDAudio_Activate(bool active) {
 }

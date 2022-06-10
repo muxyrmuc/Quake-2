@@ -218,7 +218,7 @@ void AppActivate(BOOL fActive, BOOL minimize) {
     // minimize/restore mouse-capture on demand
     if (kFalse == ActiveApp) {
         IN_Activate(kFalse);
-        CDAudio_Activate(kFalse);
+        CDAudio_Activate(false);
         S_Activate(false);
 
         if (win_noalttab->value) {
@@ -226,7 +226,7 @@ void AppActivate(BOOL fActive, BOOL minimize) {
         }
     } else {
         IN_Activate(kTrue);
-        CDAudio_Activate(kTrue);
+        CDAudio_Activate(true);
         S_Activate(true);
         if (win_noalttab->value) {
             WIN_DisableAltTab();
