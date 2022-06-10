@@ -491,14 +491,13 @@ void SV_ExecuteClientMessage(client_t* cl) {
     int stringCmdCount;
     int checksum, calculatedChecksum;
     int checksumIndex;
-    qboolean move_issued;
     int lastframe;
 
     sv_client = cl;
     sv_player = sv_client->edict;
 
     // only allow one move command
-    move_issued = kFalse;
+    bool move_issued = false;
     stringCmdCount = 0;
 
     while (1) {
@@ -530,7 +529,7 @@ void SV_ExecuteClientMessage(client_t* cl) {
                 if (move_issued)
                     return;  // someone is trying to cheat...
 
-                move_issued = kTrue;
+                move_issued = true;
                 checksumIndex = net_message.readcount;
                 checksum = MSG_ReadByte(&net_message);
                 lastframe = MSG_ReadLong(&net_message);

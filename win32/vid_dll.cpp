@@ -154,13 +154,13 @@ Map from windows to quake keynums
 int MapKey(int key) {
     int result;
     int modified = (key >> 16) & 255;
-    qboolean is_extended = kFalse;
+    bool is_extended = false;
 
     if (modified > 127)
         return 0;
 
     if (key & (1 << 24))
-        is_extended = kTrue;
+        is_extended = true;
 
     result = scantokey[modified];
 
