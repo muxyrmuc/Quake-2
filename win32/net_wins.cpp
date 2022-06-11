@@ -86,23 +86,23 @@ void SockadrToNetadr(struct sockaddr* s, netadr_t* a) {
     }
 }
 
-qboolean NET_CompareAdr(netadr_t a, netadr_t b) {
+bool NET_CompareAdr(netadr_t a, netadr_t b) {
     if (a.type != b.type)
-        return kFalse;
+        return false;
 
     if (a.type == NA_LOOPBACK)
-        return kTrue;
+        return true;
 
     if (a.type == NA_IP) {
         if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
-            return kTrue;
-        return kFalse;
+            return true;
+        return false;
     }
 
     if (a.type == NA_IPX) {
         if ((memcmp(a.ipx, b.ipx, 10) == 0) && a.port == b.port)
-            return kTrue;
-        return kFalse;
+            return true;
+        return false;
     }
 }
 
@@ -113,23 +113,23 @@ NET_CompareBaseAdr
 Compares without the port
 ===================
 */
-qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b) {
+bool NET_CompareBaseAdr(netadr_t a, netadr_t b) {
     if (a.type != b.type)
-        return kFalse;
+        return false;
 
     if (a.type == NA_LOOPBACK)
-        return kTrue;
+        return true;
 
     if (a.type == NA_IP) {
         if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
-            return kTrue;
-        return kFalse;
+            return true;
+        return false;
     }
 
     if (a.type == NA_IPX) {
         if ((memcmp(a.ipx, b.ipx, 10) == 0))
-            return kTrue;
-        return kFalse;
+            return true;
+        return false;
     }
 }
 
@@ -242,8 +242,8 @@ qboolean NET_StringToAdr(char* s, netadr_t* a) {
     return kTrue;
 }
 
-qboolean NET_IsLocalAddress(netadr_t adr) {
-    return (adr.type == NA_LOOPBACK) ? kTrue : kFalse;
+bool NET_IsLocalAddress(netadr_t adr) {
+    return adr.type == NA_LOOPBACK;
 }
 
 /*
