@@ -139,10 +139,9 @@ void SV_Multicast(vec3_t origin, multicast_t to) {
     byte* mask;
     int leafnum, cluster;
     int j;
-    qboolean reliable;
     int area1, area2;
 
-    reliable = kFalse;
+    bool reliable = false;
 
     if (to != MULTICAST_ALL_R && to != MULTICAST_ALL) {
         leafnum = CM_PointLeafnum(origin);
@@ -158,14 +157,14 @@ void SV_Multicast(vec3_t origin, multicast_t to) {
 
     switch (to) {
         case MULTICAST_ALL_R:
-            reliable = kTrue;  // intentional fallthrough
+            reliable = true;  // intentional fallthrough
         case MULTICAST_ALL:
             leafnum = 0;
             mask = NULL;
             break;
 
         case MULTICAST_PHS_R:
-            reliable = kTrue;  // intentional fallthrough
+            reliable = true;  // intentional fallthrough
         case MULTICAST_PHS:
             leafnum = CM_PointLeafnum(origin);
             cluster = CM_LeafCluster(leafnum);
@@ -173,7 +172,7 @@ void SV_Multicast(vec3_t origin, multicast_t to) {
             break;
 
         case MULTICAST_PVS_R:
-            reliable = kTrue;  // intentional fallthrough
+            reliable = true;  // intentional fallthrough
         case MULTICAST_PVS:
             leafnum = CM_PointLeafnum(origin);
             cluster = CM_LeafCluster(leafnum);
