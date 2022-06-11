@@ -87,21 +87,21 @@ SV_RunThink
 Runs thinking code for this frame if necessary
 =============
 */
-qboolean SV_RunThink(edict_t* ent) {
+static bool SV_RunThink(edict_t* ent) {
     float thinktime;
 
     thinktime = ent->nextthink;
     if (thinktime <= 0)
-        return kTrue;
+        return true;
     if (thinktime > level.time + 0.001)
-        return kTrue;
+        return true;
 
     ent->nextthink = 0;
     if (!ent->think)
         gi.error("NULL ent->think");
     ent->think(ent);
 
-    return kFalse;
+    return false;
 }
 
 /*
