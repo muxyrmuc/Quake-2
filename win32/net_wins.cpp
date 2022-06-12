@@ -163,7 +163,7 @@ idnewt:28000
     sscanf(copy, "%x", &val); \
     ((struct sockaddr_ipx*)sadr)->dest = val
 
-qboolean NET_StringToSockaddr(char* s, struct sockaddr* sadr) {
+static bool NET_StringToSockaddr(char* s, struct sockaddr* sadr) {
     struct hostent* h;
     char* colon;
     int val;
@@ -204,12 +204,12 @@ qboolean NET_StringToSockaddr(char* s, struct sockaddr* sadr) {
             *(int*)&((struct sockaddr_in*)sadr)->sin_addr = inet_addr(copy);
         } else {
             if (!(h = gethostbyname(copy)))
-                return kFalse;
+                return false;
             *(int*)&((struct sockaddr_in*)sadr)->sin_addr = *(int*)h->h_addr_list[0];
         }
     }
 
-    return kTrue;
+    return true;
 }
 
 #undef DO
@@ -225,21 +225,21 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qboolean NET_StringToAdr(char* s, netadr_t* a) {
+bool NET_StringToAdr(char* s, netadr_t* a) {
     struct sockaddr sadr;
 
     if (!strcmp(s, "localhost")) {
         memset(a, 0, sizeof(*a));
         a->type = NA_LOOPBACK;
-        return kTrue;
+        return true;
     }
 
     if (!NET_StringToSockaddr(s, &sadr))
-        return kFalse;
+        return false;
 
     SockadrToNetadr(&sadr, a);
 
-    return kTrue;
+    return true;
 }
 
 bool NET_IsLocalAddress(netadr_t adr) {
