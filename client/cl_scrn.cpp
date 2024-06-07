@@ -751,7 +751,7 @@ void SizeHUDString(char* string, int* w, int* h) {
     *h = lines * 8;
 }
 
-void DrawHUDString(char* string, int x, int y, int centerwidth, int xor) {
+void DrawHUDString(char* string, int x, int y, int centerwidth, int xor_with) {
     int margin;
     char line[1024];
     int width;
@@ -771,7 +771,7 @@ void DrawHUDString(char* string, int x, int y, int centerwidth, int xor) {
         else
             x = margin;
         for (i = 0; i < width; i++) {
-            re.DrawChar(x, y, line[i] ^ xor);
+            re.DrawChar(x, y, line[i] ^ xor_with);
             x += 8;
         }
         if (*string) {
