@@ -401,8 +401,6 @@ void(APIENTRY* qglUnlockArraysEXT)(void);
 
 BOOL(WINAPI* qwglSwapIntervalEXT)
 (int interval);
-BOOL(WINAPI* qwglSetDeviceGammaRampEXT)
-(const unsigned char*, const unsigned char*, const unsigned char*);
 void(APIENTRY* qglPointParameterfEXT)(GLenum param, GLfloat value);
 void(APIENTRY* qglPointParameterfvEXT)(GLenum param, const GLfloat* value);
 void(APIENTRY* qglColorTableEXT)(int, int, int, int, int, const void*);
@@ -2656,8 +2654,6 @@ void QGL_Shutdown(void) {
     qwglSwapBuffers = NULL;
 
     qwglSwapIntervalEXT = NULL;
-
-    qwglSetDeviceGammaRampEXT = NULL;
 }
 
 #pragma warning(disable : 4113 4133 4047)

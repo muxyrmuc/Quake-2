@@ -405,8 +405,6 @@ extern BOOL(WINAPI* qwglSwapLayerBuffers)(HDC, UINT);
 
 extern BOOL(WINAPI* qwglSwapIntervalEXT)(int interval);
 
-extern BOOL(WINAPI* qwglSetDeviceGammaRampEXT)(const unsigned char* pRed, const unsigned char* pGreen, const unsigned char* pBlue);
-
 #endif
 
 /*
