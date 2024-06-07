@@ -306,5 +306,5 @@ int main(int ac, char** av /*HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
     }
 
     // never gets here
-    return TRUE;
+    return 0;
 }

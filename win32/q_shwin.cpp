@@ -23,10 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <direct.h>
-#include <io.h>
-#include <conio.h>
 #include <chrono>
+#include <filesystem>
 
 //===============================================================================
 
@@ -79,9 +77,8 @@ void Hunk_Free(void* base) {
 //===============================================================================
 
 int Sys_NowMilliseconds() {
-    static_assert(std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den <= 1 / 1000,
-                  "steady_clock precision is too low");
-
+    static_assert(double(std::chrono::steady_clock::period::num) / std::chrono::steady_clock::period::den <= double(1) / 1000,
+                      "steady_clock precision is too low");
     return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 
@@ -105,7 +102,7 @@ int Sys_Milliseconds(void) {
 }
 
 void Sys_Mkdir(char* path) {
-    _mkdir(path);
+    std::filesystem::create_directory(std::filesystem::path(path));
 }
 
 //============================================
