@@ -620,7 +620,7 @@ void Cmd_TokenizeString(char* text, qboolean macroExpand) {
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand(char* cmd_name, xcommand_t function) {
+void Cmd_AddCommand(const char* cmd_name, xcommand_t function) {
     cmd_function_t* cmd;
 
     // fail if the command is a variable name
@@ -649,7 +649,7 @@ void Cmd_AddCommand(char* cmd_name, xcommand_t function) {
 Cmd_RemoveCommand
 ============
 */
-void Cmd_RemoveCommand(char* cmd_name) {
+void Cmd_RemoveCommand(const char* cmd_name) {
     cmd_function_t *cmd, **back;
 
     back = &cmd_functions;

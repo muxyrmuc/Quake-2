@@ -136,7 +136,7 @@ void GL_MBind(GLenum target, int texnum) {
 
 typedef struct
 {
-    char* name;
+    const char* name;
     int minimize, maximize;
 } glmode_t;
 
@@ -152,7 +152,7 @@ glmode_t modes[] = {
 
 typedef struct
 {
-    char* name;
+    const char* name;
     int mode;
 } gltmode_t;
 
@@ -378,7 +378,7 @@ PCX LOADING
 LoadPCX
 ==============
 */
-void LoadPCX(char* filename, byte** pic, byte** palette, int* width, int* height) {
+void LoadPCX(const char* filename, byte** pic, byte** palette, int* width, int* height) {
     byte* raw;
     pcx_t* pcx;
     int x, y;
@@ -480,7 +480,7 @@ typedef struct _TargaHeader {
 LoadTGA
 =============
 */
-void LoadTGA(char* name, byte** pic, int* width, int* height) {
+void LoadTGA(const char* name, byte** pic, int* width, int* height) {
     int columns, rows, numPixels;
     byte* pixbuf;
     int row, column;
@@ -1115,7 +1115,7 @@ GL_LoadPic
 This is also used as an entry point for the generated r_notexture
 ================
 */
-image_t* GL_LoadPic(char* name, byte* pic, int width, int height, imagetype_t type, int bits) {
+image_t* GL_LoadPic(const char* name, byte* pic, int width, int height, imagetype_t type, int bits) {
     image_t* image;
     int i;
 
@@ -1196,7 +1196,7 @@ image_t* GL_LoadPic(char* name, byte* pic, int width, int height, imagetype_t ty
 GL_LoadWal
 ================
 */
-image_t* GL_LoadWal(char* name) {
+image_t* GL_LoadWal(const char* name) {
     miptex_t* mt;
     int width, height, ofs;
     image_t* image;
@@ -1225,7 +1225,7 @@ GL_FindImage
 Finds or loads the given image
 ===============
 */
-image_t* GL_FindImage(char* name, imagetype_t type) {
+image_t* GL_FindImage(const char* name, imagetype_t type) {
     image_t* image;
     int i, len;
     byte *pic, *palette;

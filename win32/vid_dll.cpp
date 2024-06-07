@@ -91,7 +91,7 @@ DLL GLUE
 */
 
 #define MAXPRINTMSG 4096
-void VID_Printf(int print_level, char* fmt, ...) {
+void VID_Printf(int print_level, const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
     static qboolean inupdate;
@@ -110,7 +110,7 @@ void VID_Printf(int print_level, char* fmt, ...) {
     }
 }
 
-void VID_Error(int err_level, char* fmt, ...) {
+void VID_Error(int err_level, const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
     static qboolean inupdate;
