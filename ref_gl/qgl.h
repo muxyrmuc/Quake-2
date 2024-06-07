@@ -409,7 +409,6 @@ extern BOOL(WINAPI* qwglDescribeLayerPlane)(HDC, int, int, UINT,
                                             LPLAYERPLANEDESCRIPTOR);
 extern int(WINAPI* qwglGetLayerPaletteEntries)(HDC, int, int, int,
                                                COLORREF*);
-extern BOOL(WINAPI* qwglRealizeLayerPalette)(HDC, int, BOOL);
 extern BOOL(WINAPI* qwglSwapLayerBuffers)(HDC, UINT);
 
 extern BOOL(WINAPI* qwglSwapIntervalEXT)(int interval);
