@@ -396,7 +396,6 @@ extern HGLRC(WINAPI* qwglCreateContext)(HDC);
 extern HGLRC(WINAPI* qwglCreateLayerContext)(HDC, int);
 extern BOOL(WINAPI* qwglDeleteContext)(HGLRC);
 extern HGLRC(WINAPI* qwglGetCurrentContext)(VOID);
-extern HDC(WINAPI* qwglGetCurrentDC)(VOID);
 extern PROC(WINAPI* qwglGetProcAddress)(LPCSTR);
 extern BOOL(WINAPI* qwglMakeCurrent)(HDC, HGLRC);
 extern BOOL(WINAPI* qwglUseFontBitmaps)(HDC, DWORD, DWORD, DWORD);
