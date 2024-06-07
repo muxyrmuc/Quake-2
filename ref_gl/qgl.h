@@ -402,9 +402,6 @@ extern BOOL(WINAPI* qwglMakeCurrent)(HDC, HGLRC);
 extern BOOL(WINAPI* qwglShareLists)(HGLRC, HGLRC);
 extern BOOL(WINAPI* qwglUseFontBitmaps)(HDC, DWORD, DWORD, DWORD);
 
-extern BOOL(WINAPI* qwglUseFontOutlines)(HDC, DWORD, DWORD, DWORD, FLOAT,
-                                         FLOAT, int, LPGLYPHMETRICSFLOAT);
-
 extern int(WINAPI* qwglGetLayerPaletteEntries)(HDC, int, int, int,
                                                COLORREF*);
 extern BOOL(WINAPI* qwglSwapLayerBuffers)(HDC, UINT);

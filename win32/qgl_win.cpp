@@ -58,10 +58,6 @@ BOOL(WINAPI* qwglShareLists)
 BOOL(WINAPI* qwglUseFontBitmaps)
 (HDC, DWORD, DWORD, DWORD);
 
-BOOL(WINAPI* qwglUseFontOutlines)
-(HDC, DWORD, DWORD, DWORD, FLOAT,
- FLOAT, int, LPGLYPHMETRICSFLOAT);
-
 int(WINAPI* qwglGetLayerPaletteEntries)(HDC, int, int, int,
                                         COLORREF*);
 BOOL(WINAPI* qwglSwapLayerBuffers)
@@ -2660,7 +2656,6 @@ void QGL_Shutdown(void) {
     qwglShareLists = NULL;
     qwglSwapLayerBuffers = NULL;
     qwglUseFontBitmaps = NULL;
-    qwglUseFontOutlines = NULL;
 
     qwglChoosePixelFormat = NULL;
     qwglDescribePixelFormat = NULL;
@@ -3051,7 +3046,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA1(qwglShareLists, "wglShareLists");
     GPA1(qwglSwapLayerBuffers, "wglSwapLayerBuffers");
     GPA1(qwglUseFontBitmaps, "wglUseFontBitmapsA");
-    GPA1(qwglUseFontOutlines, "wglUseFontOutlinesA");
 
     GPA1(qwglChoosePixelFormat, "wglChoosePixelFormat");
     GPA1(qwglDescribePixelFormat, "wglDescribePixelFormat");
