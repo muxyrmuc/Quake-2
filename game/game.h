@@ -125,7 +125,7 @@ typedef struct
     // and misc data like the sky definition and cdtrack.
     // All of the current configstrings are sent to clients when
     // they connect, and changes are sent to all connected clients.
-    void (*configstring)(int num, char* string);
+    void (*configstring)(int num, const char* string);
 
     void (*error)(char* fmt, ...);
 
@@ -177,7 +177,7 @@ typedef struct
 
     // ClientCommand and ServerCommand parameter access
     int (*argc)(void);
-    char* (*argv)(int n);
+    const char* (*argv)(int n);
     char* (*args)(void);  // concatenation of all argv >= 1
 
     // add commands to the server console as if they were typed in

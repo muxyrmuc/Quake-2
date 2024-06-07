@@ -266,7 +266,7 @@ so when they are typed in at the console, they will need to be forwarded.
 ===================
 */
 void Cmd_ForwardToServer(void) {
-    char* cmd;
+    const char* cmd;
 
     cmd = Cmd_Argv(0);
     if (cls.state <= ca_connected || *cmd == '-' || *cmd == '+') {
@@ -449,7 +449,7 @@ CL_Connect_f
 ================
 */
 void CL_Connect_f(void) {
-    char* server;
+    const char* server;
 
     if (Cmd_Argc() != 2) {
         Com_Printf("usage: connect <server>\n");
@@ -618,7 +618,8 @@ Contents allows \n escape character
 void CL_Packet_f(void) {
     char send[2048];
     int i, l;
-    char *in, *out;
+    const char *in;
+    char *out;
     netadr_t adr;
 
     if (Cmd_Argc() != 3) {
@@ -800,7 +801,7 @@ Responses to broadcasts, etc
 */
 void CL_ConnectionlessPacket(void) {
     char* s;
-    char* c;
+    const char* c;
 
     MSG_BeginReading(&net_message);
     MSG_ReadLong(&net_message);  // skip the -1

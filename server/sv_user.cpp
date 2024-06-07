@@ -273,7 +273,7 @@ SV_BeginDownload_f
 ==================
 */
 void SV_BeginDownload_f(void) {
-    char* name;
+    const char* name;
     extern cvar_t* allow_download;
     extern cvar_t* allow_download_players;
     extern cvar_t* allow_download_models;

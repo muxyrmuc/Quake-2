@@ -149,7 +149,7 @@ void COM_AddParm(char* parm);
 void COM_Init(void);
 void COM_InitArgv(int argc, char** argv);
 
-char* CopyString(char* in);
+char* CopyString(const char* in);
 
 //============================================================================
 
@@ -409,7 +409,7 @@ char* Cmd_CompleteCommand(char* partial);
 // returns NULL if nothing fits
 
 int Cmd_Argc(void);
-char* Cmd_Argv(int arg);
+const char* Cmd_Argv(int arg);
 char* Cmd_Args(void);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
@@ -462,7 +462,7 @@ cvar_t* Cvar_Set(const char* var_name, const char* value);
 cvar_t* Cvar_ForceSet(const char* var_name, const char* value);
 // will set the variable even if NOSET or LATCH
 
-cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
+cvar_t* Cvar_FullSet(const char* var_name, const char* value, int flags);
 
 void Cvar_SetValue(const char* var_name, float value);
 // expands value to a string and calls Cvar_Set

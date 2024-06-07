@@ -431,7 +431,7 @@ connectionless packets.
 */
 void SV_ConnectionlessPacket(void) {
     char* s;
-    char* c;
+    const char* c;
 
     MSG_BeginReading(&net_message);
     MSG_ReadLong(&net_message);  // skip the -1 marker

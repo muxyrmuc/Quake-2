@@ -916,7 +916,7 @@ int memsearch(byte* start, int count, int search) {
     return -1;
 }
 
-char* CopyString(char* in) {
+char* CopyString(const char* in) {
     char* out;
 
     out = static_cast<char*>(Z_Malloc(strlen(in) + 1));
