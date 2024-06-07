@@ -41,8 +41,6 @@ BOOL(WINAPI* qwglSwapBuffers)
 
 HGLRC(WINAPI* qwglCreateContext)
 (HDC);
-HGLRC(WINAPI* qwglCreateLayerContext)
-(HDC, int);
 BOOL(WINAPI* qwglDeleteContext)
 (HGLRC);
 HGLRC(WINAPI* qwglGetCurrentContext)
@@ -2631,7 +2629,6 @@ void QGL_Shutdown(void) {
     qglViewport = NULL;
 
     qwglCreateContext = NULL;
-    qwglCreateLayerContext = NULL;
     qwglDeleteContext = NULL;
     qwglGetCurrentContext = NULL;
     qwglGetProcAddress = NULL;
@@ -3013,7 +3010,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA2(qglViewport, dllViewport, "glViewport");
 
     GPA1(qwglCreateContext, "wglCreateContext");
-    GPA1(qwglCreateLayerContext, "wglCreateLayerContext");
     GPA1(qwglDeleteContext, "wglDeleteContext");
     GPA1(qwglGetCurrentContext, "wglGetCurrentContext");
     GPA1(qwglGetProcAddress, "wglGetProcAddress");

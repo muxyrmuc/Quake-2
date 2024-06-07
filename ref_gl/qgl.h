@@ -393,7 +393,6 @@ extern BOOL(WINAPI* qwglSetPixelFormat)(HDC, int, CONST PIXELFORMATDESCRIPTOR*);
 extern BOOL(WINAPI* qwglSwapBuffers)(HDC);
 
 extern HGLRC(WINAPI* qwglCreateContext)(HDC);
-extern HGLRC(WINAPI* qwglCreateLayerContext)(HDC, int);
 extern BOOL(WINAPI* qwglDeleteContext)(HGLRC);
 extern HGLRC(WINAPI* qwglGetCurrentContext)(VOID);
 extern PROC(WINAPI* qwglGetProcAddress)(LPCSTR);
