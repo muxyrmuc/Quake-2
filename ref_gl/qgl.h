@@ -399,8 +399,6 @@ extern HGLRC(WINAPI* qwglGetCurrentContext)(VOID);
 extern PROC(WINAPI* qwglGetProcAddress)(LPCSTR);
 extern BOOL(WINAPI* qwglMakeCurrent)(HDC, HGLRC);
 
-extern BOOL(WINAPI* qwglSwapLayerBuffers)(HDC, UINT);
-
 extern BOOL(WINAPI* qwglSwapIntervalEXT)(int interval);
 
 #endif

@@ -52,9 +52,6 @@ PROC(WINAPI* qwglGetProcAddress)
 BOOL(WINAPI* qwglMakeCurrent)
 (HDC, HGLRC);
 
-BOOL(WINAPI* qwglSwapLayerBuffers)
-(HDC, UINT);
-
 void(APIENTRY* qglAccum)(GLenum op, GLfloat value);
 void(APIENTRY* qglAlphaFunc)(GLenum func, GLclampf ref);
 GLboolean(APIENTRY* qglAreTexturesResident)(GLsizei n, const GLuint* textures, GLboolean* residences);
@@ -2639,7 +2636,6 @@ void QGL_Shutdown(void) {
     qwglGetCurrentContext = NULL;
     qwglGetProcAddress = NULL;
     qwglMakeCurrent = NULL;
-    qwglSwapLayerBuffers = NULL;
 
     qwglChoosePixelFormat = NULL;
     qwglDescribePixelFormat = NULL;
@@ -3022,7 +3018,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA1(qwglGetCurrentContext, "wglGetCurrentContext");
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
     GPA1(qwglMakeCurrent, "wglMakeCurrent");
-    GPA1(qwglSwapLayerBuffers, "wglSwapLayerBuffers");
 
     GPA1(qwglChoosePixelFormat, "wglChoosePixelFormat");
     GPA1(qwglDescribePixelFormat, "wglDescribePixelFormat");
