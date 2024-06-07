@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 #include "gl_local.h"
 
+#include <cctype>
+
 void R_Clear(void);
 
 viddef_t vid;
@@ -132,6 +134,17 @@ cvar_t* gl_3dlabs_broken;
 cvar_t* vid_fullscreen;
 cvar_t* vid_gamma;
 cvar_t* vid_ref;
+
+namespace {
+
+char* Str_Lower(char* str) {
+    for (char* c = str; *c; ++c) {
+        *c = std::tolower(*c);
+    }
+    return str;
+}
+
+}
 
 /*
 =================
@@ -1077,10 +1090,10 @@ int R_Init(void* hinstance, void* hWnd) {
     ri.Con_Printf(PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string);
 
     strcpy(renderer_buffer, gl_config.renderer_string);
-    strlwr(renderer_buffer);
+    ::Str_Lower(renderer_buffer);
 
     strcpy(vendor_buffer, gl_config.vendor_string);
-    strlwr(vendor_buffer);
+    ::Str_Lower(vendor_buffer);
 
     if (strstr(renderer_buffer, "voodoo")) {
         if (!strstr(renderer_buffer, "rush"))
@@ -1104,7 +1117,7 @@ int R_Init(void* hinstance, void* hWnd) {
     else
         gl_config.renderer = GL_RENDERER_OTHER;
 
-    if (toupper(gl_monolightmap->string[1]) != 'F') {
+    if (std::toupper(gl_monolightmap->string[1]) != 'F') {
         if (gl_config.renderer == GL_RENDERER_PERMEDIA2) {
             ri.Cvar_Set("gl_monolightmap", "A");
             ri.Con_Printf(PRINT_ALL, "...using gl_monolightmap 'a'\n");
@@ -1476,7 +1489,7 @@ GetRefAPI
 */
 extern "C" {
 
-__declspec(dllexport) refexport_t GetRefAPI(refimport_t rimp) {
+refexport_t GetRefAPI(refimport_t rimp) {
     refexport_t re;
 
     ri = rimp;
