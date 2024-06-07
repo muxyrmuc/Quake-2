@@ -401,8 +401,6 @@ void(APIENTRY* qglUnlockArraysEXT)(void);
 
 BOOL(WINAPI* qwglSwapIntervalEXT)
 (int interval);
-BOOL(WINAPI* qwglGetDeviceGammaRampEXT)
-(unsigned char*, unsigned char*, unsigned char*);
 BOOL(WINAPI* qwglSetDeviceGammaRampEXT)
 (const unsigned char*, const unsigned char*, const unsigned char*);
 void(APIENTRY* qglPointParameterfEXT)(GLenum param, GLfloat value);
@@ -2659,7 +2657,6 @@ void QGL_Shutdown(void) {
 
     qwglSwapIntervalEXT = NULL;
 
-    qwglGetDeviceGammaRampEXT = NULL;
     qwglSetDeviceGammaRampEXT = NULL;
 }
 
