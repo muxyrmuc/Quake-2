@@ -51,8 +51,6 @@ PROC(WINAPI* qwglGetProcAddress)
 (LPCSTR);
 BOOL(WINAPI* qwglMakeCurrent)
 (HDC, HGLRC);
-BOOL(WINAPI* qwglUseFontBitmaps)
-(HDC, DWORD, DWORD, DWORD);
 
 BOOL(WINAPI* qwglSwapLayerBuffers)
 (HDC, UINT);
@@ -2642,7 +2640,6 @@ void QGL_Shutdown(void) {
     qwglGetProcAddress = NULL;
     qwglMakeCurrent = NULL;
     qwglSwapLayerBuffers = NULL;
-    qwglUseFontBitmaps = NULL;
 
     qwglChoosePixelFormat = NULL;
     qwglDescribePixelFormat = NULL;
@@ -3026,7 +3023,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
     GPA1(qwglMakeCurrent, "wglMakeCurrent");
     GPA1(qwglSwapLayerBuffers, "wglSwapLayerBuffers");
-    GPA1(qwglUseFontBitmaps, "wglUseFontBitmapsA");
 
     GPA1(qwglChoosePixelFormat, "wglChoosePixelFormat");
     GPA1(qwglDescribePixelFormat, "wglDescribePixelFormat");
