@@ -18,6 +18,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef __Q_SHARED_H__
+#define __Q_SHARED_H__
+
 // q_shared.h -- included first by ALL program modules
 
 #ifdef _WIN32
@@ -1146,3 +1149,5 @@ typedef struct
 extern int vidref_val;
 // PGM
 // ==================
+
+#endif  // __Q_SHARED_H__
