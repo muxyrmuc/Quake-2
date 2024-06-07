@@ -39,8 +39,6 @@ BOOL(WINAPI* qwglSetPixelFormat)
 BOOL(WINAPI* qwglSwapBuffers)
 (HDC);
 
-BOOL(WINAPI* qwglCopyContext)
-(HGLRC, HGLRC, UINT);
 HGLRC(WINAPI* qwglCreateContext)
 (HDC);
 HGLRC(WINAPI* qwglCreateLayerContext)
@@ -67,8 +65,6 @@ BOOL(WINAPI* qwglUseFontOutlines)
 BOOL(WINAPI* qwglDescribeLayerPlane)
 (HDC, int, int, UINT,
  LPLAYERPLANEDESCRIPTOR);
-int(WINAPI* qwglSetLayerPaletteEntries)(HDC, int, int, int,
-                                        CONST COLORREF*);
 int(WINAPI* qwglGetLayerPaletteEntries)(HDC, int, int, int,
                                         COLORREF*);
 BOOL(WINAPI* qwglRealizeLayerPalette)
@@ -2321,13 +2317,6 @@ static void APIENTRY logViewport(GLint x, GLint y, GLsizei width, GLsizei height
 ** Unloads the specified DLL then nulls out all the proc pointers.
 */
 void QGL_Shutdown(void) {
-    if (glw_state.hinstOpenGL) {
-        FreeLibrary(glw_state.hinstOpenGL);
-        glw_state.hinstOpenGL = NULL;
-    }
-
-    glw_state.hinstOpenGL = NULL;
-
     qglAccum = NULL;
     qglAlphaFunc = NULL;
     qglAreTexturesResident = NULL;
@@ -2665,7 +2654,6 @@ void QGL_Shutdown(void) {
     qglVertexPointer = NULL;
     qglViewport = NULL;
 
-    qwglCopyContext = NULL;
     qwglCreateContext = NULL;
     qwglCreateLayerContext = NULL;
     qwglDeleteContext = NULL;
@@ -2676,7 +2664,6 @@ void QGL_Shutdown(void) {
     qwglGetProcAddress = NULL;
     qwglMakeCurrent = NULL;
     qwglRealizeLayerPalette = NULL;
-    qwglSetLayerPaletteEntries = NULL;
     qwglShareLists = NULL;
     qwglSwapLayerBuffers = NULL;
     qwglUseFontBitmaps = NULL;
@@ -2719,14 +2706,6 @@ qboolean QGL_Init(const char* dllname) {
         putenv(envbuffer);
         Com_sprintf(envbuffer, sizeof(envbuffer), "SST_GAMMA=%f", g);
         putenv(envbuffer);
-    }
-
-    if ((glw_state.hinstOpenGL = LoadLibrary(dllname)) == 0) {
-        char* buf = NULL;
-
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&buf, 0, NULL);
-        ri.Con_Printf(PRINT_ALL, "%s\n", buf);
-        return kFalse;
     }
 
     gl_config.allow_cds = kTrue;
@@ -3068,7 +3047,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA2(qglVertexPointer, dllVertexPointer, "glVertexPointer");
     GPA2(qglViewport, dllViewport, "glViewport");
 
-    GPA1(qwglCopyContext, "wglCopyContext");
     GPA1(qwglCreateContext, "wglCreateContext");
     GPA1(qwglCreateLayerContext, "wglCreateLayerContext");
     GPA1(qwglDeleteContext, "wglDeleteContext");
@@ -3079,7 +3057,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
     GPA1(qwglMakeCurrent, "wglMakeCurrent");
     GPA1(qwglRealizeLayerPalette, "wglRealizeLayerPalette");
-    GPA1(qwglSetLayerPaletteEntries, "wglSetLayerPaletteEntries");
     GPA1(qwglShareLists, "wglShareLists");
     GPA1(qwglSwapLayerBuffers, "wglSwapLayerBuffers");
     GPA1(qwglUseFontBitmaps, "wglUseFontBitmapsA");

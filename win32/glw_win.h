@@ -17,12 +17,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#ifndef _WIN32
-#error You should not be including this file on this platform
-#endif
 
 #ifndef __GLW_WIN_H__
 #define __GLW_WIN_H__
+
+#include "../game/q_shared.h"
 
 typedef struct
 {
@@ -32,8 +31,6 @@ typedef struct
     HDC hDC;      // handle to device context
     HWND hWnd;    // handle to window
     HGLRC hGLRC;  // handle to GL rendering context
-
-    HINSTANCE hinstOpenGL;  // HINSTANCE for the OpenGL library
 
     qboolean minidriver;
     qboolean allowdisplaydepthchange;
