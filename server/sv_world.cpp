@@ -35,7 +35,9 @@ FIXME: this use of "area" is different from the bsp file use
 // FIXME: remove this mess!
 #define STRUCT_FROM_LINK(l, t, m) ((t*)((byte*)l - (int)&(((t*)0)->m)))
 
-#define EDICT_FROM_AREA(l) STRUCT_FROM_LINK(l, edict_t, area)
+static inline edict_t* EdictFromArea(link_t* l) {
+    return STRUCT_FROM_LINK(l, edict_t, area);
+}
 
 typedef struct areanode_s {
     int axis;  // -1 = leaf node
@@ -331,7 +333,7 @@ void SV_AreaEdicts_r(areanode_t* node) {
 
     for (l = start->next; l != start; l = next) {
         next = l->next;
-        check = EDICT_FROM_AREA(l);
+        check = EdictFromArea(l);
 
         if (check->solid == SOLID_NOT)
             continue;  // deactivated

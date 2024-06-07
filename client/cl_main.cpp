@@ -1475,18 +1475,18 @@ typedef struct
 } cheatvar_t;
 
 cheatvar_t cheatvars[] = {
-    {"timescale", "1"},
-    {"timedemo", "0"},
-    {"r_drawworld", "1"},
-    {"cl_testlights", "0"},
-    {"r_fullbright", "0"},
-    {"r_drawflat", "0"},
-    {"paused", "0"},
-    {"fixedtime", "0"},
-    {"sw_draworder", "0"},
-    {"gl_lightmap", "0"},
-    {"gl_saturatelighting", "0"},
-    {NULL, NULL}};
+    {"timescale", "1", nullptr},
+    {"timedemo", "0", nullptr},
+    {"r_drawworld", "1", nullptr},
+    {"cl_testlights", "0", nullptr},
+    {"r_fullbright", "0", nullptr},
+    {"r_drawflat", "0", nullptr},
+    {"paused", "0", nullptr},
+    {"fixedtime", "0", nullptr},
+    {"sw_draworder", "0", nullptr},
+    {"gl_lightmap", "0", nullptr},
+    {"gl_saturatelighting", "0", nullptr},
+    {nullptr, nullptr, nullptr}};
 
 int numcheatvars;
 

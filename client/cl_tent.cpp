@@ -1603,8 +1603,9 @@ void CL_ProcessSustain() {
             if ((s->endtime >= cl.time) && (cl.time >= s->nextthink)) {
                 //				Com_Printf ("think %d %d %d\n", cl.time, s->nextthink, s->thinkinterval);
                 s->think(s);
-            } else if (s->endtime < cl.time)
+            } else if (s->endtime < cl.time) {
                 s->id = 0;
+            }
     }
 }
 

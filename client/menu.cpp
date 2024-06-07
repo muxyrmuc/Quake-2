@@ -352,7 +352,6 @@ void M_Main_Draw(void) {
     int ystart;
     int xoffset;
     int widest = -1;
-    int totalheight = 0;
     char litname[80];
     const char* names[] =
         {
@@ -368,7 +367,6 @@ void M_Main_Draw(void) {
 
         if (w > widest)
             widest = w;
-        totalheight += (h + 12);
     }
 
     ystart = (viddef.height / 2 - 110);
@@ -1802,13 +1800,6 @@ static void CreditsFunc(void* unused) {
 }
 
 void Game_MenuInit(void) {
-    static const char* difficulty_names[] =
-        {
-            "easy",
-            "medium",
-            "hard",
-            0};
-
     s_game_menu.x = viddef.width * 0.50;
     s_game_menu.nitems = 0;
 
@@ -3306,11 +3297,9 @@ static int pmicmpfnc(const void* _a, const void* _b) {
 
 qboolean PlayerConfig_MenuInit(void) {
     extern cvar_t* name;
-    extern cvar_t* team;
     extern cvar_t* skin;
     char currentdirectory[1024];
     char currentskin[1024];
-    int i = 0;
 
     int currentdirectoryindex = 0;
     int currentskinindex = 0;
@@ -3343,7 +3332,7 @@ qboolean PlayerConfig_MenuInit(void) {
     qsort(s_pmi, s_numplayermodels, sizeof(s_pmi[0]), pmicmpfnc);
 
     memset(s_pmnames, 0, sizeof(s_pmnames));
-    for (i = 0; i < s_numplayermodels; i++) {
+    for (int i = 0; i < s_numplayermodels; i++) {
         s_pmnames[i] = s_pmi[i].displayname;
         if (Q_stricmp(s_pmi[i].directory, currentdirectory) == 0) {
             int j;
@@ -3414,7 +3403,8 @@ qboolean PlayerConfig_MenuInit(void) {
     s_player_handedness_box.curvalue = Cvar_VariableValue("hand");
     s_player_handedness_box.itemnames = handedness;
 
-    for (i = 0; i < sizeof(rate_tbl) / sizeof(*rate_tbl) - 1; i++)
+    std::size_t i = 0;
+    for (; i < sizeof(rate_tbl) / sizeof(*rate_tbl) - 1; i++)
         if (Cvar_VariableValue("rate") == rate_tbl[i])
             break;
 
@@ -3473,7 +3463,6 @@ void PlayerConfig_MenuDraw(void) {
 
     if (s_pmi[s_player_model_box.curvalue].skindisplaynames) {
         static int yaw;
-        int maxframe = 29;
         entity_t entity;
 
         memset(&entity, 0, sizeof(entity));
