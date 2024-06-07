@@ -86,7 +86,7 @@ void SZ_Init(sizebuf_t* buf, byte* data, int length);
 void SZ_Clear(sizebuf_t* buf);
 void* SZ_GetSpace(sizebuf_t* buf, int length);
 void SZ_Write(sizebuf_t* buf, void* data, int length);
-void SZ_Print(sizebuf_t* buf, char* data);  // strcats onto the sizebuf
+void SZ_Print(sizebuf_t* buf, const char* data);  // strcats onto the sizebuf
 
 //============================================================================
 
@@ -141,7 +141,7 @@ extern float LittleFloat(float l);
 //============================================================================
 
 int COM_Argc(void);
-char* COM_Argv(int arg);  // range and null checked
+const char* COM_Argv(int arg);  // range and null checked
 void COM_ClearArgv(int arg);
 int COM_CheckParm(char* parm);
 void COM_AddParm(char* parm);
@@ -725,7 +725,7 @@ MISC
 void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush));
 void Com_EndRedirect(void);
 void Com_Printf(const char* fmt, ...);
-void Com_DPrintf(char* fmt, ...);
+void Com_DPrintf(const char* fmt, ...);
 void Com_Error(int code, const char* fmt, ...);
 void Com_Quit(void);
 

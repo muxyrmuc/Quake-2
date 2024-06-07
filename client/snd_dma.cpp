@@ -188,7 +188,7 @@ S_FindName
 
 ==================
 */
-sfx_t* S_FindName(char* name, qboolean create) {
+sfx_t* S_FindName(const char* name, qboolean create) {
     int i;
     sfx_t* sfx;
 
@@ -280,7 +280,7 @@ S_RegisterSound
 
 ==================
 */
-sfx_t* S_RegisterSound(char* name) {
+sfx_t* S_RegisterSound(const char* name) {
     sfx_t* sfx;
 
     if (!sound_started)
@@ -663,7 +663,7 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t* sfx, float f
 S_StartLocalSound
 ==================
 */
-void S_StartLocalSound(char* sound) {
+void S_StartLocalSound(const char* sound) {
     sfx_t* sfx;
 
     if (!sound_started)

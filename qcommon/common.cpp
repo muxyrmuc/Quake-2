@@ -137,7 +137,7 @@ Com_DPrintf
 A Com_Printf that only shows up if the "developer" cvar is set
 ================
 */
-void Com_DPrintf(char* fmt, ...) {
+void Com_DPrintf(const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
 
@@ -823,7 +823,7 @@ void SZ_Write(sizebuf_t* buf, void* data, int length) {
     memcpy(SZ_GetSpace(buf, length), data, length);
 }
 
-void SZ_Print(sizebuf_t* buf, char* data) {
+void SZ_Print(sizebuf_t* buf, const char* data) {
     int len;
 
     len = strlen(data) + 1;
@@ -862,7 +862,7 @@ int COM_Argc(void) {
     return com_argc;
 }
 
-char* COM_Argv(int arg) {
+const char* COM_Argv(int arg) {
     if (arg < 0 || arg >= com_argc || !com_argv[arg])
         return "";
     return com_argv[arg];
