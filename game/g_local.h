@@ -667,7 +667,7 @@ void M_CheckGround(edict_t* ent);
 //
 // g_misc.c
 //
-void ThrowHead(edict_t* self, char* gibname, int damage, int type);
+void ThrowHead(edict_t* self, const char* gibname, int damage, int type);
 void ThrowClientHead(edict_t* self, int damage);
 void ThrowGib(edict_t* self, const char* gibname, int damage, int type);
 void BecomeExplosion1(edict_t* self);

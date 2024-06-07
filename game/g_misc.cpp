@@ -163,7 +163,7 @@ void ThrowGib(edict_t* self, const char* gibname, int damage, int type) {
     gi.linkentity(gib);
 }
 
-void ThrowHead(edict_t* self, char* gibname, int damage, int type) {
+void ThrowHead(edict_t* self, const char* gibname, int damage, int type) {
     vec3_t vd;
     float vscale;
 
