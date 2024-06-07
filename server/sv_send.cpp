@@ -79,7 +79,7 @@ SV_BroadcastPrintf
 Sends text to all active clients
 =================
 */
-void SV_BroadcastPrintf(int level, char* fmt, ...) {
+void SV_BroadcastPrintf(int level, const char* fmt, ...) {
     va_list argptr;
     char string[2048];
     client_t* cl;

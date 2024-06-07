@@ -3280,6 +3280,8 @@ static qboolean PlayerConfig_ScanDirectories(void) {
     }
     if (dirnames)
         FreeFileList(dirnames, ndirs);
+
+    return kTrue;
 }
 
 static int pmicmpfnc(const void* _a, const void* _b) {
