@@ -404,7 +404,7 @@ void Cmd_RemoveCommand(const char* cmd_name);
 qboolean Cmd_Exists(char* cmd_name);
 // used by the cvar code to check for cvar / command name overlap
 
-char* Cmd_CompleteCommand(char* partial);
+const char* Cmd_CompleteCommand(char* partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
@@ -615,7 +615,7 @@ CMODEL
 
 #include "../qcommon/qfiles.h"
 
-cmodel_t* CM_LoadMap(char* name, qboolean clientload, unsigned* checksum);
+cmodel_t* CM_LoadMap(const char* name, qboolean clientload, unsigned* checksum);
 cmodel_t* CM_InlineModel(char* name);  // *1, *2, etc
 
 int CM_NumClusters(void);
