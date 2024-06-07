@@ -349,7 +349,7 @@ CL_LoadClientinfo
 
 ================
 */
-void CL_LoadClientinfo(clientinfo_t* ci, char* s) {
+void CL_LoadClientinfo(clientinfo_t* ci, const char* s) {
     int i;
     char* t;
     char model_name[MAX_QPATH];
