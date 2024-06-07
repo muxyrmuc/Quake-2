@@ -390,17 +390,6 @@ qboolean GLimp_InitGL(void) {
     }
     DescribePixelFormat(glw_state.hDC, pixelformat, sizeof(pfd), &pfd);
 
-    if (!(pfd.dwFlags & PFD_GENERIC_ACCELERATED)) {
-        extern cvar_t* gl_allow_software;
-
-        if (gl_allow_software->value)
-            glw_state.mcd_accelerated = kTrue;
-        else
-            glw_state.mcd_accelerated = kFalse;
-    } else {
-        glw_state.mcd_accelerated = kTrue;
-    }
-
     /*
     ** report if stereo is desired but unavailable
     */

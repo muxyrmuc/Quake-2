@@ -33,7 +33,6 @@ typedef struct
     HGLRC hGLRC;  // handle to GL rendering context
 
     qboolean allowdisplaydepthchange;
-    qboolean mcd_accelerated;
 
     FILE* log_fp;
 } glwstate_t;
