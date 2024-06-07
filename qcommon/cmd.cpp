@@ -492,7 +492,8 @@ char* Cmd_MacroExpandString(char* text) {
     char* scan;
     static char expanded[MAX_STRING_CHARS];
     char temporary[MAX_STRING_CHARS];
-    char *token, *start;
+    const char* token;
+    char* start;
 
     inquote = kFalse;
     scan = text;

@@ -28,7 +28,7 @@ cvar_t* cvar_vars;
 Cvar_InfoValidate
 ============
 */
-static qboolean Cvar_InfoValidate(char* s) {
+static qboolean Cvar_InfoValidate(const char* s) {
     if (strstr(s, "\\"))
         return kFalse;
     if (strstr(s, "\""))

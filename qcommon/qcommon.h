@@ -722,7 +722,7 @@ MISC
 #define PRINT_ALL 0
 #define PRINT_DEVELOPER 1  // only print when "developer 1"
 
-void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush));
+void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)(int, char*));
 void Com_EndRedirect(void);
 void Com_Printf(const char* fmt, ...);
 void Com_DPrintf(const char* fmt, ...);

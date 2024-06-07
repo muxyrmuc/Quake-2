@@ -65,13 +65,13 @@ static char* rd_buffer;
 static int rd_buffersize;
 static void (*rd_flush)(int target, char* buffer);
 
-void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)) {
+void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)(int, char*)) {
     if (!target || !buffer || !buffersize || !flush)
         return;
     rd_target = target;
     rd_buffer = buffer;
     rd_buffersize = buffersize;
-    rd_flush = reinterpret_cast<decltype(rd_flush)>(flush);
+    rd_flush = flush;
 
     *rd_buffer = 0;
 }

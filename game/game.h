@@ -114,7 +114,7 @@ struct edict_s {
 typedef struct
 {
     // special messages
-    void (*bprintf)(int printlevel, char* fmt, ...);
+    void (*bprintf)(int printlevel, const char* fmt, ...);
     void (*dprintf)(char* fmt, ...);
     void (*cprintf)(edict_t* ent, int printlevel, char* fmt, ...);
     void (*centerprintf)(edict_t* ent, char* fmt, ...);
@@ -171,9 +171,9 @@ typedef struct
     void (*FreeTags)(int tag);
 
     // console variable interaction
-    cvar_t* (*cvar)(char* var_name, char* value, int flags);
-    cvar_t* (*cvar_set)(char* var_name, char* value);
-    cvar_t* (*cvar_forceset)(char* var_name, char* value);
+    cvar_t* (*cvar)(const char* var_name, const char* value, int flags);
+    cvar_t* (*cvar_set)(const char* var_name, const char* value);
+    cvar_t* (*cvar_forceset)(const char* var_name, const char* value);
 
     // ClientCommand and ServerCommand parameter access
     int (*argc)(void);
@@ -182,7 +182,7 @@ typedef struct
 
     // add commands to the server console as if they were typed in
     // for map changing, etc
-    void (*AddCommandString)(char* text);
+    void (*AddCommandString)(const char* text);
 
     void (*DebugGraph)(float value, int color);
 } game_import_t;
