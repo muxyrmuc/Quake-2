@@ -151,7 +151,7 @@ typedef struct
     // slash will not use the "pics/" prefix or the ".pcx" postfix)
     void (*BeginRegistration)(char* map);
     struct model_s* (*RegisterModel)(char* name);
-    struct image_s* (*RegisterSkin)(char* name);
+    struct image_s* (*RegisterSkin)(const char* name);
     struct image_s* (*RegisterPic)(char* name);
     void (*SetSky)(char* name, float rotate, vec3_t axis);
     void (*EndRegistration)(void);
