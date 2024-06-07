@@ -72,7 +72,7 @@ float Cvar_VariableValue(const char* var_name) {
 Cvar_VariableString
 ============
 */
-char* Cvar_VariableString(char* var_name) {
+const char* Cvar_VariableString(const char* var_name) {
     cvar_t* var;
 
     var = Cvar_FindVar(var_name);
@@ -234,7 +234,7 @@ cvar_t* Cvar_Set2(const char* var_name, const char* value, qboolean force) {
 Cvar_ForceSet
 ============
 */
-cvar_t* Cvar_ForceSet(char* var_name, char* value) {
+cvar_t* Cvar_ForceSet(const char* var_name, const char* value) {
     return Cvar_Set2(var_name, value, kTrue);
 }
 

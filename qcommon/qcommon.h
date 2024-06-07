@@ -85,7 +85,7 @@ typedef struct sizebuf_s {
 void SZ_Init(sizebuf_t* buf, byte* data, int length);
 void SZ_Clear(sizebuf_t* buf);
 void* SZ_GetSpace(sizebuf_t* buf, int length);
-void SZ_Write(sizebuf_t* buf, void* data, int length);
+void SZ_Write(sizebuf_t* buf, const void* data, int length);
 void SZ_Print(sizebuf_t* buf, const char* data);  // strcats onto the sizebuf
 
 //============================================================================
@@ -459,7 +459,7 @@ cvar_t* Cvar_Get(const char* var_name, const char* value, int flags);
 cvar_t* Cvar_Set(const char* var_name, const char* value);
 // will create the variable if it doesn't exist
 
-cvar_t* Cvar_ForceSet(char* var_name, char* value);
+cvar_t* Cvar_ForceSet(const char* var_name, const char* value);
 // will set the variable even if NOSET or LATCH
 
 cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
@@ -470,7 +470,7 @@ void Cvar_SetValue(const char* var_name, float value);
 float Cvar_VariableValue(const char* var_name);
 // returns 0 if not defined or non numeric
 
-char* Cvar_VariableString(char* var_name);
+const char* Cvar_VariableString(const char* var_name);
 // returns an empty string if not defined
 
 char* Cvar_CompleteVariable(char* partial);
@@ -547,7 +547,7 @@ qboolean NET_CompareAdr(netadr_t a, netadr_t b);
 qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b);
 qboolean NET_IsLocalAddress(netadr_t adr);
 char* NET_AdrToString(netadr_t a);
-qboolean NET_StringToAdr(char* s, netadr_t* a);
+qboolean NET_StringToAdr(const char* s, netadr_t* a);
 void NET_Sleep(int msec);
 
 //============================================================================
@@ -688,11 +688,11 @@ char* FS_Gamedir(void);
 char* FS_NextPath(char* prevpath);
 void FS_ExecAutoexec(void);
 
-int FS_FOpenFile(char* filename, FILE** file);
+int FS_FOpenFile(const char* filename, FILE** file);
 void FS_FCloseFile(FILE* f);
 // note: this can't be called from another DLL, due to MS libc issues
 
-int FS_LoadFile(char* path, void** buffer);
+int FS_LoadFile(const char* path, void** buffer);
 // a null buffer will just return the file length without loading
 // a -1 length is not present
 

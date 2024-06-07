@@ -122,7 +122,7 @@ void Draw_GetPicSize(int* w, int* h, const char* pic) {
 Draw_StretchPic
 =============
 */
-void Draw_StretchPic(int x, int y, int w, int h, char* pic) {
+void Draw_StretchPic(int x, int y, int w, int h, const char* pic) {
     image_t* gl;
 
     gl = Draw_FindPic(pic);

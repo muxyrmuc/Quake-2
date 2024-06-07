@@ -225,7 +225,7 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qboolean NET_StringToAdr(char* s, netadr_t* a) {
+qboolean NET_StringToAdr(const char* s, netadr_t* a) {
     struct sockaddr sadr;
 
     if (!strcmp(s, "localhost")) {
