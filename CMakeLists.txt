@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(quake2)
 
+find_package(SDL2 REQUIRED)
+
 add_library(ref_gl SHARED
     ref_gl/gl_draw.cpp
     ref_gl/gl_image.cpp
@@ -71,8 +73,7 @@ add_library(game SHARED
     game/q_shared.cpp
 )
 
-# WIN32 means WinMain()
-add_executable(quake2 WIN32
+add_executable(quake2
     client/cl_view.cpp
     client/cl_pred.cpp
     client/cl_input.cpp
@@ -125,11 +126,14 @@ add_executable(quake2 WIN32
     win32/in_win.cpp
 )
 
-# Windows-only, required by timeGetTime
-target_link_libraries(ref_gl winmm.lib)
+target_link_libraries(ref_gl ${SDL2_LIBRARIES})
+target_include_directories(ref_gl PRIVATE ${SDL2_INCLUDE_DIRS})
+
+target_link_libraries(ref_gl ${SDL2_LIBRARIES})
+target_include_directories(ref_gl PRIVATE ${SDL2_INCLUDE_DIRS})
 
 # Windows-only, required by mciSendCommand, waveOutOpen and others
-target_link_libraries(quake2 winmm.lib)
+#target_link_libraries(quake2 winmm.lib)
 
 # Windows-only, required by Winsock-related stuff
-target_link_libraries(quake2 ws2_32.lib)
+#target_link_libraries(quake2 ws2_32.lib)
