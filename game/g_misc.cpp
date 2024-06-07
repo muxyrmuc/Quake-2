@@ -206,7 +206,7 @@ void ThrowHead(edict_t* self, char* gibname, int damage, int type) {
 
 void ThrowClientHead(edict_t* self, int damage) {
     vec3_t vd;
-    char* gibname;
+    const char* gibname;
 
     if (rand() & 1) {
         gibname = "models/objects/gibs/head2/tris.md2";

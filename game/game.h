@@ -127,7 +127,7 @@ typedef struct
     // they connect, and changes are sent to all connected clients.
     void (*configstring)(int num, const char* string);
 
-    void (*error)(char* fmt, ...);
+    void (*error)(const char* fmt, ...);
 
     // the *index functions create configstrings and some internal server state
     int (*modelindex)(const char* name);

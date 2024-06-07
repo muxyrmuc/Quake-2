@@ -129,7 +129,7 @@ PF_error
 Abort the server with a game error
 ===============
 */
-void PF_error(char* fmt, ...) {
+void PF_error(const char* fmt, ...) {
     char msg[1024];
     va_list argptr;
 

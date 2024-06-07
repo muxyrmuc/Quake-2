@@ -236,7 +236,7 @@ typedef struct gitem_s {
     int count_width;    // number of digits to display by icon
 
     int quantity;  // for ammo how much, for weapons how much is used per shot
-    char* ammo;    // for weapons
+    const char* ammo;    // for weapons
     int flags;     // IT_* flags
 
     int weapmodel;  // weapon model index (for weapons)
@@ -244,7 +244,7 @@ typedef struct gitem_s {
     void* info;
     int tag;
 
-    char* precaches;  // string of all models, sounds, and images this item will use
+    const char* precaches;  // string of all models, sounds, and images this item will use
 } gitem_t;
 
 //
@@ -479,7 +479,7 @@ extern int meansOfDeath;
 extern edict_t* g_edicts;
 
 #define FOFS(x) (offsetof(edict_t, x))
-#define STOFS(x) (offsetof(spawn_temp_t), x)
+#define STOFS(x) (offsetof(spawn_temp_t, x))
 #define LLOFS(x) (offsetof(level_locals_t, x))
 #define CLOFS(x) (offsetof(gclient_t, x))
 
@@ -557,7 +557,7 @@ typedef enum {
 
 typedef struct
 {
-    char* name;
+    const char* name;
     int ofs;
     fieldtype_t type;
     int flags;
@@ -597,7 +597,7 @@ void Touch_Item(edict_t* ent, edict_t* other, cplane_t* plane, csurface_t* surf)
 //
 qboolean KillBox(edict_t* ent);
 void G_ProjectSource(vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-edict_t* G_Find(edict_t* from, int fieldofs, char* match);
+edict_t* G_Find(edict_t* from, int fieldofs, const char* match);
 edict_t* findradius(edict_t* from, vec3_t org, float rad);
 edict_t* G_PickTarget(char* targetname);
 void G_UseTargets(edict_t* ent, edict_t* activator);
