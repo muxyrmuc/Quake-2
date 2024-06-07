@@ -36,7 +36,9 @@ FIXME: this use of "area" is different from the bsp file use
 #define STRUCT_FROM_LINK(l, t, m) ((t*)((byte*)l - (int)&(((t*)0)->m)))
 
 static inline edict_t* EdictFromArea(link_t* l) {
-    return STRUCT_FROM_LINK(l, edict_t, area);
+    // return STRUCT_FROM_LINK(l, edict_t, area);
+    // TODO: seems like we can use offsetof instead of this
+    return (edict_t*)((unsigned char*)l - (unsigned char*)&(((edict_t*)0)->area));
 }
 
 typedef struct areanode_s {
