@@ -58,8 +58,6 @@ BOOL(WINAPI* qwglShareLists)
 BOOL(WINAPI* qwglUseFontBitmaps)
 (HDC, DWORD, DWORD, DWORD);
 
-int(WINAPI* qwglGetLayerPaletteEntries)(HDC, int, int, int,
-                                        COLORREF*);
 BOOL(WINAPI* qwglSwapLayerBuffers)
 (HDC, UINT);
 
@@ -2650,7 +2648,6 @@ void QGL_Shutdown(void) {
     qwglDeleteContext = NULL;
     qwglGetCurrentContext = NULL;
     qwglGetCurrentDC = NULL;
-    qwglGetLayerPaletteEntries = NULL;
     qwglGetProcAddress = NULL;
     qwglMakeCurrent = NULL;
     qwglShareLists = NULL;
@@ -3040,7 +3037,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA1(qwglDeleteContext, "wglDeleteContext");
     GPA1(qwglGetCurrentContext, "wglGetCurrentContext");
     GPA1(qwglGetCurrentDC, "wglGetCurrentDC");
-    GPA1(qwglGetLayerPaletteEntries, "wglGetLayerPaletteEntries");
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
     GPA1(qwglMakeCurrent, "wglMakeCurrent");
     GPA1(qwglShareLists, "wglShareLists");
