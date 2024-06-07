@@ -2654,7 +2654,7 @@ void QGL_Shutdown(void) {
 ** might be.
 **
 */
-qboolean QGL_Init(const char* dllname) {
+bool QGL_Init(const char* dllname) {
     // update 3Dfx gamma irrespective of underlying DLL
     {
         char envbuffer[1024];
@@ -3024,7 +3024,7 @@ qboolean QGL_Init(const char* dllname) {
     qglSelectTextureSGIS = 0;
     qglMTexCoord2fSGIS = 0;
 
-    return kTrue;
+    return true;
 }
 
 void GLimp_EnableLogging(qboolean enable) {
