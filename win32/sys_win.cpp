@@ -25,9 +25,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <float.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <direct.h>
-#include <io.h>
-#include <conio.h>
+#include <thread>
+
+#include <SDL_messagebox.h>
+#include <SDL_clipboard.h>
 
 #define MINIMUM_WIN_MEMORY 0x0a00000
 #define MAXIMUM_WIN_MEMORY 0x1000000
@@ -41,7 +42,7 @@ unsigned sys_frame_time;
 
 #define MAX_NUM_ARGVS 128
 int argc;
-char* argv[MAX_NUM_ARGVS];
+char** argv;
 
 /*
 ===============================================================================
@@ -62,7 +63,7 @@ void Sys_Error(const char* error, ...) {
     vsprintf(text, error, argptr);
     va_end(argptr);
 
-    MessageBox(NULL, text, "Error", 0 /* MB_OK */);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", text, nullptr);
 
     exit(1);
 }
@@ -135,21 +136,19 @@ Sys_GetClipboardData
 ================
 */
 char* Sys_GetClipboardData(void) {
-    char* data = NULL;
-    char* cliptext;
+    char* data = nullptr;
 
-    if (OpenClipboard(NULL) != 0) {
-        HANDLE hClipboardData;
+    if (!SDL_HasClipboardText()) {
 
-        if ((hClipboardData = GetClipboardData(CF_TEXT)) != 0) {
-            if ((cliptext = static_cast<char*>(GlobalLock(hClipboardData))) != 0) {
-                data = static_cast<char*>(malloc(GlobalSize(hClipboardData) + 1));
-                strcpy(data, cliptext);
-                GlobalUnlock(hClipboardData);
-            }
-        }
-        CloseClipboard();
     }
+
+    char* cliptext = SDL_GetClipboardText();
+    if (cliptext[0] != '\0') {
+        data = static_cast<char*>(malloc(strlen(cliptext) + 1));
+        strcpy(data, cliptext);
+    }
+    SDL_free(cliptext);
+
     return data;
 }
 
@@ -258,52 +257,20 @@ void* Sys_GetGameAPI(void* parms) {
 
 /*
 ==================
-ParseCommandLine
-
-==================
-*/
-void ParseCommandLine(LPSTR lpCmdLine) {
-    argc = 1;
-    argv[0] = "exe";
-
-    while (*lpCmdLine && (argc < MAX_NUM_ARGVS)) {
-        while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
-            lpCmdLine++;
-
-        if (*lpCmdLine) {
-            argv[argc] = lpCmdLine;
-            argc++;
-
-            while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
-                lpCmdLine++;
-
-            if (*lpCmdLine) {
-                *lpCmdLine = 0;
-                lpCmdLine++;
-            }
-        }
-    }
-}
-
-/*
-==================
 WinMain
 
 ==================
 */
 HINSTANCE global_hInstance;
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int main(int ac, char** av /*HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow*/) {
     MSG msg;
     int time, oldtime, newtime;
 
-    /* previous instances do not exist in Win32 */
-    if (hPrevInstance)
-        return 0;
-
     global_hInstance = hInstance;
 
-    ParseCommandLine(lpCmdLine);
+    argc = ac;
+    argv = av;
 
     Qcommon_Init(argc, argv);
     oldtime = Sys_Milliseconds();
@@ -312,7 +279,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     while (1) {
         // if at a full screen console, don't update unless needed
         if (Minimized) {
-            Sleep(1);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
 
         while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
