@@ -62,9 +62,6 @@ BOOL(WINAPI* qwglUseFontOutlines)
 (HDC, DWORD, DWORD, DWORD, FLOAT,
  FLOAT, int, LPGLYPHMETRICSFLOAT);
 
-BOOL(WINAPI* qwglDescribeLayerPlane)
-(HDC, int, int, UINT,
- LPLAYERPLANEDESCRIPTOR);
 int(WINAPI* qwglGetLayerPaletteEntries)(HDC, int, int, int,
                                         COLORREF*);
 BOOL(WINAPI* qwglSwapLayerBuffers)
@@ -2655,7 +2652,6 @@ void QGL_Shutdown(void) {
     qwglCreateContext = NULL;
     qwglCreateLayerContext = NULL;
     qwglDeleteContext = NULL;
-    qwglDescribeLayerPlane = NULL;
     qwglGetCurrentContext = NULL;
     qwglGetCurrentDC = NULL;
     qwglGetLayerPaletteEntries = NULL;
@@ -3047,7 +3043,6 @@ qboolean QGL_Init(const char* dllname) {
     GPA1(qwglCreateContext, "wglCreateContext");
     GPA1(qwglCreateLayerContext, "wglCreateLayerContext");
     GPA1(qwglDeleteContext, "wglDeleteContext");
-    GPA1(qwglDescribeLayerPlane, "wglDescribeLayerPlane");
     GPA1(qwglGetCurrentContext, "wglGetCurrentContext");
     GPA1(qwglGetCurrentDC, "wglGetCurrentDC");
     GPA1(qwglGetLayerPaletteEntries, "wglGetLayerPaletteEntries");
