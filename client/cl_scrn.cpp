@@ -564,9 +564,11 @@ int entitycmpfnc(const entity_t* a, const entity_t* b) {
     ** all other models are sorted by model then skin
     */
     if (a->model == b->model) {
-        return ((int)a->skin - (int)b->skin);
+        std::ptrdiff_t distance = reinterpret_cast<char*>(a->skin) - reinterpret_cast<char*>(b->skin);
+        return distance < 0 ? -1 : (distance > 0 ? 1 : 0);
     } else {
-        return ((int)a->model - (int)b->model);
+        std::ptrdiff_t distance = reinterpret_cast<char*>(a->model) - reinterpret_cast<char*>(b->model);
+        return distance < 0 ? -1 : (distance > 0 ? 1 : 0);
     }
 }
 
