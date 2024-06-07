@@ -759,7 +759,7 @@ void COM_StripExtension(char* in, char* out) {
 COM_FileExtension
 ============
 */
-char* COM_FileExtension(char* in) {
+const char* COM_FileExtension(char* in) {
     static char exten[8];
     int i;
 
@@ -1125,7 +1125,7 @@ Searches the string for the given
 key and returns the associated value, or an empty string.
 ===============
 */
-const char* Info_ValueForKey(char* s, char* key) {
+const char* Info_ValueForKey(char* s, const char* key) {
     char pkey[512];
     static char value[2][512];  // use two buffers so compares
                                 // work without stomping on each other
@@ -1163,7 +1163,7 @@ const char* Info_ValueForKey(char* s, char* key) {
     }
 }
 
-void Info_RemoveKey(char* s, char* key) {
+void Info_RemoveKey(char* s, const char* key) {
     char* start;
     char pkey[512];
     char value[512];
@@ -1221,7 +1221,7 @@ qboolean Info_Validate(char* s) {
     return kTrue;
 }
 
-void Info_SetValueForKey(char* s, char* key, char* value) {
+void Info_SetValueForKey(char* s, const char* key, char* value) {
     char newi[MAX_INFO_STRING], *v;
     int c;
     int maxsize = MAX_INFO_STRING;
