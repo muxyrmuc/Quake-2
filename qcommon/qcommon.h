@@ -98,7 +98,7 @@ void MSG_WriteByte(sizebuf_t* sb, int c);
 void MSG_WriteShort(sizebuf_t* sb, int c);
 void MSG_WriteLong(sizebuf_t* sb, int c);
 void MSG_WriteFloat(sizebuf_t* sb, float f);
-void MSG_WriteString(sizebuf_t* sb, char* s);
+void MSG_WriteString(sizebuf_t* sb, const char* s);
 void MSG_WriteCoord(sizebuf_t* sb, float f);
 void MSG_WritePos(sizebuf_t* sb, vec3_t pos);
 void MSG_WriteAngle(sizebuf_t* sb, float f);
@@ -467,7 +467,7 @@ cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
 void Cvar_SetValue(const char* var_name, float value);
 // expands value to a string and calls Cvar_Set
 
-float Cvar_VariableValue(char* var_name);
+float Cvar_VariableValue(const char* var_name);
 // returns 0 if not defined or non numeric
 
 char* Cvar_VariableString(char* var_name);
@@ -600,7 +600,7 @@ void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport);
 qboolean Netchan_NeedReliable(netchan_t* chan);
 void Netchan_Transmit(netchan_t* chan, int length, byte* data);
 void Netchan_OutOfBand(netsrc_t net_socket, netadr_t adr, int length, byte* data);
-void Netchan_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, char* format, ...);
+void Netchan_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, const char* format, ...);
 qboolean Netchan_Process(netchan_t* chan, sizebuf_t* msg);
 
 qboolean Netchan_CanReliable(netchan_t* chan);
