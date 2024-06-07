@@ -44,17 +44,6 @@ glwstate_t glw_state;
 extern cvar_t* vid_fullscreen;
 extern cvar_t* vid_ref;
 
-static qboolean VerifyDriver(void) {
-    char buffer[1024];
-
-    strcpy(buffer, reinterpret_cast<const char*>(qglGetString(GL_RENDERER)));
-    strlwr(buffer);
-    if (strcmp(buffer, "gdi generic") == 0)
-        if (!glw_state.mcd_accelerated)
-            return kFalse;
-    return kTrue;
-}
-
 /*
 ** VID_CreateWindow
 */
@@ -455,11 +444,6 @@ qboolean GLimp_InitGL(void) {
     if (!qwglMakeCurrent(glw_state.hDC, glw_state.hGLRC)) {
         ri.Con_Printf(PRINT_ALL, "GLimp_Init() - qwglMakeCurrent failed\n");
 
-        goto fail;
-    }
-
-    if (!VerifyDriver()) {
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - no hardware acceleration detected\n");
         goto fail;
     }
 
