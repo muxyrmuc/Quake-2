@@ -1466,7 +1466,7 @@ void R_DrawBeam(entity_t* e) {
 //===================================================================
 
 void R_BeginRegistration(char* map);
-struct model_s* R_RegisterModel(char* name);
+struct model_s* R_RegisterModel(const char* name);
 struct image_s* R_RegisterSkin(const char* name);
 void R_SetSky(char* name, float rotate, vec3_t axis);
 void R_EndRegistration(void);
@@ -1477,7 +1477,7 @@ struct image_s* Draw_FindPic(const char* name);
 
 void Draw_Pic(int x, int y, const char* name);
 void Draw_Char(int x, int y, int c);
-void Draw_TileClear(int x, int y, int w, int h, char* name);
+void Draw_TileClear(int x, int y, int w, int h, const char* name);
 void Draw_Fill(int x, int y, int w, int h, int c);
 void Draw_FadeScreen(void);
 

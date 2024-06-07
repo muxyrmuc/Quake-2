@@ -1039,7 +1039,7 @@ R_RegisterModel
 
 @@@@@@@@@@@@@@@@@@@@@
 */
-struct model_s* R_RegisterModel(char* name) {
+struct model_s* R_RegisterModel(const char* name) {
     model_t* mod;
     int i;
     dsprite_t* sprout;

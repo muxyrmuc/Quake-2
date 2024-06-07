@@ -196,7 +196,7 @@ This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-void Draw_TileClear(int x, int y, int w, int h, char* pic) {
+void Draw_TileClear(int x, int y, int w, int h, const char* pic) {
     image_t* image;
 
     image = Draw_FindPic(pic);
