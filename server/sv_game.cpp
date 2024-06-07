@@ -147,7 +147,7 @@ PF_setmodel
 Also sets mins and maxs for inline bmodels
 =================
 */
-void PF_setmodel(edict_t* ent, char* name) {
+void PF_setmodel(edict_t* ent, const char* name) {
     int i;
     cmodel_t* mod;
 

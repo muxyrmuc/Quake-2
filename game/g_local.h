@@ -225,8 +225,8 @@ typedef struct gitem_s {
     void (*use)(struct edict_s* ent, struct gitem_s* item);
     void (*drop)(struct edict_s* ent, struct gitem_s* item);
     void (*weaponthink)(struct edict_s* ent);
-    char* pickup_sound;
-    char* world_model;
+    const char* pickup_sound;
+    const char* world_model;
     int world_model_flags;
     char* view_model;
 
@@ -436,10 +436,6 @@ extern spawn_temp_t st;
 
 extern int sm_meat_index;
 extern int snd_fry;
-
-extern int jacket_armor_index;
-extern int combat_armor_index;
-extern int body_armor_index;
 
 // means of death
 #define MOD_UNKNOWN 0
@@ -967,7 +963,7 @@ struct edict_s {
     int movetype;
     int flags;
 
-    char* model;
+    const char* model;
     float freetime;  // sv.time when the object was freed
 
     //

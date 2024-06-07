@@ -58,7 +58,7 @@ int SV_FindIndex(char* name, int start, int max, qboolean create) {
     return i;
 }
 
-int SV_ModelIndex(char* name) {
+int SV_ModelIndex(const char* name) {
     return SV_FindIndex(name, CS_MODELS, MAX_MODELS, kTrue);
 }
 

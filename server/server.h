@@ -203,7 +203,7 @@ extern edict_t* sv_player;
 void SV_FinalMessage(const char* message, qboolean reconnect);
 void SV_DropClient(client_t* drop);
 
-int SV_ModelIndex(char* name);
+int SV_ModelIndex(const char* name);
 int SV_SoundIndex(const char* name);
 int SV_ImageIndex(char* name);
 

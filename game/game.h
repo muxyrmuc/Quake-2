@@ -130,11 +130,11 @@ typedef struct
     void (*error)(char* fmt, ...);
 
     // the *index functions create configstrings and some internal server state
-    int (*modelindex)(char* name);
+    int (*modelindex)(const char* name);
     int (*soundindex)(const char* name);
     int (*imageindex)(char* name);
 
-    void (*setmodel)(edict_t* ent, char* name);
+    void (*setmodel)(edict_t* ent, const char* name);
 
     // collision detection
     trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t* passent, int contentmask);
