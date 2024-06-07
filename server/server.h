@@ -205,7 +205,7 @@ void SV_DropClient(client_t* drop);
 
 int SV_ModelIndex(const char* name);
 int SV_SoundIndex(const char* name);
-int SV_ImageIndex(char* name);
+int SV_ImageIndex(const char* name);
 
 void SV_WriteClientdataToMessage(client_t* client, sizebuf_t* msg);
 

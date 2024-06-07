@@ -132,7 +132,7 @@ typedef struct
     // the *index functions create configstrings and some internal server state
     int (*modelindex)(const char* name);
     int (*soundindex)(const char* name);
-    int (*imageindex)(char* name);
+    int (*imageindex)(const char* name);
 
     void (*setmodel)(edict_t* ent, const char* name);
 

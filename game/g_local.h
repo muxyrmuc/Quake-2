@@ -228,11 +228,11 @@ typedef struct gitem_s {
     const char* pickup_sound;
     const char* world_model;
     int world_model_flags;
-    char* view_model;
+    const char* view_model;
 
     // client side info
-    char* icon;
-    char* pickup_name;  // for printing on pickup
+    const char* icon;
+    const char* pickup_name;  // for printing on pickup
     int count_width;    // number of digits to display by icon
 
     int quantity;  // for ammo how much, for weapons how much is used per shot
@@ -693,7 +693,7 @@ qboolean FacingIdeal(edict_t* self);
 //
 // g_weapon.c
 //
-void ThrowDebris(edict_t* self, char* modelname, float speed, vec3_t origin);
+void ThrowDebris(edict_t* self, const char* modelname, float speed, vec3_t origin);
 qboolean fire_hit(edict_t* self, vec3_t aim, int damage, int kick);
 void fire_bullet(edict_t* self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int mod);
 void fire_shotgun(edict_t* self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod);

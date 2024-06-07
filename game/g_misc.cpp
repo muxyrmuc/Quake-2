@@ -253,7 +253,7 @@ void debris_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int damage
     G_FreeEdict(self);
 }
 
-void ThrowDebris(edict_t* self, char* modelname, float speed, vec3_t origin) {
+void ThrowDebris(edict_t* self, const char* modelname, float speed, vec3_t origin) {
     edict_t* chunk;
     vec3_t v;
 

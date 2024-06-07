@@ -66,7 +66,7 @@ int SV_SoundIndex(const char* name) {
     return SV_FindIndex(name, CS_SOUNDS, MAX_SOUNDS, kTrue);
 }
 
-int SV_ImageIndex(char* name) {
+int SV_ImageIndex(const char* name) {
     return SV_FindIndex(name, CS_IMAGES, MAX_IMAGES, kTrue);
 }
 
