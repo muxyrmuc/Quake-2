@@ -158,7 +158,7 @@ void Draw_StretchPic(int x, int y, int w, int h, char* pic) {
 Draw_Pic
 =============
 */
-void Draw_Pic(int x, int y, char* pic) {
+void Draw_Pic(int x, int y, const char* pic) {
     image_t* gl;
 
     gl = Draw_FindPic(pic);

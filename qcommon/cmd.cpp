@@ -82,7 +82,7 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddText(char* text) {
+void Cbuf_AddText(const char* text) {
     int l;
 
     l = strlen(text);
