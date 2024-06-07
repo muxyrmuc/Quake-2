@@ -245,5 +245,5 @@ typedef struct
 } game_export_t;
 
 extern "C" {
-    __declspec(dllexport) game_export_t* GetGameApi(game_import_t* import);
+    game_export_t* GetGameApi(game_import_t* import);
 }

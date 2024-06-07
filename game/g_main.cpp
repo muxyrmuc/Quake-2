@@ -104,7 +104,7 @@ and global variables
 */
 extern "C" {
 
-__declspec(dllexport) game_export_t* GetGameAPI(game_import_t* import) {
+game_export_t* GetGameAPI(game_import_t* import) {
     gi = *import;
 
     globals.apiversion = GAME_API_VERSION;
