@@ -370,14 +370,6 @@ qboolean GLimp_InitGL(void) {
     }
 
     /*
-    ** figure out if we're running on a minidriver or not
-    */
-    if (strstr(gl_driver->string, "opengl32") != 0)
-        glw_state.minidriver = kFalse;
-    else
-        glw_state.minidriver = kTrue;
-
-    /*
     ** Get a DC for the specified window
     */
     if (glw_state.hDC != NULL)
@@ -388,37 +380,25 @@ qboolean GLimp_InitGL(void) {
         return kFalse;
     }
 
-    if (glw_state.minidriver) {
-        if ((pixelformat = qwglChoosePixelFormat(glw_state.hDC, &pfd)) == 0) {
-            ri.Con_Printf(PRINT_ALL, "GLimp_Init() - qwglChoosePixelFormat failed\n");
-            return kFalse;
-        }
-        if (qwglSetPixelFormat(glw_state.hDC, pixelformat, &pfd) == FALSE) {
-            ri.Con_Printf(PRINT_ALL, "GLimp_Init() - qwglSetPixelFormat failed\n");
-            return kFalse;
-        }
-        qwglDescribePixelFormat(glw_state.hDC, pixelformat, sizeof(pfd), &pfd);
-    } else {
-        if ((pixelformat = ChoosePixelFormat(glw_state.hDC, &pfd)) == 0) {
-            ri.Con_Printf(PRINT_ALL, "GLimp_Init() - ChoosePixelFormat failed\n");
-            return kFalse;
-        }
-        if (SetPixelFormat(glw_state.hDC, pixelformat, &pfd) == FALSE) {
-            ri.Con_Printf(PRINT_ALL, "GLimp_Init() - SetPixelFormat failed\n");
-            return kFalse;
-        }
-        DescribePixelFormat(glw_state.hDC, pixelformat, sizeof(pfd), &pfd);
+    if ((pixelformat = ChoosePixelFormat(glw_state.hDC, &pfd)) == 0) {
+        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - ChoosePixelFormat failed\n");
+        return kFalse;
+    }
+    if (SetPixelFormat(glw_state.hDC, pixelformat, &pfd) == FALSE) {
+        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - SetPixelFormat failed\n");
+        return kFalse;
+    }
+    DescribePixelFormat(glw_state.hDC, pixelformat, sizeof(pfd), &pfd);
 
-        if (!(pfd.dwFlags & PFD_GENERIC_ACCELERATED)) {
-            extern cvar_t* gl_allow_software;
+    if (!(pfd.dwFlags & PFD_GENERIC_ACCELERATED)) {
+        extern cvar_t* gl_allow_software;
 
-            if (gl_allow_software->value)
-                glw_state.mcd_accelerated = kTrue;
-            else
-                glw_state.mcd_accelerated = kFalse;
-        } else {
+        if (gl_allow_software->value)
             glw_state.mcd_accelerated = kTrue;
-        }
+        else
+            glw_state.mcd_accelerated = kFalse;
+    } else {
+        glw_state.mcd_accelerated = kTrue;
     }
 
     /*
