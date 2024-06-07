@@ -949,7 +949,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char* va(char* format, ...) {
+char* va(const char* format, ...) {
     va_list argptr;
     static char string[1024];
 
@@ -969,7 +969,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char* COM_Parse(char** data_p) {
+const char* COM_Parse(char** data_p) {
     int c;
     int len;
     char* data;

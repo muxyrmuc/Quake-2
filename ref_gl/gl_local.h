@@ -301,7 +301,7 @@ char	*va(char *format, ...);
 
 void COM_StripExtension(char* in, char* out);
 
-void Draw_GetPicSize(int* w, int* h, char* name);
+void Draw_GetPicSize(int* w, int* h, const char* name);
 void Draw_Pic(int x, int y, const char* name);
 void Draw_StretchPic(int x, int y, int w, int h, char* name);
 void Draw_Char(int x, int y, int c);

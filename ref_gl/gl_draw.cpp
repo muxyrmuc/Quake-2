@@ -87,7 +87,7 @@ void Draw_Char(int x, int y, int num) {
 Draw_FindPic
 =============
 */
-image_t* Draw_FindPic(char* name) {
+image_t* Draw_FindPic(const char* name) {
     image_t* gl;
     char fullname[MAX_QPATH];
 
@@ -105,7 +105,7 @@ image_t* Draw_FindPic(char* name) {
 Draw_GetPicSize
 =============
 */
-void Draw_GetPicSize(int* w, int* h, char* pic) {
+void Draw_GetPicSize(int* w, int* h, const char* pic) {
     image_t* gl;
 
     gl = Draw_FindPic(pic);
