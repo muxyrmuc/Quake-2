@@ -62,7 +62,7 @@ int SV_ModelIndex(char* name) {
     return SV_FindIndex(name, CS_MODELS, MAX_MODELS, kTrue);
 }
 
-int SV_SoundIndex(char* name) {
+int SV_SoundIndex(const char* name) {
     return SV_FindIndex(name, CS_SOUNDS, MAX_SOUNDS, kTrue);
 }
 

@@ -58,7 +58,7 @@ PF_dprintf
 Debug print to server console
 ===============
 */
-void PF_dprintf(char* fmt, ...) {
+void PF_dprintf(const char* fmt, ...) {
     char msg[1024];
     va_list argptr;
 
@@ -76,7 +76,7 @@ PF_cprintf
 Print to a single client
 ===============
 */
-void PF_cprintf(edict_t* ent, int level, char* fmt, ...) {
+void PF_cprintf(edict_t* ent, int level, const char* fmt, ...) {
     char msg[1024];
     va_list argptr;
     int n;

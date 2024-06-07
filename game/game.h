@@ -115,8 +115,8 @@ typedef struct
 {
     // special messages
     void (*bprintf)(int printlevel, const char* fmt, ...);
-    void (*dprintf)(char* fmt, ...);
-    void (*cprintf)(edict_t* ent, int printlevel, char* fmt, ...);
+    void (*dprintf)(const char* fmt, ...);
+    void (*cprintf)(edict_t* ent, int printlevel, const char* fmt, ...);
     void (*centerprintf)(edict_t* ent, char* fmt, ...);
     void (*sound)(edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
     void (*positioned_sound)(vec3_t origin, edict_t* ent, int channel, int soundinedex, float volume, float attenuation, float timeofs);
@@ -131,7 +131,7 @@ typedef struct
 
     // the *index functions create configstrings and some internal server state
     int (*modelindex)(char* name);
-    int (*soundindex)(char* name);
+    int (*soundindex)(const char* name);
     int (*imageindex)(char* name);
 
     void (*setmodel)(edict_t* ent, char* name);

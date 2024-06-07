@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "q_shared.h"
 
+#include <cstddef>
+
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
 // because we define the full size ones in this file
@@ -218,7 +220,7 @@ typedef struct
 #define WEAP_BFG 11
 
 typedef struct gitem_s {
-    char* classname;  // spawning name
+    const char* classname;  // spawning name
     qboolean (*pickup)(struct edict_s* ent, struct edict_s* other);
     void (*use)(struct edict_s* ent, struct gitem_s* item);
     void (*drop)(struct edict_s* ent, struct gitem_s* item);
@@ -480,10 +482,10 @@ extern int meansOfDeath;
 
 extern edict_t* g_edicts;
 
-#define FOFS(x) (int)&(((edict_t*)0)->x)
-#define STOFS(x) (int)&(((spawn_temp_t*)0)->x)
-#define LLOFS(x) (int)&(((level_locals_t*)0)->x)
-#define CLOFS(x) (int)&(((gclient_t*)0)->x)
+#define FOFS(x) (offsetof(edict_t, x))
+#define STOFS(x) (offsetof(spawn_temp_t), x)
+#define LLOFS(x) (offsetof(level_locals_t, x))
+#define CLOFS(x) (offsetof(gclient_t, x))
 
 #define random() ((rand() & 0x7fff) / ((float)0x7fff))
 #define crandom() (2.0 * (random() - 0.5))
@@ -580,7 +582,7 @@ void Cmd_Score_f(edict_t* ent);
 void PrecacheItem(gitem_t* it);
 void InitItems(void);
 void SetItemNames(void);
-gitem_t* FindItem(char* pickup_name);
+gitem_t* FindItem(const char* pickup_name);
 gitem_t* FindItemByClassname(char* classname);
 #define ITEM_INDEX(x) ((x)-itemlist)
 edict_t* Drop_Item(edict_t* ent, gitem_t* item);
@@ -972,7 +974,7 @@ struct edict_s {
     // only used locally in game, not by server
     //
     char* message;
-    char* classname;
+    const char* classname;
     int spawnflags;
 
     float timestamp;
