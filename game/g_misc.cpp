@@ -119,7 +119,7 @@ void gib_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int damage, v
     G_FreeEdict(self);
 }
 
-void ThrowGib(edict_t* self, char* gibname, int damage, int type) {
+void ThrowGib(edict_t* self, const char* gibname, int damage, int type) {
     edict_t* gib;
     vec3_t vd;
     vec3_t origin;

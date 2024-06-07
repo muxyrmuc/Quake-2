@@ -669,7 +669,7 @@ void M_CheckGround(edict_t* ent);
 //
 void ThrowHead(edict_t* self, char* gibname, int damage, int type);
 void ThrowClientHead(edict_t* self, int damage);
-void ThrowGib(edict_t* self, char* gibname, int damage, int type);
+void ThrowGib(edict_t* self, const char* gibname, int damage, int type);
 void BecomeExplosion1(edict_t* self);
 
 //
@@ -735,7 +735,7 @@ void player_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int damage
 // g_svcmds.c
 //
 void ServerCommand(void);
-qboolean SV_FilterPacket(char* from);
+qboolean SV_FilterPacket(const char* from);
 
 //
 // p_view.c
