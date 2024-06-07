@@ -503,11 +503,11 @@ void CL_Record_f(void);
 //
 // cl_parse.c
 //
-extern char* svc_strings[256];
+extern const char* svc_strings[256];
 
 void CL_ParseServerMessage(void);
 void CL_LoadClientinfo(clientinfo_t* ci, const char* s);
-void SHOWNET(char* s);
+void SHOWNET(const char* s);
 void CL_ParseClientinfo(int player);
 void CL_Download_f(void);
 
