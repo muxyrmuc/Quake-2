@@ -351,7 +351,7 @@ CL_LoadClientinfo
 */
 void CL_LoadClientinfo(clientinfo_t* ci, const char* s) {
     int i;
-    char* t;
+    const char* t;
     char model_name[MAX_QPATH];
     char skin_name[MAX_QPATH];
     char model_filename[MAX_QPATH];
@@ -381,6 +381,7 @@ void CL_LoadClientinfo(clientinfo_t* ci, const char* s) {
         ci->skin = re.RegisterSkin(skin_filename);
         ci->icon = re.RegisterPic(ci->iconname);
     } else {
+        char* t;
         // isolate the model name
         strcpy(model_name, s);
         t = strstr(model_name, "/");
