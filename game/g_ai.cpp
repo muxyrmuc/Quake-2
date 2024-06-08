@@ -445,7 +445,7 @@ qboolean FindTarget(edict_t* self) {
         }
 
         if (r == RANGE_NEAR) {
-            if (client->show_hostile < level.time && !infront(self, client)) {
+            if (static_cast<float>(client->show_hostile) < level.time && !infront(self, client)) {
                 return kFalse;
             }
         } else if (r == RANGE_MID) {
