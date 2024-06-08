@@ -376,6 +376,8 @@ void ED_ParseField(char* key, const char* value, edict_t* ent) {
                     break;
                 case F_IGNORE:
                     break;
+                default:  // TODO: shouldn't we fail here?
+                    break;
             }
             return;
         }
