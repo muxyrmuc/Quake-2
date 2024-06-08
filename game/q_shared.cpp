@@ -1224,7 +1224,7 @@ qboolean Info_Validate(char* s) {
 void Info_SetValueForKey(char* s, const char* key, const char* value) {
     char newi[MAX_INFO_STRING], *v;
     int c;
-    int maxsize = MAX_INFO_STRING;
+    std::size_t maxsize = MAX_INFO_STRING;
 
     if (strstr(key, "\\") || strstr(value, "\\")) {
         Com_Printf("Can't use keys or values with a \\\n");

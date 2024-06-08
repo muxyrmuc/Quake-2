@@ -338,7 +338,7 @@ typedef struct
     int lip;
     int distance;
     int height;
-    char* noise;
+    const char* noise;
     float pausetime;
     char* item;
     char* gravity;
