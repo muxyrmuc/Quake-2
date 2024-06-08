@@ -117,7 +117,7 @@ typedef struct
     void (*bprintf)(int printlevel, const char* fmt, ...);
     void (*dprintf)(const char* fmt, ...);
     void (*cprintf)(edict_t* ent, int printlevel, const char* fmt, ...);
-    void (*centerprintf)(edict_t* ent, char* fmt, ...);
+    void (*centerprintf)(edict_t* ent, const char* fmt, ...);
     void (*sound)(edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
     void (*positioned_sound)(vec3_t origin, edict_t* ent, int channel, int soundinedex, float volume, float attenuation, float timeofs);
 

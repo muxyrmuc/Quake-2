@@ -608,7 +608,7 @@ void SpawnEntities(char* mapname, char* entities, char* spawnpoint) {
 
 #endif
 
-char* single_statusbar =
+const char* single_statusbar =
     "yb	-24 "
 
     // health

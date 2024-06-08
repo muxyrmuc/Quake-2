@@ -104,7 +104,7 @@ PF_centerprintf
 centerprint to a single client
 ===============
 */
-void PF_centerprintf(edict_t* ent, char* fmt, ...) {
+void PF_centerprintf(edict_t* ent, const char* fmt, ...) {
     char msg[1024];
     va_list argptr;
     int n;
