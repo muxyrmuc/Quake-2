@@ -733,7 +733,6 @@ void CL_PingServers_f(void) {
     char name[32];
     const char* adrstring;
     cvar_t* noudp;
-    cvar_t* noipx;
 
     NET_Config(kTrue);  // allow remote
 
@@ -743,13 +742,6 @@ void CL_PingServers_f(void) {
     noudp = Cvar_Get("noudp", "0", CVAR_NOSET);
     if (!noudp->value) {
         adr.type = NA_BROADCAST;
-        adr.port = BigShort(PORT_SERVER);
-        Netchan_OutOfBandPrint(NS_CLIENT, adr, va("info %i", PROTOCOL_VERSION));
-    }
-
-    noipx = Cvar_Get("noipx", "0", CVAR_NOSET);
-    if (!noipx->value) {
-        adr.type = NA_BROADCAST_IPX;
         adr.port = BigShort(PORT_SERVER);
         Netchan_OutOfBandPrint(NS_CLIENT, adr, va("info %i", PROTOCOL_VERSION));
     }
