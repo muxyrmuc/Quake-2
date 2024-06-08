@@ -1221,7 +1221,7 @@ qboolean Info_Validate(char* s) {
     return kTrue;
 }
 
-void Info_SetValueForKey(char* s, const char* key, char* value) {
+void Info_SetValueForKey(char* s, const char* key, const char* value) {
     char newi[MAX_INFO_STRING], *v;
     int c;
     int maxsize = MAX_INFO_STRING;

@@ -665,7 +665,7 @@ const char* single_statusbar =
     "	pic	11 "
     "endif ";
 
-char* dm_statusbar =
+const char* dm_statusbar =
     "yb	-24 "
 
     // health

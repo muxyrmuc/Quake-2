@@ -160,7 +160,7 @@ typedef struct
     void (*WriteShort)(int c);
     void (*WriteLong)(int c);
     void (*WriteFloat)(float f);
-    void (*WriteString)(char* s);
+    void (*WriteString)(const char* s);
     void (*WritePosition)(vec3_t pos);  // some fractional bits
     void (*WriteDir)(vec3_t pos);       // single byte encoded, very coarse
     void (*WriteAngle)(float f);

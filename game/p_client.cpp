@@ -188,8 +188,8 @@ qboolean IsNeutral(edict_t* ent) {
 
 void ClientObituary(edict_t* self, edict_t* inflictor, edict_t* attacker) {
     int mod;
-    char* message;
-    char* message2;
+    const char* message;
+    const char* message2;
     qboolean ff;
 
     if (coop->value && attacker->client)
@@ -751,7 +751,7 @@ edict_t* SelectDeathmatchSpawnPoint(void) {
 edict_t* SelectCoopSpawnPoint(edict_t* ent) {
     int index;
     edict_t* spot = NULL;
-    char* target;
+    const char* target;
 
     index = ent->client - game.clients;
 

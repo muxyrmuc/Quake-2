@@ -977,7 +977,7 @@ struct edict_s {
 
     float angle;  // set in qe3, -1 = up, -2 = down
     char* target;
-    char* targetname;
+    const char* targetname;
     char* killtarget;
     char* team;
     char* pathtarget;

@@ -201,7 +201,7 @@ mframe_t actor_frames_taunt[] =
         { ai_turn, 0, NULL }};
 mmove_t actor_move_taunt = {FRAME_taunt01, FRAME_taunt17, actor_frames_taunt, actor_run};
 
-char* messages[] =
+const char* messages[] =
     {
         "Watch it",
         "#$@*&",
@@ -222,7 +222,7 @@ void actor_pain(edict_t* self, edict_t* other, float kick, int damage) {
 
     if ((other->client) && (random() < 0.4)) {
         vec3_t v;
-        char* name;
+        const char* name;
 
         VectorSubtract(other->s.origin, self->s.origin, v);
         self->ideal_yaw = vectoyaw(v);
