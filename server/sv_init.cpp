@@ -29,7 +29,7 @@ SV_FindIndex
 
 ================
 */
-int SV_FindIndex(char* name, int start, int max, qboolean create) {
+int SV_FindIndex(const char* name, int start, int max, qboolean create) {
     int i;
 
     if (!name || !name[0])

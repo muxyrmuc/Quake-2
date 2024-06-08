@@ -981,10 +981,6 @@ static void MouseSpeedFunc(void* unused) {
     Cvar_SetValue("sensitivity", s_options_sensitivity_slider.curvalue / 2.0F);
 }
 
-static void NoAltTabFunc(void* unused) {
-    Cvar_SetValue("win_noalttab", s_options_noalttab_box.curvalue);
-}
-
 static float ClampCvar(float min, float max, float value) {
     if (value < min) return min;
     if (value > max) return max;
@@ -1211,14 +1207,7 @@ void Options_MenuInit(void) {
     s_options_crosshair_box.generic.name = "crosshair";
     s_options_crosshair_box.generic.callback = CrosshairFunc;
     s_options_crosshair_box.itemnames = crosshair_names;
-    /*
-            s_options_noalttab_box.generic.type = MTYPE_SPINCONTROL;
-            s_options_noalttab_box.generic.x	= 0;
-            s_options_noalttab_box.generic.y	= 110;
-            s_options_noalttab_box.generic.name	= "disable alt-tab";
-            s_options_noalttab_box.generic.callback = NoAltTabFunc;
-            s_options_noalttab_box.itemnames = yesno_names;
-    */
+
     s_options_joystick_box.generic.type = MTYPE_SPINCONTROL;
     s_options_joystick_box.generic.x = 0;
     s_options_joystick_box.generic.y = 120;
