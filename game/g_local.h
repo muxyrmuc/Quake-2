@@ -293,7 +293,7 @@ typedef struct
 
     // intermission state
     float intermissiontime;  // time the intermission was started
-    char* changemap;
+    const char* changemap;
     int exitintermission;
     vec3_t intermission_origin;
     vec3_t intermission_angle;
@@ -1024,7 +1024,7 @@ struct edict_s {
 
     float powerarmor_time;
 
-    char* map;  // target_changelevel
+    const char* map;  // target_changelevel
 
     int viewheight;  // height above origin where eyesight is determined
     int takedamage;

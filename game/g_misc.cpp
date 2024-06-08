@@ -21,6 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 
+namespace {
+
+char message_empty[] = "";
+
+}
+
+
 /*QUAKED func_group (0 0 0) ?
 Used to group brushes together just for editor convenience.
 */
@@ -1439,7 +1446,7 @@ void target_string_use(edict_t* self, edict_t* other, edict_t* activator) {
 
 void SP_target_string(edict_t* self) {
     if (!self->message)
-        self->message = "";  // TODO: self->message is mutable
+        self->message = ::message_empty;
     self->use = target_string_use;
 }
 
