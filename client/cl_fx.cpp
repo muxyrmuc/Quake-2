@@ -1900,7 +1900,7 @@ void CL_BfgParticles(entity_t* ent) {
     int i;
     cparticle_t* p;
     float angle;
-    float sr, sp, sy, cr, cp, cy;
+    float sp, sy, cp, cy;
     vec3_t forward;
     float dist = 64;
     vec3_t v;
@@ -1919,9 +1919,6 @@ void CL_BfgParticles(entity_t* ent) {
         angle = ltime * avelocities[i][1];
         sp = sin(angle);
         cp = cos(angle);
-        angle = ltime * avelocities[i][2];
-        sr = sin(angle);
-        cr = cos(angle);
 
         forward[0] = cp * cy;
         forward[1] = cp * sy;

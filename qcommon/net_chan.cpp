@@ -279,8 +279,10 @@ qboolean Netchan_Process(netchan_t* chan, sizebuf_t* msg) {
     sequence_ack = MSG_ReadLong(msg);
 
     // read the qport if we are a server
-    if (chan->sock == NS_SERVER)
+    if (chan->sock == NS_SERVER) {
         qport = MSG_ReadShort(msg);
+        (void)qport;
+    }
 
     reliable_message = sequence >> 31;
     reliable_ack = sequence_ack >> 31;

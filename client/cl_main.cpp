@@ -211,7 +211,7 @@ void CL_Record_f(void) {
     // configstrings
     for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
         if (cl.configstrings[i][0]) {
-            if (buf.cursize + strlen(cl.configstrings[i]) + 32 > buf.maxsize) {  // write it out
+            if (buf.cursize + static_cast<int>(strlen(cl.configstrings[i])) + 32 > buf.maxsize) {  // write it out
                 len = LittleLong(buf.cursize);
                 fwrite(&len, 4, 1, cls.demofile);
                 fwrite(buf.data, buf.cursize, 1, cls.demofile);

@@ -1599,13 +1599,14 @@ void CL_ProcessSustain() {
     int i;
 
     for (i = 0, s = cl_sustains; i < MAX_SUSTAINS; i++, s++) {
-        if (s->id)
+        if (s->id) {
             if ((s->endtime >= cl.time) && (cl.time >= s->nextthink)) {
                 //				Com_Printf ("think %d %d %d\n", cl.time, s->nextthink, s->thinkinterval);
                 s->think(s);
             } else if (s->endtime < cl.time) {
                 s->id = 0;
             }
+        }
     }
 }
 
