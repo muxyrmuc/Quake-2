@@ -71,7 +71,7 @@ FindItemByClassname
 
 ===============
 */
-gitem_t* FindItemByClassname(char* classname) {
+gitem_t* FindItemByClassname(const char* classname) {
     int i;
     gitem_t* it;
 
