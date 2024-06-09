@@ -213,7 +213,6 @@ WinMain
 HINSTANCE global_hInstance;
 
 int main(int ac, char** av /*HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow*/) {
-    MSG msg;
     int time, oldtime, newtime;
 
     global_hInstance = hInstance;
@@ -231,21 +230,19 @@ int main(int ac, char** av /*HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
 
-        while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-            if (!GetMessage(&msg, NULL, 0, 0))
-                Com_Quit();
-            sys_msg_time = msg.time;
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                Sys_Quit();
+            }
+            sys_msg_time = event.common.timestamp;
+            MainWndProc();
         }
 
         do {
             newtime = Sys_Milliseconds();
             time = newtime - oldtime;
         } while (time < 1);
-        //			Con_Printf ("time:%5.2f - %5.2f = %5.2f\n", newtime, oldtime, time);
-
-        //	_controlfp( ~( _EM_ZERODIVIDE /*| _EM_INVALID*/ ), _MCW_EM );
 
         // TODO: commented because _MCW_PC is not supported for x86-64
         // _controlfp( _PC_24, _MCW_PC );
