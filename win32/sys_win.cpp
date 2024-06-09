@@ -27,8 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <thread>
 
+#include "../game/game.h"
+
 #include <SDL_messagebox.h>
 #include <SDL_clipboard.h>
+#include <SDL_events.h>
 
 #define MINIMUM_WIN_MEMORY 0x0a00000
 #define MAXIMUM_WIN_MEMORY 0x1000000
@@ -115,14 +118,14 @@ Send Key_Event calls
 ================
 */
 void Sys_SendKeyEvents(void) {
-    MSG msg;
-
-    while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-        if (!GetMessage(&msg, NULL, 0, 0))
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
             Sys_Quit();
-        sys_msg_time = msg.time;
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        }
+        sys_msg_time = event.common.timestamp;
+
+        MainWndProc();
     }
 
     // grab frame time
@@ -166,8 +169,8 @@ Sys_AppActivate
 =================
 */
 void Sys_AppActivate(void) {
-    ShowWindow(cl_hwnd, SW_RESTORE);
-    SetForegroundWindow(cl_hwnd);
+    SDL_ShowWindow(cl_hwnd);
+    SDL_RaiseWindow(cl_hwnd);
 }
 
 /*
@@ -178,17 +181,13 @@ GAME DLL
 ========================================================================
 */
 
-static HINSTANCE game_library;
-
 /*
 =================
 Sys_UnloadGame
 =================
 */
 void Sys_UnloadGame(void) {
-    if (!FreeLibrary(game_library))
-        Com_Error(ERR_FATAL, "FreeLibrary failed for game library");
-    game_library = NULL;
+    // don't think we need FreeLibrary anymore
 }
 
 /*
@@ -199,58 +198,8 @@ Loads the game dll
 =================
 */
 void* Sys_GetGameAPI(void* parms) {
-    void* (*GetGameAPI)(void*);
-    char name[MAX_OSPATH];
-    char* path;
-    char cwd[MAX_OSPATH];
-
-    const char* gamename = "game.dll";
-
-#ifdef NDEBUG
-    const char* debugdir = "release";
-#else
-    const char* debugdir = "debug";
-#endif
-
-    if (game_library)
-        Com_Error(ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
-
-    // check the current debug directory first for development purposes
-    _getcwd(cwd, sizeof(cwd));
-    Com_sprintf(name, sizeof(name), "%s/%s/%s", cwd, debugdir, gamename);
-    game_library = LoadLibrary(name);
-    if (game_library) {
-        Com_DPrintf("LoadLibrary (%s)\n", name);
-    } else {
-        // check the current directory for other development purposes
-        Com_sprintf(name, sizeof(name), "%s/%s", cwd, gamename);
-        game_library = LoadLibrary(name);
-        if (game_library) {
-            Com_DPrintf("LoadLibrary (%s)\n", name);
-        } else {
-            // now run through the search paths
-            path = NULL;
-            while (1) {
-                path = FS_NextPath(path);
-                if (!path)
-                    return NULL;  // couldn't find one anywhere
-                Com_sprintf(name, sizeof(name), "%s/%s", path, gamename);
-                game_library = LoadLibrary(name);
-                if (game_library) {
-                    Com_DPrintf("LoadLibrary (%s)\n", name);
-                    break;
-                }
-            }
-        }
-    }
-
-    GetGameAPI = (decltype(GetGameAPI))GetProcAddress(game_library, "GetGameAPI");
-    if (!GetGameAPI) {
-        Sys_UnloadGame();
-        return NULL;
-    }
-
-    return GetGameAPI(parms);
+    // don't think we need LoadLibrary anymore
+    return GetGameApi(static_cast<game_import_t*>(parms));
 }
 
 //=======================================================================

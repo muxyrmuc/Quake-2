@@ -50,7 +50,7 @@ viddef_t viddef;           // global video state; used by other modules
 HINSTANCE reflib_library;  // Handle to refresh DLL
 qboolean reflib_active = kFalse;
 
-HWND cl_hwnd;  // Main window handle for life of program
+SDL_Window* cl_hwnd;  // Main window handle for life of program; used to be HWND
 
 #define VID_NUM_MODES (sizeof(vid_modes) / sizeof(vid_modes[0]))
 
