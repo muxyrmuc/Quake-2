@@ -75,8 +75,9 @@ qboolean NET_CompareAdr(netadr_t a, netadr_t b) {
     if (a.type == NA_IP) {
         if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
             return kTrue;
-        return kFalse;
     }
+
+    return kFalse;
 }
 
 /*
@@ -96,8 +97,9 @@ qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b) {
     if (a.type == NA_IP) {
         if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
             return kTrue;
-        return kFalse;
     }
+
+    return kFalse;
 }
 
 char* NET_AdrToString(netadr_t a) {
@@ -244,37 +246,32 @@ qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message
     if (NET_GetLoopPacket(sock, net_from, net_message))
         return kTrue;
 
-    for (protocol = 0; protocol < 2; protocol++) {
-        if (protocol == 0)
-            net_socket = ip_sockets[sock];
-        else
-            net_socket = ipx_sockets[sock];
+    net_socket = ip_sockets[sock];
 
-        if (!net_socket)
-            continue;
+    if (!net_socket)
+        return kFalse;
 
-        fromlen = sizeof(from);
-        ret = recvfrom(net_socket, reinterpret_cast<char*>(net_message->data), net_message->maxsize, 0, (struct sockaddr*)&from, &fromlen);
-        if (ret == -1) {
-            err = WSAGetLastError();
+    fromlen = sizeof(from);
+    ret = recvfrom(net_socket, reinterpret_cast<char*>(net_message->data), net_message->maxsize, 0, (struct sockaddr*)&from, &fromlen);
+    if (ret == -1) {
+        err = WSAGetLastError();
 
-            if (err == WSAEWOULDBLOCK)
-                continue;
-            
-            Com_Error(ERR_DROP, "NET_GetPacket: %s", NET_ErrorString());
-            continue;
-        }
+        if (err == WSAEWOULDBLOCK)
+            return kFalse;
 
-        SockadrToNetadr(&from, net_from);
-
-        if (ret == net_message->maxsize) {
-            Com_Printf("Oversize packet from %s\n", NET_AdrToString(*net_from));
-            continue;
-        }
-
-        net_message->cursize = ret;
-        return kTrue;
+        Com_Error(ERR_DROP, "NET_GetPacket: %s", NET_ErrorString());
+        return kFalse;
     }
+
+    SockadrToNetadr(&from, net_from);
+
+    if (ret == net_message->maxsize) {
+        Com_Printf("Oversize packet from %s\n", NET_AdrToString(*net_from));
+        return kFalse;
+    }
+
+    net_message->cursize = ret;
+    return kTrue;
 
     return kFalse;
 }
@@ -314,7 +311,7 @@ void NET_SendPacket(netsrc_t sock, int length, void* data, netadr_t to) {
             return;
 
         // some PPP links dont allow broadcasts
-        if ((err == WSAEADDRNOTAVAIL) && ((to.type == NA_BROADCAST) || (to.type == NA_BROADCAST_IPX)))
+        if ((err == WSAEADDRNOTAVAIL) && (to.type == NA_BROADCAST))
             return;
 
         if (err == WSAEADDRNOTAVAIL) {
