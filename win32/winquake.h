@@ -36,7 +36,7 @@ extern SDL_Window* cl_hwnd;
 extern bool ActiveApp;
 extern bool Minimized;
 
-void IN_Activate(qboolean active);
+void IN_Activate(bool active);
 void IN_MouseEvent(int mstate);
 
 extern int window_center_x, window_center_y;
