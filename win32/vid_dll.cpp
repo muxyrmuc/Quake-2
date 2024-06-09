@@ -205,18 +205,18 @@ int MapKey(int key) {
 }
 
 void AppActivate(BOOL fActive, BOOL minimize) {
-    Minimized = minimize ? kTrue : kFalse;
+    Minimized = minimize ? true : false;
 
     Key_ClearStates();
 
     // we don't want to act like we're active if we're minimized
     if (fActive && !Minimized)
-        ActiveApp = kTrue;
+        ActiveApp = true;
     else
-        ActiveApp = kFalse;
+        ActiveApp = false;
 
     // minimize/restore mouse-capture on demand
-    if (kFalse == ActiveApp) {
+    if (false == ActiveApp) {
         IN_Activate(kFalse);
         CDAudio_Activate(kFalse);
         S_Activate(kFalse);
@@ -327,7 +327,7 @@ LONG WINAPI MainWndProc(
                 Cvar_SetValue("vid_ypos", yPos + r.top);
                 vid_xpos->modified = kFalse;
                 vid_ypos->modified = kFalse;
-                if (kFalse != ActiveApp)
+                if (false != ActiveApp)
                     IN_Activate(kTrue);
             }
         }

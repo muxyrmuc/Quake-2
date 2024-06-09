@@ -37,8 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAXIMUM_WIN_MEMORY 0x1000000
 
 int starttime;
-qboolean ActiveApp;
-qboolean Minimized;
+bool ActiveApp;
+bool Minimized;
 
 unsigned sys_msg_time;
 unsigned sys_frame_time;
