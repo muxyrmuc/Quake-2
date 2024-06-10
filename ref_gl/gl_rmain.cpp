@@ -831,44 +831,6 @@ void R_SetGL2D(void) {
     qglColor4f(1, 1, 1, 1);
 }
 
-static void GL_DrawColoredStereoLinePair(float r, float g, float b, float y) {
-    qglColor3f(r, g, b);
-    qglVertex2f(0, y);
-    qglVertex2f(vid.width, y);
-    qglColor3f(0, 0, 0);
-    qglVertex2f(0, y + 1);
-    qglVertex2f(vid.width, y + 1);
-}
-
-static void GL_DrawStereoPattern(void) {
-    int i;
-
-    if (!(gl_config.renderer & GL_RENDERER_INTERGRAPH))
-        return;
-
-    if (!gl_state.stereo_enabled)
-        return;
-
-    R_SetGL2D();
-
-    qglDrawBuffer(GL_BACK_LEFT);
-
-    for (i = 0; i < 20; i++) {
-        qglBegin(GL_LINES);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 0);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 2);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 4);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 6);
-        GL_DrawColoredStereoLinePair(0, 1, 0, 8);
-        GL_DrawColoredStereoLinePair(1, 1, 0, 10);
-        GL_DrawColoredStereoLinePair(1, 1, 0, 12);
-        GL_DrawColoredStereoLinePair(0, 1, 0, 14);
-        qglEnd();
-
-        GLimp_EndFrame();
-    }
-}
-
 /*
 ====================
 R_SetLightLevel
@@ -1213,13 +1175,6 @@ int R_Init(void* hinstance, void* hWnd) {
 #endif
 
     GL_SetDefaultState();
-
-    /*
-    ** draw our stereo patterns
-    */
-#if 0  // commented out until H3D pays us the money they owe us
-	GL_DrawStereoPattern();
-#endif
 
     GL_InitImages();
     Mod_Init();

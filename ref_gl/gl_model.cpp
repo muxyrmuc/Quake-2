@@ -158,7 +158,7 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t* Mod_ForName(char* name, qboolean crash) {
+model_t* Mod_ForName(const char* name, qboolean crash) {
     model_t* mod;
     unsigned* buf;
     int i;
