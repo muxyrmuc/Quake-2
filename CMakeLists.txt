@@ -1,26 +1,27 @@
 cmake_minimum_required(VERSION 2.6)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(quake2)
 
 find_package(SDL2 REQUIRED)
 
-add_library(ref_gl SHARED
-    ref_gl/gl_draw.cpp
-    ref_gl/gl_image.cpp
-    ref_gl/gl_light.cpp
-    ref_gl/gl_mesh.cpp
-    ref_gl/gl_model.cpp
-    ref_gl/gl_rmain.cpp
-    ref_gl/gl_rmisc.cpp
-    ref_gl/gl_rsurf.cpp
-    ref_gl/gl_warp.cpp
-    win32/glw_imp.cpp
-    win32/q_shwin.cpp
-    win32/qgl_win.cpp
-    game/q_shared.cpp)
+#add_library(ref_gl SHARED
+#    ref_gl/gl_draw.cpp
+#    ref_gl/gl_image.cpp
+#    ref_gl/gl_light.cpp
+#    ref_gl/gl_mesh.cpp
+#    ref_gl/gl_model.cpp
+#    ref_gl/gl_rmain.cpp
+#    ref_gl/gl_rmisc.cpp
+#    ref_gl/gl_rsurf.cpp
+#    ref_gl/gl_warp.cpp
+#    win32/glw_imp.cpp
+#    win32/q_shwin.cpp
+#    win32/qgl_win.cpp
+#    game/q_shared.cpp
+#)
 
 add_library(game SHARED
     game/g_ai.cpp
@@ -126,11 +127,22 @@ add_executable(quake2
     win32/in_win.cpp
 )
 
-target_link_libraries(ref_gl ${SDL2_LIBRARIES})
-target_include_directories(ref_gl PRIVATE ${SDL2_INCLUDE_DIRS})
+#target_link_libraries(ref_gl ${SDL2_LIBRARIES})
+#target_include_directories(ref_gl PRIVATE ${SDL2_INCLUDE_DIRS})
 
-target_link_libraries(ref_gl ${SDL2_LIBRARIES})
-target_include_directories(ref_gl PRIVATE ${SDL2_INCLUDE_DIRS})
+target_compile_options(game PRIVATE
+    -Wall
+    -Wextra
+    -Wno-unused-parameter
+    -Wno-unused-but-set-variable
+    -Wno-missing-field-initializers)
+
+target_link_libraries(quake2 ${SDL2_LIBRARIES})
+target_include_directories(quake2 PRIVATE ${SDL2_INCLUDE_DIRS})
+#target_compile_options(quake2 PRIVATE
+#    -Wall
+#    -Wextra
+#    -Wno-unused-parameter)
 
 # Windows-only, required by mciSendCommand, waveOutOpen and others
 #target_link_libraries(quake2 winmm.lib)
