@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "glw_win.h"
 #include "winquake.h"
 
+#define WINDOW_STYLE (WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_VISIBLE)
+
 static qboolean GLimp_SwitchFullscreen(int width, int height);
 qboolean GLimp_InitGL(void);
 

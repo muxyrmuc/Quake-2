@@ -210,12 +210,9 @@ WinMain
 
 ==================
 */
-HINSTANCE global_hInstance;
 
-int main(int ac, char** av /*HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow*/) {
+int main(int ac, char** av) {
     int time, oldtime, newtime;
-
-    global_hInstance = hInstance;
 
     argc = ac;
     argv = av;
