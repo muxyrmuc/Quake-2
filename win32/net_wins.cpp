@@ -21,6 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../qcommon/qcommon.h"
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <errno.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/ioctl.h>
+
 #define MAX_LOOPBACK 4
 
 typedef struct
@@ -124,7 +132,7 @@ idnewt:28000
 192.246.40.70:28000
 =============
 */
-qboolean NET_StringToSockaddr(char* s, struct sockaddr* sadr) {
+qboolean NET_StringToSockaddr(const char* s, struct sockaddr* sadr) {
     struct hostent* h;
     char* colon;
     int val;
@@ -238,7 +246,6 @@ void NET_SendLoopPacket(netsrc_t sock, int length, void* data, netadr_t to) {
 qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message) {
     int ret;
     struct sockaddr from;
-    int fromlen;
     int net_socket;
     int protocol;
     int err;
@@ -251,12 +258,13 @@ qboolean NET_GetPacket(netsrc_t sock, netadr_t* net_from, sizebuf_t* net_message
     if (!net_socket)
         return kFalse;
 
-    fromlen = sizeof(from);
+    socklen_t fromlen = sizeof(from);
+
     ret = recvfrom(net_socket, reinterpret_cast<char*>(net_message->data), net_message->maxsize, 0, (struct sockaddr*)&from, &fromlen);
     if (ret == -1) {
-        err = WSAGetLastError();
+        err = errno;
 
-        if (err == WSAEWOULDBLOCK)
+        if (err == EWOULDBLOCK)
             return kFalse;
 
         Com_Error(ERR_DROP, "NET_GetPacket: %s", NET_ErrorString());
@@ -304,17 +312,17 @@ void NET_SendPacket(netsrc_t sock, int length, void* data, netadr_t to) {
 
     ret = sendto(net_socket, static_cast<char*>(data), length, 0, &addr, sizeof(addr));
     if (ret == -1) {
-        int err = WSAGetLastError();
+        int err = errno;
 
         // wouldblock is silent
-        if (err == WSAEWOULDBLOCK)
+        if (err == EWOULDBLOCK)
             return;
 
         // some PPP links dont allow broadcasts
-        if ((err == WSAEADDRNOTAVAIL) && (to.type == NA_BROADCAST))
+        if ((err == EADDRNOTAVAIL) && (to.type == NA_BROADCAST))
             return;
 
-        if (err == WSAEADDRNOTAVAIL) {
+        if (err == EADDRNOTAVAIL) {
             Com_DPrintf("NET_SendPacket Warning: %s : %s\n", NET_ErrorString(), NET_AdrToString(to));
         } else {
             Com_Error(ERR_DROP, "NET_SendPacket ERROR: %s\n", NET_ErrorString());
@@ -334,17 +342,16 @@ int NET_IPSocket(char* net_interface, int port) {
     struct sockaddr_in address;
     u_long _true = 1;
     int i = 1;
-    int err;
 
     if ((newsocket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
-        err = WSAGetLastError();
-        if (err != WSAEAFNOSUPPORT)
+        int err = errno;
+        if (err != EAFNOSUPPORT)
             Com_Printf("WARNING: UDP_OpenSocket: socket: %s", NET_ErrorString());
         return 0;
     }
 
     // make it non-blocking
-    if (ioctlsocket(newsocket, FIONBIO, &_true) == -1) {
+    if (ioctl(newsocket, FIONBIO, &_true) == -1) {
         Com_Printf("WARNING: UDP_OpenSocket: ioctl FIONBIO: %s\n", NET_ErrorString());
         return 0;
     }
@@ -355,7 +362,7 @@ int NET_IPSocket(char* net_interface, int port) {
         return 0;
     }
 
-    if (!net_interface || !net_interface[0] || !stricmp(net_interface, "localhost"))
+    if (!net_interface || !net_interface[0] || !Q_stricmp(net_interface, "localhost"))
         address.sin_addr.s_addr = INADDR_ANY;
     else
         NET_StringToSockaddr(net_interface, (struct sockaddr*)&address);
@@ -369,7 +376,7 @@ int NET_IPSocket(char* net_interface, int port) {
 
     if (bind(newsocket, (const sockaddr*)&address, sizeof(address)) == -1) {
         Com_Printf("WARNING: UDP_OpenSocket: bind: %s\n", NET_ErrorString());
-        closesocket(newsocket);
+        close(newsocket);
         return 0;
     }
 
@@ -439,7 +446,7 @@ void NET_Config(qboolean multiplayer) {
     if (!multiplayer) {  // shut down any existing sockets
         for (i = 0; i < 2; i++) {
             if (ip_sockets[i]) {
-                closesocket(ip_sockets[i]);
+                close(ip_sockets[i]);
                 ip_sockets[i] = 0;
             }
         }

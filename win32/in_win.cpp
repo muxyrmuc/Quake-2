@@ -90,7 +90,7 @@ DWORD joy_numbuttons;
 
 static JOYINFOEX ji;
 
-qboolean in_appactive;
+bool in_appactive;
 
 // forward-referenced functions
 void IN_StartupJoystick(void);
