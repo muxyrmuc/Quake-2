@@ -3180,7 +3180,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
         // verify the existence of tris.md2
         strcpy(scratch, dirnames[i]);
         strcat(scratch, "/tris.md2");
-        if (!Sys_FindFirst(scratch, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM)) {
+        if (!Sys_FindFirst(scratch, 0, SFF_SUBDIR)) {
             free(dirnames[i]);
             dirnames[i] = 0;
             Sys_FindClose();
@@ -3191,7 +3191,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
         // verify the existence of at least one pcx skin
         strcpy(scratch, dirnames[i]);
         strcat(scratch, "/*.pcx");
-        pcxnames = FS_ListFiles(scratch, &npcxfiles, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM);
+        pcxnames = FS_ListFiles(scratch, &npcxfiles, 0, SFF_SUBDIR);
 
         if (!pcxnames) {
             free(dirnames[i]);

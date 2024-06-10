@@ -109,69 +109,57 @@ void Sys_Mkdir(char* path) {
 
 char findbase[MAX_OSPATH];
 char findpath[MAX_OSPATH];
-std::intptr_t findhandle;
+
+namespace {
+
+std::filesystem::directory_iterator findhandle;
+
+}
 
 static qboolean CompareAttributes(unsigned found, unsigned musthave, unsigned canthave) {
     if ((found & _A_RDONLY) && (canthave & SFF_RDONLY))
         return kFalse;
-    if ((found & _A_HIDDEN) && (canthave & SFF_HIDDEN))
-        return kFalse;
-    if ((found & _A_SYSTEM) && (canthave & SFF_SYSTEM))
-        return kFalse;
     if ((found & _A_SUBDIR) && (canthave & SFF_SUBDIR))
-        return kFalse;
-    if ((found & _A_ARCH) && (canthave & SFF_ARCH))
         return kFalse;
 
     if ((musthave & SFF_RDONLY) && !(found & _A_RDONLY))
         return kFalse;
-    if ((musthave & SFF_HIDDEN) && !(found & _A_HIDDEN))
-        return kFalse;
-    if ((musthave & SFF_SYSTEM) && !(found & _A_SYSTEM))
-        return kFalse;
     if ((musthave & SFF_SUBDIR) && !(found & _A_SUBDIR))
-        return kFalse;
-    if ((musthave & SFF_ARCH) && !(found & _A_ARCH))
         return kFalse;
 
     return kTrue;
 }
 
 char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave) {
-    struct _finddata_t findinfo;
-
-    if (findhandle)
+    if (findhandle != std::filesystem::directory_iterator())
         Sys_Error("Sys_BeginFind without close");
-    findhandle = 0;
 
     COM_FilePath(path, findbase);
-    findhandle = _findfirst(path, &findinfo);
-    if (findhandle == -1)
+    findhandle = std::filesystem::directory_iterator(path);
+    if (findhandle == std::filesystem::directory_iterator())
         return NULL;
     if (!CompareAttributes(findinfo.attrib, musthave, canthave))
         return NULL;
-    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findinfo.name);
+    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findhandle->path().string().c_str());
     return findpath;
 }
 
 char* Sys_FindNext(unsigned musthave, unsigned canthave) {
-    struct _finddata_t findinfo;
+    if (findhandle == std::filesystem::directory_iterator()) // default-constructed iterator is the end iterator
+        return NULL;
+    findhandle++;
+    if (++findhandle == std::filesystem::directory_iterator())
+        return NULL;
 
-    if (findhandle == -1)
-        return NULL;
-    if (_findnext(findhandle, &findinfo) == -1)
-        return NULL;
     if (!CompareAttributes(findinfo.attrib, musthave, canthave))
         return NULL;
 
-    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findinfo.name);
+    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findhandle->path().string().c_str());
     return findpath;
 }
 
 void Sys_FindClose(void) {
-    if (findhandle != -1)
-        _findclose(findhandle);
-    findhandle = 0;
+    findhandle = std::filesystem::directory_iterator();
 }
 
 //============================================
