@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <assert.h>
 #include <float.h>
 
-#include "..\client\client.h"
+#include "../client/client.h"
 #include "winquake.h"
 //#include "zmouse.h"
 
@@ -31,8 +31,6 @@ static HINSTANCE global_hInstance;
 
 // Structure containing functions exported from refresh DLL
 refexport_t re;
-
-cvar_t* win_noalttab;
 
 #ifndef WM_MOUSEWHEEL
 #define WM_MOUSEWHEEL (WM_MOUSELAST + 1)  // message that will be supported by the OS
@@ -58,31 +56,7 @@ SDL_Window* cl_hwnd;  // Main window handle for life of program; used to be HWND
 
 LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-static qboolean s_alttab_disabled;
-
 extern unsigned sys_msg_time;
-
-/*
-** WIN32 helper functions
-*/
-static void WIN_DisableAltTab(void) {
-    if (s_alttab_disabled)
-        return;
-
-    RegisterHotKey(0, 0, MOD_ALT, VK_TAB);
-    RegisterHotKey(0, 1, MOD_ALT, VK_RETURN);
-
-    s_alttab_disabled = kTrue;
-}
-
-static void WIN_EnableAltTab(void) {
-    if (s_alttab_disabled) {
-        UnregisterHotKey(0, 0);
-        UnregisterHotKey(0, 1);
-
-        s_alttab_disabled = kFalse;
-    }
-}
 
 /*
 ==========================================================================
@@ -222,17 +196,10 @@ void AppActivate(BOOL fActive, BOOL minimize) {
         IN_Activate(false);
         CDAudio_Activate(kFalse);
         S_Activate(kFalse);
-
-        if (win_noalttab->value) {
-            WIN_EnableAltTab();
-        }
     } else {
         IN_Activate(true);
         CDAudio_Activate(kTrue);
         S_Activate(kTrue);
-        if (win_noalttab->value) {
-            WIN_DisableAltTab();
-        }
     }
 }
 
@@ -564,15 +531,6 @@ update the rendering DLL and/or video mode to match.
 void VID_CheckChanges(void) {
     char name[100];
 
-    if (win_noalttab->modified) {
-        if (win_noalttab->value) {
-            WIN_DisableAltTab();
-        } else {
-            WIN_EnableAltTab();
-        }
-        win_noalttab->modified = kFalse;
-    }
-
     if (vid_ref->modified) {
         cl.force_refdef = kTrue;  // can't use a paused refdef
         S_StopAllSounds();
@@ -626,7 +584,6 @@ void VID_Init(void) {
     vid_ypos = Cvar_Get("vid_ypos", "22", CVAR_ARCHIVE);
     vid_fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
     vid_gamma = Cvar_Get("vid_gamma", "1", CVAR_ARCHIVE);
-    win_noalttab = Cvar_Get("win_noalttab", "0", CVAR_ARCHIVE);
 
     /* Add some console commands that we want to handle */
     Cmd_AddCommand("vid_restart", VID_Restart_f);

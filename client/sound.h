@@ -18,6 +18,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#pragma once
+
+#include "../game/q_shared.h"
+
 struct sfx_s;
 
 void S_Init(void);

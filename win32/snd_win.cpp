@@ -75,7 +75,7 @@ LPDIRECTSOUNDBUFFER pDSBuf, pDSPBuf;
 HINSTANCE hInstDS;
 
 sndinitstat SNDDMA_InitDirect(void);
-qboolean SNDDMA_InitWav(void);
+static qboolean SNDDMA_InitWav(void);
 
 void FreeSound(void);
 
@@ -406,7 +406,7 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-qboolean SNDDMA_InitWav(void) {
+static qboolean SNDDMA_InitWav(void) {
     WAVEFORMATEX format;
     int i;
     HRESULT hr;
