@@ -116,20 +116,20 @@ std::filesystem::directory_iterator findhandle;
 
 }
 
-static qboolean CompareAttributes(unsigned found, unsigned musthave, unsigned canthave) {
-    if ((found & _A_RDONLY) && (canthave & SFF_RDONLY))
-        return kFalse;
-    if ((found & _A_SUBDIR) && (canthave & SFF_SUBDIR))
-        return kFalse;
+static bool CompareAttributes(const std::filesystem::directory_entry& found, unsigned musthave, unsigned canthave) {
+    const bool is_directory = found.is_directory();
 
-    if ((musthave & SFF_RDONLY) && !(found & _A_RDONLY))
-        return kFalse;
-    if ((musthave & SFF_SUBDIR) && !(found & _A_SUBDIR))
-        return kFalse;
+    if (is_directory && (canthave & SFF_SUBDIR))
+        return false;
 
-    return kTrue;
+    if ((musthave & SFF_SUBDIR) && !is_directory)
+        return false;
+
+    return true;
 }
 
+// TODO: does it work as expected? Seems like we're stopping the search in the middle
+// in case there is a file with bad flags in the middle of the loop
 char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave) {
     if (findhandle != std::filesystem::directory_iterator())
         Sys_Error("Sys_BeginFind without close");
@@ -138,7 +138,7 @@ char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave) {
     findhandle = std::filesystem::directory_iterator(path);
     if (findhandle == std::filesystem::directory_iterator())
         return NULL;
-    if (!CompareAttributes(findinfo.attrib, musthave, canthave))
+    if (!CompareAttributes(*findhandle, musthave, canthave))
         return NULL;
     Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findhandle->path().string().c_str());
     return findpath;
@@ -151,7 +151,7 @@ char* Sys_FindNext(unsigned musthave, unsigned canthave) {
     if (++findhandle == std::filesystem::directory_iterator())
         return NULL;
 
-    if (!CompareAttributes(findinfo.attrib, musthave, canthave))
+    if (!CompareAttributes(*findhandle, musthave, canthave))
         return NULL;
 
     Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findhandle->path().string().c_str());

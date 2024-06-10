@@ -260,8 +260,8 @@ void Hunk_Free(void* buf);
 int Hunk_End(void);
 
 // directory searching
-#define SFF_RDONLY 0x01
-#define SFF_SUBDIR 0x02
+// TODO: wipe it completely
+#define SFF_SUBDIR 0x01
 
 /*
 ** pass in an attribute mask of things you wish to REJECT
