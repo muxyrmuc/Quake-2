@@ -23,14 +23,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../game/q_shared.h"
 
+#include <SDL_video.h>
+
 typedef struct
 {
-    HINSTANCE hInstance;
     void* wndproc;
 
     HDC hDC;      // handle to device context
-    HWND hWnd;    // handle to window
-    HGLRC hGLRC;  // handle to GL rendering context
+    SDL_Window* hWnd;    // handle to window
+    SDL_GLContext hGLRC;  // handle to GL rendering context
 
     qboolean allowdisplaydepthchange;
 
