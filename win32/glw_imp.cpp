@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ** GLimp_EndFrame
 ** GLimp_Init
 ** GLimp_Shutdown
-** GLimp_SwitchFullscreen
 **
 */
 #include <assert.h>
@@ -36,7 +35,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "winquake.h"
 #include <cstdint>
 
-static qboolean GLimp_SwitchFullscreen(int width, int height);
 qboolean GLimp_InitGL(void);
 
 glwstate_t glw_state;
@@ -299,10 +297,11 @@ void GLimp_EndFrame(void) {
 */
 void GLimp_AppActivate(qboolean active) {
     if (active) {
-        SetForegroundWindow(glw_state.hWnd);
-        ShowWindow(glw_state.hWnd, SW_RESTORE);
+        // TODO: what's the order?
+        SDL_RestoreWindow(glw_state.hWnd);
+        SDL_RaiseWindow(glw_state.hWnd);
     } else {
         if (vid_fullscreen->value)
-            ShowWindow(glw_state.hWnd, SW_MINIMIZE);
+            SDL_MinimizeWindow(glw_state.hWnd);
     }
 }
