@@ -42,12 +42,8 @@ BOOL(WINAPI* qwglSetPixelFormat)
 BOOL(WINAPI* qwglSwapBuffers)
 (HDC);
 
-HGLRC(WINAPI* qwglCreateContext)
-(HDC);
 PROC(WINAPI* qwglGetProcAddress)
 (LPCSTR);
-BOOL(WINAPI* qwglMakeCurrent)
-(HDC, HGLRC);
 
 void(APIENTRY* qglAccum)(GLenum op, GLfloat value);
 void(APIENTRY* qglAlphaFunc)(GLenum func, GLclampf ref);
@@ -2627,7 +2623,6 @@ void QGL_Shutdown(void) {
     qglVertexPointer = NULL;
     qglViewport = NULL;
 
-    qwglCreateContext = NULL;
     qwglGetProcAddress = NULL;
 
     qwglChoosePixelFormat = NULL;
@@ -3004,7 +2999,6 @@ bool QGL_Init(const char* dllname) {
     qglVertexPointer = dllVertexPointer = glVertexPointer;
     qglViewport = dllViewport = glViewport;
 
-    GPA1(qwglCreateContext, "wglCreateContext");
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
 
     GPA1(qwglChoosePixelFormat, "wglChoosePixelFormat");

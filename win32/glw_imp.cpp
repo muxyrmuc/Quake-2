@@ -200,12 +200,6 @@ qboolean GLimp_InitGL(void) {
 
     gl_state.stereo_enabled = kFalse;
 
-    /*
-    ** Get a DC for the specified window
-    */
-    if (glw_state.hDC != NULL)
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - non-NULL DC exists\n");
-
     if ((glw_state.hDC = GetDC(glw_state.hWnd)) == NULL) {
         ri.Con_Printf(PRINT_ALL, "GLimp_Init() - GetDC failed\n");
         return kFalse;
@@ -225,14 +219,14 @@ qboolean GLimp_InitGL(void) {
     ** startup the OpenGL subsystem by creating a context and making
     ** it current
     */
-    if ((glw_state.hGLRC = qwglCreateContext(glw_state.hDC)) == 0) {
+    if ((glw_state.hGLRC = SDL_GL_CreateContext(glw_state.hWnd)) == nullptr) {
         ri.Con_Printf(PRINT_ALL, "GLimp_Init() - qwglCreateContext failed\n");
 
         goto fail;
     }
 
-    if (!qwglMakeCurrent(glw_state.hDC, glw_state.hGLRC)) {
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - qwglMakeCurrent failed\n");
+    if (SDL_GL_MakeCurrent(glw_state.hWnd, glw_state.hGLRC) < 0) {
+        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - SDL_GL_MakeCurrent failed\n");
 
         goto fail;
     }

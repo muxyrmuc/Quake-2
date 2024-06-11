@@ -392,7 +392,6 @@ extern int(WINAPI* qwglGetPixelFormat)(HDC);
 extern BOOL(WINAPI* qwglSetPixelFormat)(HDC, int, CONST PIXELFORMATDESCRIPTOR*);
 extern BOOL(WINAPI* qwglSwapBuffers)(HDC);
 
-extern HGLRC(WINAPI* qwglCreateContext)(HDC);
 extern PROC(WINAPI* qwglGetProcAddress)(LPCSTR);
 
 extern BOOL(WINAPI* qwglSwapIntervalEXT)(int interval);
