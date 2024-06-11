@@ -139,7 +139,7 @@ Give items to a client
 ==================
 */
 void Cmd_Give_f(edict_t* ent) {
-    char* name;
+    const char* name;
     gitem_t* it;
     int index;
     int i;
@@ -277,7 +277,7 @@ argv(0) god
 ==================
 */
 void Cmd_God_f(edict_t* ent) {
-    char* msg;
+    const char* msg;
 
     if (deathmatch->value && !sv_cheats->value) {
         gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
@@ -303,7 +303,7 @@ argv(0) notarget
 ==================
 */
 void Cmd_Notarget_f(edict_t* ent) {
-    char* msg;
+    const char* msg;
 
     if (deathmatch->value && !sv_cheats->value) {
         gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
@@ -327,7 +327,7 @@ argv(0) noclip
 ==================
 */
 void Cmd_Noclip_f(edict_t* ent) {
-    char* msg;
+    const char* msg;
 
     if (deathmatch->value && !sv_cheats->value) {
         gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
@@ -819,7 +819,7 @@ ClientCommand
 =================
 */
 void ClientCommand(edict_t* ent) {
-    char* cmd;
+    const char* cmd;
 
     if (!ent->client)
         return;  // not fully in game yet

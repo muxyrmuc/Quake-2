@@ -142,15 +142,9 @@ void FS_FCloseFile(FILE* f) {
         Developer_searchpath
 */
 int Developer_searchpath(int who) {
-    int ch;
     // PMM - warning removal
     //	char	*start;
     searchpath_t* search;
-
-    if (who == 1)  // xatrix
-        ch = 'x';
-    else if (who == 2)
-        ch = 'r';
 
     for (search = fs_searchpaths; search; search = search->next) {
         if (strstr(search->filename, "xatrix"))
@@ -183,7 +177,7 @@ a seperate file.
 */
 int file_from_pak = 0;
 #ifndef NO_ADDONS
-int FS_FOpenFile(char* filename, FILE** file) {
+int FS_FOpenFile(const char* filename, FILE** file) {
     searchpath_t* search;
     char netpath[MAX_OSPATH];
     pack_t* pak;
@@ -351,7 +345,7 @@ Filename are reletive to the quake search path
 a null buffer will just return the file length without loading
 ============
 */
-int FS_LoadFile(char* path, void** buffer) {
+int FS_LoadFile(const char* path, void** buffer) {
     FILE* h;
     byte* buf;
     int len;
@@ -510,7 +504,7 @@ FS_ExecAutoexec
 =============
 */
 void FS_ExecAutoexec(void) {
-    char* dir;
+    const char* dir;
     char name[MAX_QPATH];
 
     dir = Cvar_VariableString("gamedir");
@@ -518,7 +512,7 @@ void FS_ExecAutoexec(void) {
         Com_sprintf(name, sizeof(name), "%s/%s/autoexec.cfg", fs_basedir->string, dir);
     else
         Com_sprintf(name, sizeof(name), "%s/%s/autoexec.cfg", fs_basedir->string, BASEDIRNAME);
-    if (Sys_FindFirst(name, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM))
+    if (Sys_FindFirst(name, 0, SFF_SUBDIR))
         Cbuf_AddText("exec autoexec.cfg\n");
     Sys_FindClose();
 }

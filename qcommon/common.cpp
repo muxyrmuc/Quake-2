@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MAX_NUM_ARGVS 50
 
 int com_argc;
-char* com_argv[MAX_NUM_ARGVS + 1];
+const char* com_argv[MAX_NUM_ARGVS + 1];
 
 int realtime;
 
@@ -65,13 +65,13 @@ static char* rd_buffer;
 static int rd_buffersize;
 static void (*rd_flush)(int target, char* buffer);
 
-void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)) {
+void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)(int, char*)) {
     if (!target || !buffer || !buffersize || !flush)
         return;
     rd_target = target;
     rd_buffer = buffer;
     rd_buffersize = buffersize;
-    rd_flush = reinterpret_cast<decltype(rd_flush)>(flush);
+    rd_flush = flush;
 
     *rd_buffer = 0;
 }
@@ -93,7 +93,7 @@ Both client and server can use this, and it will output
 to the apropriate place.
 =============
 */
-void Com_Printf(char* fmt, ...) {
+void Com_Printf(const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
 
@@ -137,7 +137,7 @@ Com_DPrintf
 A Com_Printf that only shows up if the "developer" cvar is set
 ================
 */
-void Com_DPrintf(char* fmt, ...) {
+void Com_DPrintf(const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
 
@@ -159,7 +159,7 @@ Both client and server can use this, and it will
 do the apropriate things.
 =============
 */
-void Com_Error(int code, char* fmt, ...) {
+void Com_Error(int code, const char* fmt, ...) {
     va_list argptr;
     static char msg[MAXPRINTMSG];
     static qboolean recursive;
@@ -310,7 +310,7 @@ void MSG_WriteFloat(sizebuf_t* sb, float f) {
     SZ_Write(sb, &dat.l, 4);
 }
 
-void MSG_WriteString(sizebuf_t* sb, char* s) {
+void MSG_WriteString(sizebuf_t* sb, const char* s) {
     if (!s)
         SZ_Write(sb, "", 1);
     else
@@ -819,11 +819,11 @@ void* SZ_GetSpace(sizebuf_t* buf, int length) {
     return data;
 }
 
-void SZ_Write(sizebuf_t* buf, void* data, int length) {
+void SZ_Write(sizebuf_t* buf, const void* data, int length) {
     memcpy(SZ_GetSpace(buf, length), data, length);
 }
 
-void SZ_Print(sizebuf_t* buf, char* data) {
+void SZ_Print(sizebuf_t* buf, const char* data) {
     int len;
 
     len = strlen(data) + 1;
@@ -862,7 +862,7 @@ int COM_Argc(void) {
     return com_argc;
 }
 
-char* COM_Argv(int arg) {
+const char* COM_Argv(int arg) {
     if (arg < 0 || arg >= com_argc || !com_argv[arg])
         return "";
     return com_argv[arg];
@@ -916,7 +916,7 @@ int memsearch(byte* start, int count, int search) {
     return -1;
 }
 
-char* CopyString(char* in) {
+char* CopyString(const char* in) {
     char* out;
 
     out = static_cast<char*>(Z_Malloc(strlen(in) + 1));

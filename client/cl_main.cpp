@@ -211,7 +211,7 @@ void CL_Record_f(void) {
     // configstrings
     for (i = 0; i < MAX_CONFIGSTRINGS; i++) {
         if (cl.configstrings[i][0]) {
-            if (buf.cursize + strlen(cl.configstrings[i]) + 32 > buf.maxsize) {  // write it out
+            if (buf.cursize + static_cast<int>(strlen(cl.configstrings[i])) + 32 > buf.maxsize) {  // write it out
                 len = LittleLong(buf.cursize);
                 fwrite(&len, 4, 1, cls.demofile);
                 fwrite(buf.data, buf.cursize, 1, cls.demofile);
@@ -266,7 +266,7 @@ so when they are typed in at the console, they will need to be forwarded.
 ===================
 */
 void Cmd_ForwardToServer(void) {
-    char* cmd;
+    const char* cmd;
 
     cmd = Cmd_Argv(0);
     if (cls.state <= ca_connected || *cmd == '-' || *cmd == '+') {
@@ -449,7 +449,7 @@ CL_Connect_f
 ================
 */
 void CL_Connect_f(void) {
-    char* server;
+    const char* server;
 
     if (Cmd_Argc() != 2) {
         Com_Printf("usage: connect <server>\n");
@@ -618,7 +618,8 @@ Contents allows \n escape character
 void CL_Packet_f(void) {
     char send[2048];
     int i, l;
-    char *in, *out;
+    const char *in;
+    char *out;
     netadr_t adr;
 
     if (Cmd_Argc() != 3) {
@@ -730,9 +731,8 @@ void CL_PingServers_f(void) {
     int i;
     netadr_t adr;
     char name[32];
-    char* adrstring;
+    const char* adrstring;
     cvar_t* noudp;
-    cvar_t* noipx;
 
     NET_Config(kTrue);  // allow remote
 
@@ -742,13 +742,6 @@ void CL_PingServers_f(void) {
     noudp = Cvar_Get("noudp", "0", CVAR_NOSET);
     if (!noudp->value) {
         adr.type = NA_BROADCAST;
-        adr.port = BigShort(PORT_SERVER);
-        Netchan_OutOfBandPrint(NS_CLIENT, adr, va("info %i", PROTOCOL_VERSION));
-    }
-
-    noipx = Cvar_Get("noipx", "0", CVAR_NOSET);
-    if (!noipx->value) {
-        adr.type = NA_BROADCAST_IPX;
         adr.port = BigShort(PORT_SERVER);
         Netchan_OutOfBandPrint(NS_CLIENT, adr, va("info %i", PROTOCOL_VERSION));
     }
@@ -800,7 +793,7 @@ Responses to broadcasts, etc
 */
 void CL_ConnectionlessPacket(void) {
     char* s;
-    char* c;
+    const char* c;
 
     MSG_BeginReading(&net_message);
     MSG_ReadLong(&net_message);  // skip the -1
@@ -1468,24 +1461,24 @@ CL_FixCvarCheats
 
 typedef struct
 {
-    char* name;
-    char* value;
+    const char* name;
+    const char* value;
     cvar_t* var;
 } cheatvar_t;
 
 cheatvar_t cheatvars[] = {
-    {"timescale", "1"},
-    {"timedemo", "0"},
-    {"r_drawworld", "1"},
-    {"cl_testlights", "0"},
-    {"r_fullbright", "0"},
-    {"r_drawflat", "0"},
-    {"paused", "0"},
-    {"fixedtime", "0"},
-    {"sw_draworder", "0"},
-    {"gl_lightmap", "0"},
-    {"gl_saturatelighting", "0"},
-    {NULL, NULL}};
+    {"timescale", "1", nullptr},
+    {"timedemo", "0", nullptr},
+    {"r_drawworld", "1", nullptr},
+    {"cl_testlights", "0", nullptr},
+    {"r_fullbright", "0", nullptr},
+    {"r_drawflat", "0", nullptr},
+    {"paused", "0", nullptr},
+    {"fixedtime", "0", nullptr},
+    {"sw_draworder", "0", nullptr},
+    {"gl_lightmap", "0", nullptr},
+    {"gl_saturatelighting", "0", nullptr},
+    {nullptr, nullptr, nullptr}};
 
 int numcheatvars;
 

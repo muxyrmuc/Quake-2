@@ -28,7 +28,7 @@ cvar_t* cvar_vars;
 Cvar_InfoValidate
 ============
 */
-static qboolean Cvar_InfoValidate(char* s) {
+static qboolean Cvar_InfoValidate(const char* s) {
     if (strstr(s, "\\"))
         return kFalse;
     if (strstr(s, "\""))
@@ -43,7 +43,7 @@ static qboolean Cvar_InfoValidate(char* s) {
 Cvar_FindVar
 ============
 */
-static cvar_t* Cvar_FindVar(char* var_name) {
+static cvar_t* Cvar_FindVar(const char* var_name) {
     cvar_t* var;
 
     for (var = cvar_vars; var; var = var->next)
@@ -58,7 +58,7 @@ static cvar_t* Cvar_FindVar(char* var_name) {
 Cvar_VariableValue
 ============
 */
-float Cvar_VariableValue(char* var_name) {
+float Cvar_VariableValue(const char* var_name) {
     cvar_t* var;
 
     var = Cvar_FindVar(var_name);
@@ -72,7 +72,7 @@ float Cvar_VariableValue(char* var_name) {
 Cvar_VariableString
 ============
 */
-char* Cvar_VariableString(char* var_name) {
+const char* Cvar_VariableString(const char* var_name) {
     cvar_t* var;
 
     var = Cvar_FindVar(var_name);
@@ -116,7 +116,7 @@ If the variable already exists, the value will not be set
 The flags will be or'ed in if the variable exists.
 ============
 */
-cvar_t* Cvar_Get(char* var_name, char* var_value, int flags) {
+cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags) {
     cvar_t* var;
 
     if (flags & (CVAR_USERINFO | CVAR_SERVERINFO)) {
@@ -162,7 +162,7 @@ cvar_t* Cvar_Get(char* var_name, char* var_value, int flags) {
 Cvar_Set2
 ============
 */
-cvar_t* Cvar_Set2(char* var_name, char* value, qboolean force) {
+cvar_t* Cvar_Set2(const char* var_name, const char* value, qboolean force) {
     cvar_t* var;
 
     var = Cvar_FindVar(var_name);
@@ -234,7 +234,7 @@ cvar_t* Cvar_Set2(char* var_name, char* value, qboolean force) {
 Cvar_ForceSet
 ============
 */
-cvar_t* Cvar_ForceSet(char* var_name, char* value) {
+cvar_t* Cvar_ForceSet(const char* var_name, const char* value) {
     return Cvar_Set2(var_name, value, kTrue);
 }
 
@@ -243,7 +243,7 @@ cvar_t* Cvar_ForceSet(char* var_name, char* value) {
 Cvar_Set
 ============
 */
-cvar_t* Cvar_Set(char* var_name, char* value) {
+cvar_t* Cvar_Set(const char* var_name, const char* value) {
     return Cvar_Set2(var_name, value, kFalse);
 }
 
@@ -252,7 +252,7 @@ cvar_t* Cvar_Set(char* var_name, char* value) {
 Cvar_FullSet
 ============
 */
-cvar_t* Cvar_FullSet(char* var_name, char* value, int flags) {
+cvar_t* Cvar_FullSet(const char* var_name, const char* value, int flags) {
     cvar_t* var;
 
     var = Cvar_FindVar(var_name);
@@ -279,7 +279,7 @@ cvar_t* Cvar_FullSet(char* var_name, char* value, int flags) {
 Cvar_SetValue
 ============
 */
-void Cvar_SetValue(char* var_name, float value) {
+void Cvar_SetValue(const char* var_name, float value) {
     char val[32];
 
     if (value == (int)value)

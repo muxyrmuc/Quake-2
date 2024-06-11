@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "client.h"
 
-char* svc_strings[256] =
+const char* svc_strings[256] =
     {
         "svc_bad",
 
@@ -349,9 +349,9 @@ CL_LoadClientinfo
 
 ================
 */
-void CL_LoadClientinfo(clientinfo_t* ci, char* s) {
+void CL_LoadClientinfo(clientinfo_t* ci, const char* s) {
     int i;
-    char* t;
+    const char* t;
     char model_name[MAX_QPATH];
     char skin_name[MAX_QPATH];
     char model_filename[MAX_QPATH];
@@ -381,6 +381,7 @@ void CL_LoadClientinfo(clientinfo_t* ci, char* s) {
         ci->skin = re.RegisterSkin(skin_filename);
         ci->icon = re.RegisterPic(ci->iconname);
     } else {
+        char* t;
         // isolate the model name
         strcpy(model_name, s);
         t = strstr(model_name, "/");
@@ -581,7 +582,7 @@ void CL_ParseStartSoundPacket(void) {
     S_StartSound(pos, ent, channel, cl.sound_precache[sound_num], volume, attenuation, ofs);
 }
 
-void SHOWNET(char* s) {
+void SHOWNET(const char* s) {
     if (cl_shownet->value >= 2)
         Com_Printf("%3i:%s\n", net_message.readcount - 1, s);
 }

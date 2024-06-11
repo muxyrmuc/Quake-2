@@ -90,7 +90,7 @@ DWORD joy_numbuttons;
 
 static JOYINFOEX ji;
 
-qboolean in_appactive;
+bool in_appactive;
 
 // forward-referenced functions
 void IN_StartupJoystick(void);
@@ -380,9 +380,9 @@ The window may have been destroyed and recreated
 between a deactivate and an activate.
 ===========
 */
-void IN_Activate(qboolean active) {
+void IN_Activate(bool active) {
     in_appactive = active;
-    mouseactive = (kFalse == active) ? kTrue : kFalse;  // force a new window check or turn off
+    mouseactive = (false == active) ? kTrue : kFalse;  // force a new window check or turn off
 }
 
 /*

@@ -508,7 +508,7 @@ CM_LoadMap
 Loads in the map and all submodels
 ==================
 */
-cmodel_t* CM_LoadMap(char* name, qboolean clientload, unsigned* checksum) {
+cmodel_t* CM_LoadMap(const char* name, qboolean clientload, unsigned* checksum) {
     unsigned* buf;
     int i;
     dheader_t header;
@@ -594,7 +594,7 @@ cmodel_t* CM_LoadMap(char* name, qboolean clientload, unsigned* checksum) {
 CM_InlineModel
 ==================
 */
-cmodel_t* CM_InlineModel(char* name) {
+cmodel_t* CM_InlineModel(const char* name) {
     int num;
 
     if (!name || name[0] != '*')

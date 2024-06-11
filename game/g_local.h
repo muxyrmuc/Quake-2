@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "q_shared.h"
 
+#include <cstddef>
+
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
 // because we define the full size ones in this file
@@ -218,23 +220,23 @@ typedef struct
 #define WEAP_BFG 11
 
 typedef struct gitem_s {
-    char* classname;  // spawning name
+    const char* classname;  // spawning name
     qboolean (*pickup)(struct edict_s* ent, struct edict_s* other);
     void (*use)(struct edict_s* ent, struct gitem_s* item);
     void (*drop)(struct edict_s* ent, struct gitem_s* item);
     void (*weaponthink)(struct edict_s* ent);
-    char* pickup_sound;
-    char* world_model;
+    const char* pickup_sound;
+    const char* world_model;
     int world_model_flags;
-    char* view_model;
+    const char* view_model;
 
     // client side info
-    char* icon;
-    char* pickup_name;  // for printing on pickup
+    const char* icon;
+    const char* pickup_name;  // for printing on pickup
     int count_width;    // number of digits to display by icon
 
     int quantity;  // for ammo how much, for weapons how much is used per shot
-    char* ammo;    // for weapons
+    const char* ammo;    // for weapons
     int flags;     // IT_* flags
 
     int weapmodel;  // weapon model index (for weapons)
@@ -242,7 +244,7 @@ typedef struct gitem_s {
     void* info;
     int tag;
 
-    char* precaches;  // string of all models, sounds, and images this item will use
+    const char* precaches;  // string of all models, sounds, and images this item will use
 } gitem_t;
 
 //
@@ -291,7 +293,7 @@ typedef struct
 
     // intermission state
     float intermissiontime;  // time the intermission was started
-    char* changemap;
+    const char* changemap;
     int exitintermission;
     vec3_t intermission_origin;
     vec3_t intermission_angle;
@@ -336,7 +338,7 @@ typedef struct
     int lip;
     int distance;
     int height;
-    char* noise;
+    const char* noise;
     float pausetime;
     char* item;
     char* gravity;
@@ -435,10 +437,6 @@ extern spawn_temp_t st;
 extern int sm_meat_index;
 extern int snd_fry;
 
-extern int jacket_armor_index;
-extern int combat_armor_index;
-extern int body_armor_index;
-
 // means of death
 #define MOD_UNKNOWN 0
 #define MOD_BLASTER 1
@@ -480,10 +478,10 @@ extern int meansOfDeath;
 
 extern edict_t* g_edicts;
 
-#define FOFS(x) (int)&(((edict_t*)0)->x)
-#define STOFS(x) (int)&(((spawn_temp_t*)0)->x)
-#define LLOFS(x) (int)&(((level_locals_t*)0)->x)
-#define CLOFS(x) (int)&(((gclient_t*)0)->x)
+#define FOFS(x) (offsetof(edict_t, x))
+#define STOFS(x) (offsetof(spawn_temp_t, x))
+#define LLOFS(x) (offsetof(level_locals_t, x))
+#define CLOFS(x) (offsetof(gclient_t, x))
 
 #define random() ((rand() & 0x7fff) / ((float)0x7fff))
 #define crandom() (2.0 * (random() - 0.5))
@@ -559,7 +557,7 @@ typedef enum {
 
 typedef struct
 {
-    char* name;
+    const char* name;
     int ofs;
     fieldtype_t type;
     int flags;
@@ -580,8 +578,8 @@ void Cmd_Score_f(edict_t* ent);
 void PrecacheItem(gitem_t* it);
 void InitItems(void);
 void SetItemNames(void);
-gitem_t* FindItem(char* pickup_name);
-gitem_t* FindItemByClassname(char* classname);
+gitem_t* FindItem(const char* pickup_name);
+gitem_t* FindItemByClassname(const char* classname);
 #define ITEM_INDEX(x) ((x)-itemlist)
 edict_t* Drop_Item(edict_t* ent, gitem_t* item);
 void SetRespawn(edict_t* ent, float delay);
@@ -599,7 +597,7 @@ void Touch_Item(edict_t* ent, edict_t* other, cplane_t* plane, csurface_t* surf)
 //
 qboolean KillBox(edict_t* ent);
 void G_ProjectSource(vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-edict_t* G_Find(edict_t* from, int fieldofs, char* match);
+edict_t* G_Find(edict_t* from, int fieldofs, const char* match);
 edict_t* findradius(edict_t* from, vec3_t org, float rad);
 edict_t* G_PickTarget(char* targetname);
 void G_UseTargets(edict_t* ent, edict_t* activator);
@@ -669,9 +667,9 @@ void M_CheckGround(edict_t* ent);
 //
 // g_misc.c
 //
-void ThrowHead(edict_t* self, char* gibname, int damage, int type);
+void ThrowHead(edict_t* self, const char* gibname, int damage, int type);
 void ThrowClientHead(edict_t* self, int damage);
-void ThrowGib(edict_t* self, char* gibname, int damage, int type);
+void ThrowGib(edict_t* self, const char* gibname, int damage, int type);
 void BecomeExplosion1(edict_t* self);
 
 //
@@ -695,7 +693,7 @@ qboolean FacingIdeal(edict_t* self);
 //
 // g_weapon.c
 //
-void ThrowDebris(edict_t* self, char* modelname, float speed, vec3_t origin);
+void ThrowDebris(edict_t* self, const char* modelname, float speed, vec3_t origin);
 qboolean fire_hit(edict_t* self, vec3_t aim, int damage, int kick);
 void fire_bullet(edict_t* self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int mod);
 void fire_shotgun(edict_t* self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod);
@@ -737,7 +735,7 @@ void player_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int damage
 // g_svcmds.c
 //
 void ServerCommand(void);
-qboolean SV_FilterPacket(char* from);
+qboolean SV_FilterPacket(const char* from);
 
 //
 // p_view.c
@@ -965,21 +963,21 @@ struct edict_s {
     int movetype;
     int flags;
 
-    char* model;
+    const char* model;
     float freetime;  // sv.time when the object was freed
 
     //
     // only used locally in game, not by server
     //
     char* message;
-    char* classname;
+    const char* classname;
     int spawnflags;
 
     float timestamp;
 
     float angle;  // set in qe3, -1 = up, -2 = down
     char* target;
-    char* targetname;
+    const char* targetname;
     char* killtarget;
     char* team;
     char* pathtarget;
@@ -1026,7 +1024,7 @@ struct edict_s {
 
     float powerarmor_time;
 
-    char* map;  // target_changelevel
+    const char* map;  // target_changelevel
 
     int viewheight;  // height above origin where eyesight is determined
     int takedamage;

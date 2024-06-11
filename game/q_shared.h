@@ -18,6 +18,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#ifndef __Q_SHARED_H__
+#define __Q_SHARED_H__
+
 // q_shared.h -- included first by ALL program modules
 
 #ifdef _WIN32
@@ -196,19 +199,19 @@ void COM_FileBase(char* in, char* out);
 void COM_FilePath(char* in, char* out);
 void COM_DefaultExtension(char* path, char* extension);
 
-char* COM_Parse(char** data_p);
+const char* COM_Parse(char** data_p);
 // data is an in/out parm, returns a parsed out token
 
-void Com_sprintf(char* dest, int size, char* fmt, ...);
+void Com_sprintf(char* dest, int size, const char* fmt, ...);
 
 void Com_PageInMemory(byte* buffer, int size);
 
 //=============================================
 
 // portable case insensitive compare
-int Q_stricmp(char* s1, char* s2);
-int Q_strcasecmp(char* s1, char* s2);
-int Q_strncasecmp(char* s1, char* s2, int n);
+int Q_stricmp(const char* s1, const char* s2);
+int Q_strcasecmp(const char* s1, const char* s2);
+int Q_strncasecmp(const char* s1, const char* s2, int n);
 
 //=============================================
 
@@ -220,7 +223,7 @@ float BigFloat(float l);
 float LittleFloat(float l);
 
 void Swap_Init(void);
-char* va(char* format, ...);
+char* va(const char* format, ...);
 
 //=============================================
 
@@ -231,9 +234,9 @@ char* va(char* format, ...);
 #define MAX_INFO_VALUE 64
 #define MAX_INFO_STRING 512
 
-char* Info_ValueForKey(char* s, char* key);
-void Info_RemoveKey(char* s, char* key);
-void Info_SetValueForKey(char* s, char* key, char* value);
+const char* Info_ValueForKey(char* s, const char* key);
+void Info_RemoveKey(char* s, const char* key);
+void Info_SetValueForKey(char* s, const char* key, const char* value);
 qboolean Info_Validate(char* s);
 
 /*
@@ -257,11 +260,8 @@ void Hunk_Free(void* buf);
 int Hunk_End(void);
 
 // directory searching
-#define SFF_ARCH 0x01
-#define SFF_HIDDEN 0x02
-#define SFF_RDONLY 0x04
-#define SFF_SUBDIR 0x08
-#define SFF_SYSTEM 0x10
+// TODO: wipe it completely
+#define SFF_SUBDIR 0x01
 
 /*
 ** pass in an attribute mask of things you wish to REJECT
@@ -271,8 +271,8 @@ char* Sys_FindNext(unsigned musthave, unsigned canthave);
 void Sys_FindClose(void);
 
 // this is only here so the functions in q_shared.c and q_shwin.c can link
-void Sys_Error(char* error, ...);
-void Com_Printf(char* msg, ...);
+void Sys_Error(const char* error, ...);
+void Com_Printf(const char* msg, ...);
 
 /*
 ==========================================================
@@ -1146,3 +1146,5 @@ typedef struct
 extern int vidref_val;
 // PGM
 // ==================
+
+#endif  // __Q_SHARED_H__

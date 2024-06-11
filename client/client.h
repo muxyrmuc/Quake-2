@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // define	PARANOID			// speed sapping error checking
 
+#pragma once
+
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
@@ -320,8 +322,8 @@ extern entity_state_t cl_parse_entities[MAX_PARSE_ENTITIES];
 extern netadr_t net_from;
 extern sizebuf_t net_message;
 
-void DrawString(int x, int y, char* s);
-void DrawAltString(int x, int y, char* s);  // toggle high bit
+void DrawString(int x, int y, const char* s);
+void DrawAltString(int x, int y, const char* s);  // toggle high bit
 qboolean CL_CheckOrDownloadFile(char* filename);
 
 void CL_AddNetgraph(void);
@@ -491,7 +493,7 @@ void CL_BaseMove(usercmd_t* cmd);
 void IN_CenterView(void);
 
 float CL_KeyState(kbutton_t* key);
-char* Key_KeynumToString(int keynum);
+const char* Key_KeynumToString(int keynum);
 
 //
 // cl_demo.c
@@ -503,11 +505,11 @@ void CL_Record_f(void);
 //
 // cl_parse.c
 //
-extern char* svc_strings[256];
+extern const char* svc_strings[256];
 
 void CL_ParseServerMessage(void);
-void CL_LoadClientinfo(clientinfo_t* ci, char* s);
-void SHOWNET(char* s);
+void CL_LoadClientinfo(clientinfo_t* ci, const char* s);
+void SHOWNET(const char* s);
 void CL_ParseClientinfo(int player);
 void CL_Download_f(void);
 

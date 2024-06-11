@@ -188,7 +188,7 @@ S_FindName
 
 ==================
 */
-sfx_t* S_FindName(char* name, qboolean create) {
+sfx_t* S_FindName(const char* name, qboolean create) {
     int i;
     sfx_t* sfx;
 
@@ -280,7 +280,7 @@ S_RegisterSound
 
 ==================
 */
-sfx_t* S_RegisterSound(char* name) {
+sfx_t* S_RegisterSound(const char* name) {
     sfx_t* sfx;
 
     if (!sound_started)
@@ -663,7 +663,7 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t* sfx, float f
 S_StartLocalSound
 ==================
 */
-void S_StartLocalSound(char* sound) {
+void S_StartLocalSound(const char* sound) {
     sfx_t* sfx;
 
     if (!sound_started)
@@ -912,7 +912,6 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up) {
     int i;
     int total;
     channel_t* ch;
-    channel_t* combine;
 
     if (!sound_started)
         return;
@@ -933,8 +932,6 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up) {
     VectorCopy(forward, listener_forward);
     VectorCopy(right, listener_right);
     VectorCopy(up, listener_up);
-
-    combine = NULL;
 
     // update spatialization for dynamic sounds
     ch = channels;

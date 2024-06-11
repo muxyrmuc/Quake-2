@@ -203,12 +203,12 @@ void gunner_run(edict_t* self) {
 
 mframe_t gunner_frames_runandshoot[] =
     {
-        ai_run, 32, NULL,
-        ai_run, 15, NULL,
-        ai_run, 10, NULL,
-        ai_run, 18, NULL,
-        ai_run, 8, NULL,
-        ai_run, 20, NULL};
+        { ai_run, 32, NULL },
+        { ai_run, 15, NULL },
+        { ai_run, 10, NULL },
+        { ai_run, 18, NULL },
+        { ai_run, 8, NULL },
+        { ai_run, 20, NULL }};
 
 mmove_t gunner_move_runandshoot = {FRAME_runs01, FRAME_runs06, gunner_frames_runandshoot, NULL};
 
@@ -218,45 +218,45 @@ void gunner_runandshoot(edict_t* self) {
 
 mframe_t gunner_frames_pain3[] =
     {
-        ai_move, -3, NULL,
-        ai_move, 1, NULL,
-        ai_move, 1, NULL,
-        ai_move, 0, NULL,
-        ai_move, 1, NULL};
+        { ai_move, -3, NULL },
+        { ai_move, 1, NULL },
+        { ai_move, 1, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 1, NULL }};
 mmove_t gunner_move_pain3 = {FRAME_pain301, FRAME_pain305, gunner_frames_pain3, gunner_run};
 
 mframe_t gunner_frames_pain2[] =
     {
-        ai_move, -2, NULL,
-        ai_move, 11, NULL,
-        ai_move, 6, NULL,
-        ai_move, 2, NULL,
-        ai_move, -1, NULL,
-        ai_move, -7, NULL,
-        ai_move, -2, NULL,
-        ai_move, -7, NULL};
+        { ai_move, -2, NULL },
+        { ai_move, 11, NULL },
+        { ai_move, 6, NULL },
+        { ai_move, 2, NULL },
+        { ai_move, -1, NULL },
+        { ai_move, -7, NULL },
+        { ai_move, -2, NULL },
+        { ai_move, -7, NULL }};
 mmove_t gunner_move_pain2 = {FRAME_pain201, FRAME_pain208, gunner_frames_pain2, gunner_run};
 
 mframe_t gunner_frames_pain1[] =
     {
-        ai_move, 2, NULL,
-        ai_move, 0, NULL,
-        ai_move, -5, NULL,
-        ai_move, 3, NULL,
-        ai_move, -1, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL,
-        ai_move, 1, NULL,
-        ai_move, 1, NULL,
-        ai_move, 2, NULL,
-        ai_move, 1, NULL,
-        ai_move, 0, NULL,
-        ai_move, -2, NULL,
-        ai_move, -2, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL};
+        { ai_move, 2, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, -5, NULL },
+        { ai_move, 3, NULL },
+        { ai_move, -1, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 1, NULL },
+        { ai_move, 1, NULL },
+        { ai_move, 2, NULL },
+        { ai_move, 1, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, -2, NULL },
+        { ai_move, -2, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL }};
 mmove_t gunner_move_pain1 = {FRAME_pain101, FRAME_pain118, gunner_frames_pain1, gunner_run};
 
 void gunner_pain(edict_t* self, edict_t* other, float kick, int damage) {
@@ -295,17 +295,17 @@ void gunner_dead(edict_t* self) {
 
 mframe_t gunner_frames_death[] =
     {
-        ai_move, 0, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL,
-        ai_move, -7, NULL,
-        ai_move, -3, NULL,
-        ai_move, -5, NULL,
-        ai_move, 8, NULL,
-        ai_move, 6, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL,
-        ai_move, 0, NULL};
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, -7, NULL },
+        { ai_move, -3, NULL },
+        { ai_move, -5, NULL },
+        { ai_move, 8, NULL },
+        { ai_move, 6, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL },
+        { ai_move, 0, NULL }};
 mmove_t gunner_move_death = {FRAME_death01, FRAME_death11, gunner_frames_death, gunner_dead};
 
 void gunner_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int damage, vec3_t point) {

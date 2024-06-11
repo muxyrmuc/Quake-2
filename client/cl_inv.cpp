@@ -38,7 +38,7 @@ void CL_ParseInventory(void) {
 Inv_DrawString
 ================
 */
-void Inv_DrawString(int x, int y, char* string) {
+void Inv_DrawString(int x, int y, const char* string) {
     while (*string) {
         re.DrawChar(x, y, *string);
         x += 8;
@@ -65,7 +65,7 @@ void CL_DrawInventory(void) {
     char string[1024];
     int x, y;
     char binding[1024];
-    char* bind;
+    const char* bind;
     int selected;
     int top;
 

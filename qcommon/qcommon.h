@@ -85,8 +85,8 @@ typedef struct sizebuf_s {
 void SZ_Init(sizebuf_t* buf, byte* data, int length);
 void SZ_Clear(sizebuf_t* buf);
 void* SZ_GetSpace(sizebuf_t* buf, int length);
-void SZ_Write(sizebuf_t* buf, void* data, int length);
-void SZ_Print(sizebuf_t* buf, char* data);  // strcats onto the sizebuf
+void SZ_Write(sizebuf_t* buf, const void* data, int length);
+void SZ_Print(sizebuf_t* buf, const char* data);  // strcats onto the sizebuf
 
 //============================================================================
 
@@ -98,7 +98,7 @@ void MSG_WriteByte(sizebuf_t* sb, int c);
 void MSG_WriteShort(sizebuf_t* sb, int c);
 void MSG_WriteLong(sizebuf_t* sb, int c);
 void MSG_WriteFloat(sizebuf_t* sb, float f);
-void MSG_WriteString(sizebuf_t* sb, char* s);
+void MSG_WriteString(sizebuf_t* sb, const char* s);
 void MSG_WriteCoord(sizebuf_t* sb, float f);
 void MSG_WritePos(sizebuf_t* sb, vec3_t pos);
 void MSG_WriteAngle(sizebuf_t* sb, float f);
@@ -141,7 +141,7 @@ extern float LittleFloat(float l);
 //============================================================================
 
 int COM_Argc(void);
-char* COM_Argv(int arg);  // range and null checked
+const char* COM_Argv(int arg);  // range and null checked
 void COM_ClearArgv(int arg);
 int COM_CheckParm(char* parm);
 void COM_AddParm(char* parm);
@@ -149,7 +149,7 @@ void COM_AddParm(char* parm);
 void COM_Init(void);
 void COM_InitArgv(int argc, char** argv);
 
-char* CopyString(char* in);
+char* CopyString(const char* in);
 
 //============================================================================
 
@@ -349,7 +349,7 @@ The game starts with a Cbuf_AddText ("exec quake.rc\n"); Cbuf_Execute ();
 void Cbuf_Init(void);
 // allocates an initial text buffer that will grow as needed
 
-void Cbuf_AddText(char* text);
+void Cbuf_AddText(const char* text);
 // as new commands are generated from the console or keybindings,
 // the text is added to the end of the command buffer.
 
@@ -393,23 +393,23 @@ typedef void (*xcommand_t)(void);
 
 void Cmd_Init(void);
 
-void Cmd_AddCommand(char* cmd_name, xcommand_t function);
+void Cmd_AddCommand(const char* cmd_name, xcommand_t function);
 // called by the init functions of other parts of the program to
 // register commands and functions to call for them.
 // The cmd_name is referenced later, so it should not be in temp memory
 // if function is NULL, the command will be forwarded to the server
 // as a clc_stringcmd instead of executed locally
-void Cmd_RemoveCommand(char* cmd_name);
+void Cmd_RemoveCommand(const char* cmd_name);
 
 qboolean Cmd_Exists(char* cmd_name);
 // used by the cvar code to check for cvar / command name overlap
 
-char* Cmd_CompleteCommand(char* partial);
+const char* Cmd_CompleteCommand(char* partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
 int Cmd_Argc(void);
-char* Cmd_Argv(int arg);
+const char* Cmd_Argv(int arg);
 char* Cmd_Args(void);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
@@ -451,26 +451,26 @@ interface from being ambiguous.
 
 extern cvar_t* cvar_vars;
 
-cvar_t* Cvar_Get(char* var_name, char* value, int flags);
+cvar_t* Cvar_Get(const char* var_name, const char* value, int flags);
 // creates the variable if it doesn't exist, or returns the existing one
 // if it exists, the value will not be changed, but flags will be ORed in
 // that allows variables to be unarchived without needing bitflags
 
-cvar_t* Cvar_Set(char* var_name, char* value);
+cvar_t* Cvar_Set(const char* var_name, const char* value);
 // will create the variable if it doesn't exist
 
-cvar_t* Cvar_ForceSet(char* var_name, char* value);
+cvar_t* Cvar_ForceSet(const char* var_name, const char* value);
 // will set the variable even if NOSET or LATCH
 
-cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
+cvar_t* Cvar_FullSet(const char* var_name, const char* value, int flags);
 
-void Cvar_SetValue(char* var_name, float value);
+void Cvar_SetValue(const char* var_name, float value);
 // expands value to a string and calls Cvar_Set
 
-float Cvar_VariableValue(char* var_name);
+float Cvar_VariableValue(const char* var_name);
 // returns 0 if not defined or non numeric
 
-char* Cvar_VariableString(char* var_name);
+const char* Cvar_VariableString(const char* var_name);
 // returns an empty string if not defined
 
 char* Cvar_CompleteVariable(char* partial);
@@ -518,9 +518,7 @@ NET
 
 typedef enum { NA_LOOPBACK,
                NA_BROADCAST,
-               NA_IP,
-               NA_IPX,
-               NA_BROADCAST_IPX } netadrtype_t;
+               NA_IP } netadrtype_t;
 
 typedef enum { NS_CLIENT,
                NS_SERVER } netsrc_t;
@@ -530,7 +528,6 @@ typedef struct
     netadrtype_t type;
 
     byte ip[4];
-    byte ipx[10];
 
     unsigned short port;
 } netadr_t;
@@ -547,7 +544,7 @@ qboolean NET_CompareAdr(netadr_t a, netadr_t b);
 qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b);
 qboolean NET_IsLocalAddress(netadr_t adr);
 char* NET_AdrToString(netadr_t a);
-qboolean NET_StringToAdr(char* s, netadr_t* a);
+qboolean NET_StringToAdr(const char* s, netadr_t* a);
 void NET_Sleep(int msec);
 
 //============================================================================
@@ -600,7 +597,7 @@ void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport);
 qboolean Netchan_NeedReliable(netchan_t* chan);
 void Netchan_Transmit(netchan_t* chan, int length, byte* data);
 void Netchan_OutOfBand(netsrc_t net_socket, netadr_t adr, int length, byte* data);
-void Netchan_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, char* format, ...);
+void Netchan_OutOfBandPrint(netsrc_t net_socket, netadr_t adr, const char* format, ...);
 qboolean Netchan_Process(netchan_t* chan, sizebuf_t* msg);
 
 qboolean Netchan_CanReliable(netchan_t* chan);
@@ -615,8 +612,8 @@ CMODEL
 
 #include "../qcommon/qfiles.h"
 
-cmodel_t* CM_LoadMap(char* name, qboolean clientload, unsigned* checksum);
-cmodel_t* CM_InlineModel(char* name);  // *1, *2, etc
+cmodel_t* CM_LoadMap(const char* name, qboolean clientload, unsigned* checksum);
+cmodel_t* CM_InlineModel(const char* name);  // *1, *2, etc
 
 int CM_NumClusters(void);
 int CM_NumInlineModels(void);
@@ -688,11 +685,11 @@ char* FS_Gamedir(void);
 char* FS_NextPath(char* prevpath);
 void FS_ExecAutoexec(void);
 
-int FS_FOpenFile(char* filename, FILE** file);
+int FS_FOpenFile(const char* filename, FILE** file);
 void FS_FCloseFile(FILE* f);
 // note: this can't be called from another DLL, due to MS libc issues
 
-int FS_LoadFile(char* path, void** buffer);
+int FS_LoadFile(const char* path, void** buffer);
 // a null buffer will just return the file length without loading
 // a -1 length is not present
 
@@ -722,11 +719,11 @@ MISC
 #define PRINT_ALL 0
 #define PRINT_DEVELOPER 1  // only print when "developer 1"
 
-void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush));
+void Com_BeginRedirect(int target, char* buffer, int buffersize, void(*flush)(int, char*));
 void Com_EndRedirect(void);
-void Com_Printf(char* fmt, ...);
-void Com_DPrintf(char* fmt, ...);
-void Com_Error(int code, char* fmt, ...);
+void Com_Printf(const char* fmt, ...);
+void Com_DPrintf(const char* fmt, ...);
+void Com_Error(int code, const char* fmt, ...);
 void Com_Quit(void);
 
 int Com_ServerState(void);  // this should have just been a cvar...
@@ -805,5 +802,5 @@ void Con_Print(char* text);
 void SCR_BeginLoadingPlaque(void);
 
 void SV_Init(void);
-void SV_Shutdown(char* finalmsg, qboolean reconnect);
+void SV_Shutdown(const char* finalmsg, qboolean reconnect);
 void SV_Frame(int msec);

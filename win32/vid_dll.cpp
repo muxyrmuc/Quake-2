@@ -23,20 +23,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <assert.h>
 #include <float.h>
 
-#include "..\client\client.h"
+#include <SDL_messagebox.h>
+#include <SDL_loadso.h>
+#include <SDL_events.h>
+
+#include "../client/client.h"
 #include "winquake.h"
 //#include "zmouse.h"
 
 // Structure containing functions exported from refresh DLL
 refexport_t re;
-
-cvar_t* win_noalttab;
-
-#ifndef WM_MOUSEWHEEL
-#define WM_MOUSEWHEEL (WM_MOUSELAST + 1)  // message that will be supported by the OS
-#endif
-
-static UINT MSH_MOUSEWHEEL;
 
 // Console variables that we need to access from this module
 cvar_t* vid_gamma;
@@ -47,40 +43,16 @@ cvar_t* vid_fullscreen;
 
 // Global variables used internally by this module
 viddef_t viddef;           // global video state; used by other modules
-HINSTANCE reflib_library;  // Handle to refresh DLL
+void* reflib_library;  // Handle to refresh DLL
 qboolean reflib_active = kFalse;
 
-HWND cl_hwnd;  // Main window handle for life of program
+SDL_Window* cl_hwnd;  // Main window handle for life of program; used to be HWND
 
 #define VID_NUM_MODES (sizeof(vid_modes) / sizeof(vid_modes[0]))
 
-LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-static qboolean s_alttab_disabled;
+void MainWndProc(const SDL_Event& event);
 
 extern unsigned sys_msg_time;
-
-/*
-** WIN32 helper functions
-*/
-static void WIN_DisableAltTab(void) {
-    if (s_alttab_disabled)
-        return;
-
-    RegisterHotKey(0, 0, MOD_ALT, VK_TAB);
-    RegisterHotKey(0, 1, MOD_ALT, VK_RETURN);
-
-    s_alttab_disabled = kTrue;
-}
-
-static void WIN_EnableAltTab(void) {
-    if (s_alttab_disabled) {
-        UnregisterHotKey(0, 0);
-        UnregisterHotKey(0, 1);
-
-        s_alttab_disabled = kFalse;
-    }
-}
 
 /*
 ==========================================================================
@@ -91,10 +63,9 @@ DLL GLUE
 */
 
 #define MAXPRINTMSG 4096
-void VID_Printf(int print_level, char* fmt, ...) {
+void VID_Printf(int print_level, const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
-    static qboolean inupdate;
 
     va_start(argptr, fmt);
     vsprintf(msg, fmt, argptr);
@@ -105,15 +76,13 @@ void VID_Printf(int print_level, char* fmt, ...) {
     } else if (print_level == PRINT_DEVELOPER) {
         Com_DPrintf("%s", msg);
     } else if (print_level == PRINT_ALERT) {
-        MessageBox(0, msg, "PRINT_ALERT", MB_ICONWARNING);
-        OutputDebugString(msg);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "PRINT_ALERT", msg, nullptr);
     }
 }
 
-void VID_Error(int err_level, char* fmt, ...) {
+void VID_Error(int err_level, const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
-    static qboolean inupdate;
 
     va_start(argptr, fmt);
     vsprintf(msg, fmt, argptr);
@@ -204,33 +173,26 @@ int MapKey(int key) {
     }
 }
 
-void AppActivate(BOOL fActive, BOOL minimize) {
-    Minimized = minimize ? kTrue : kFalse;
+void AppActivate(bool fActive, bool minimize) {
+    Minimized = minimize ? true : false;
 
     Key_ClearStates();
 
     // we don't want to act like we're active if we're minimized
     if (fActive && !Minimized)
-        ActiveApp = kTrue;
+        ActiveApp = true;
     else
-        ActiveApp = kFalse;
+        ActiveApp = false;
 
     // minimize/restore mouse-capture on demand
-    if (kFalse == ActiveApp) {
-        IN_Activate(kFalse);
+    if (false == ActiveApp) {
+        IN_Activate(false);
         CDAudio_Activate(kFalse);
         S_Activate(kFalse);
-
-        if (win_noalttab->value) {
-            WIN_EnableAltTab();
-        }
     } else {
-        IN_Activate(kTrue);
+        IN_Activate(true);
         CDAudio_Activate(kTrue);
         S_Activate(kTrue);
-        if (win_noalttab->value) {
-            WIN_DisableAltTab();
-        }
     }
 }
 
@@ -241,11 +203,16 @@ MainWndProc
 main window procedure
 ====================
 */
-LONG WINAPI MainWndProc(
-    HWND hWnd,
-    UINT uMsg,
-    WPARAM wParam,
-    LPARAM lParam) {
+void MainWndProc(const SDL_Event& event) {
+    switch (event.type) {
+        case SDL_MOUSEWHEEL:
+            break;
+
+    }
+
+
+
+
     LONG lRet = 0;
 
     if (uMsg == MSH_MOUSEWHEEL) {
@@ -327,8 +294,8 @@ LONG WINAPI MainWndProc(
                 Cvar_SetValue("vid_ypos", yPos + r.top);
                 vid_xpos->modified = kFalse;
                 vid_ypos->modified = kFalse;
-                if (kFalse != ActiveApp)
-                    IN_Activate(kTrue);
+                if (false != ActiveApp)
+                    IN_Activate(true);
             }
         }
             return DefWindowProc(hWnd, uMsg, wParam, lParam);
@@ -470,8 +437,7 @@ void VID_NewWindow(int width, int height) {
 }
 
 void VID_FreeReflib(void) {
-    if (!FreeLibrary(reflib_library))
-        Com_Error(ERR_FATAL, "Reflib FreeLibrary failed");
+    SDL_UnloadObject(reflib_library);
     memset(&re, 0, sizeof(re));
     reflib_library = NULL;
     reflib_active = kFalse;
@@ -493,8 +459,8 @@ qboolean VID_LoadRefresh(char* name) {
 
     Com_Printf("------- Loading %s -------\n", name);
 
-    if ((reflib_library = LoadLibrary(name)) == 0) {
-        Com_Printf("LoadLibrary(\"%s\") failed\n", name);
+    if ((reflib_library = SDL_LoadObject(name)) == nullptr) {
+        Com_Printf("SDL_LoadObject(\"%s\") failed\n", name);
 
         return kFalse;
     }
@@ -516,7 +482,7 @@ qboolean VID_LoadRefresh(char* name) {
     ri.Vid_MenuInit = VID_MenuInit;
     ri.Vid_NewWindow = VID_NewWindow;
 
-    if ((GetRefAPI = (GetRefAPI_t)GetProcAddress(reflib_library, "GetRefAPI")) == 0)
+    if ((GetRefAPI = (GetRefAPI_t)SDL_LoadFunction(reflib_library, "GetRefAPI")) == nullptr)
         Com_Error(ERR_FATAL, "GetProcAddress failed on %s", name);
 
     re = GetRefAPI(ri);
@@ -526,7 +492,7 @@ qboolean VID_LoadRefresh(char* name) {
         Com_Error(ERR_FATAL, "%s has incompatible api_version", name);
     }
 
-    if (re.Init(global_hInstance, MainWndProc) == -1) {
+    if (re.Init(MainWndProc) == -1) {
         re.Shutdown();
         VID_FreeReflib();
         return kFalse;
@@ -561,15 +527,6 @@ update the rendering DLL and/or video mode to match.
 */
 void VID_CheckChanges(void) {
     char name[100];
-
-    if (win_noalttab->modified) {
-        if (win_noalttab->value) {
-            WIN_DisableAltTab();
-        } else {
-            WIN_EnableAltTab();
-        }
-        win_noalttab->modified = kFalse;
-    }
 
     if (vid_ref->modified) {
         cl.force_refdef = kTrue;  // can't use a paused refdef
@@ -624,7 +581,6 @@ void VID_Init(void) {
     vid_ypos = Cvar_Get("vid_ypos", "22", CVAR_ARCHIVE);
     vid_fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
     vid_gamma = Cvar_Get("vid_gamma", "1", CVAR_ARCHIVE);
-    win_noalttab = Cvar_Get("win_noalttab", "0", CVAR_ARCHIVE);
 
     /* Add some console commands that we want to handle */
     Cmd_AddCommand("vid_restart", VID_Restart_f);

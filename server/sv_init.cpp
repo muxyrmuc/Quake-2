@@ -29,7 +29,7 @@ SV_FindIndex
 
 ================
 */
-int SV_FindIndex(char* name, int start, int max, qboolean create) {
+int SV_FindIndex(const char* name, int start, int max, qboolean create) {
     int i;
 
     if (!name || !name[0])
@@ -58,15 +58,15 @@ int SV_FindIndex(char* name, int start, int max, qboolean create) {
     return i;
 }
 
-int SV_ModelIndex(char* name) {
+int SV_ModelIndex(const char* name) {
     return SV_FindIndex(name, CS_MODELS, MAX_MODELS, kTrue);
 }
 
-int SV_SoundIndex(char* name) {
+int SV_SoundIndex(const char* name) {
     return SV_FindIndex(name, CS_SOUNDS, MAX_SOUNDS, kTrue);
 }
 
-int SV_ImageIndex(char* name) {
+int SV_ImageIndex(const char* name) {
     return SV_FindIndex(name, CS_IMAGES, MAX_IMAGES, kTrue);
 }
 
@@ -341,7 +341,7 @@ another level:
         map tram.cin+jail_e3
 ======================
 */
-void SV_Map(qboolean attractloop, char* levelstring, qboolean loadgame) {
+void SV_Map(qboolean attractloop, const char* levelstring, qboolean loadgame) {
     char level[MAX_QPATH];
     char* ch;
     int l;

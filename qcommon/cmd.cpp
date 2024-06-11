@@ -82,7 +82,7 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddText(char* text) {
+void Cbuf_AddText(const char* text) {
     int l;
 
     l = strlen(text);
@@ -237,7 +237,7 @@ Other commands are added late, after all initialization is complete.
 */
 void Cbuf_AddEarlyCommands(qboolean clear) {
     int i;
-    char* s;
+    const char* s;
 
     for (i = 0; i < COM_Argc(); i++) {
         s = COM_Argv(i);
@@ -386,7 +386,7 @@ void Cmd_Alias_f(void) {
     cmdalias_t* a;
     char cmd[1024];
     int i, c;
-    char* s;
+    const char* s;
 
     if (Cmd_Argc() == 1) {
         Com_Printf("Current alias commands:\n");
@@ -439,13 +439,13 @@ void Cmd_Alias_f(void) {
 
 typedef struct cmd_function_s {
     struct cmd_function_s* next;
-    char* name;
+    const char* name;
     xcommand_t function;
 } cmd_function_t;
 
 static int cmd_argc;
 static char* cmd_argv[MAX_STRING_TOKENS];
-static char* cmd_null_string = "";
+static const char* cmd_null_string = "";
 static char cmd_args[MAX_STRING_CHARS];
 
 static cmd_function_t* cmd_functions;  // possible commands to execute
@@ -464,7 +464,7 @@ int Cmd_Argc(void) {
 Cmd_Argv
 ============
 */
-char* Cmd_Argv(int arg) {
+const char* Cmd_Argv(int arg) {
     if ((unsigned)arg >= cmd_argc)
         return cmd_null_string;
     return cmd_argv[arg];
@@ -492,7 +492,8 @@ char* Cmd_MacroExpandString(char* text) {
     char* scan;
     static char expanded[MAX_STRING_CHARS];
     char temporary[MAX_STRING_CHARS];
-    char *token, *start;
+    const char* token;
+    char* start;
 
     inquote = kFalse;
     scan = text;
@@ -559,7 +560,7 @@ $Cvars will be expanded unless they are in a quoted token
 */
 void Cmd_TokenizeString(char* text, qboolean macroExpand) {
     int i;
-    char* com_token;
+    const char* com_token;
 
     // clear the args from the last string
     for (i = 0; i < cmd_argc; i++)
@@ -620,7 +621,7 @@ void Cmd_TokenizeString(char* text, qboolean macroExpand) {
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand(char* cmd_name, xcommand_t function) {
+void Cmd_AddCommand(const char* cmd_name, xcommand_t function) {
     cmd_function_t* cmd;
 
     // fail if the command is a variable name
@@ -649,7 +650,7 @@ void Cmd_AddCommand(char* cmd_name, xcommand_t function) {
 Cmd_RemoveCommand
 ============
 */
-void Cmd_RemoveCommand(char* cmd_name) {
+void Cmd_RemoveCommand(const char* cmd_name) {
     cmd_function_t *cmd, **back;
 
     back = &cmd_functions;
@@ -689,7 +690,7 @@ qboolean Cmd_Exists(char* cmd_name) {
 Cmd_CompleteCommand
 ============
 */
-char* Cmd_CompleteCommand(char* partial) {
+const char* Cmd_CompleteCommand(char* partial) {
     cmd_function_t* cmd;
     int len;
     cmdalias_t* a;

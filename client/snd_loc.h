@@ -19,6 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // snd_loc.h -- private sound functions
 
+#pragma once
+
+#include "../game/q_shared.h"
+
 // !!! if this is changed, the asm code must change !!!
 typedef struct
 {

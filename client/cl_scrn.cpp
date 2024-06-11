@@ -564,9 +564,11 @@ int entitycmpfnc(const entity_t* a, const entity_t* b) {
     ** all other models are sorted by model then skin
     */
     if (a->model == b->model) {
-        return ((int)a->skin - (int)b->skin);
+        std::ptrdiff_t distance = reinterpret_cast<char*>(a->skin) - reinterpret_cast<char*>(b->skin);
+        return distance < 0 ? -1 : (distance > 0 ? 1 : 0);
     } else {
-        return ((int)a->model - (int)b->model);
+        std::ptrdiff_t distance = reinterpret_cast<char*>(a->model) - reinterpret_cast<char*>(b->model);
+        return distance < 0 ? -1 : (distance > 0 ? 1 : 0);
     }
 }
 
@@ -709,7 +711,7 @@ void SCR_TileClear(void) {
 //===============================================================
 
 #define STAT_MINUS 10  // num frame for '-' stats digit
-char* sb_nums[2][11] =
+const char* sb_nums[2][11] =
     {
         {"num_0", "num_1", "num_2", "num_3", "num_4", "num_5",
          "num_6", "num_7", "num_8", "num_9", "num_minus"},
@@ -751,7 +753,7 @@ void SizeHUDString(char* string, int* w, int* h) {
     *h = lines * 8;
 }
 
-void DrawHUDString(char* string, int x, int y, int centerwidth, int xor) {
+void DrawHUDString(const char* string, int x, int y, int centerwidth, int xor_with) {
     int margin;
     char line[1024];
     int width;
@@ -771,7 +773,7 @@ void DrawHUDString(char* string, int x, int y, int centerwidth, int xor) {
         else
             x = margin;
         for (i = 0; i < width; i++) {
-            re.DrawChar(x, y, line[i] ^ xor);
+            re.DrawChar(x, y, line[i] ^ xor_with);
             x += 8;
         }
         if (*string) {
@@ -856,7 +858,7 @@ SCR_ExecuteLayoutString
 void SCR_ExecuteLayoutString(char* s) {
     int x, y;
     int value;
-    char* token;
+    const char* token;
     int width;
     int index;
     clientinfo_t* ci;

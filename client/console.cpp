@@ -30,7 +30,7 @@ extern char key_lines[32][MAXCMDLINE];
 extern int edit_line;
 extern int key_linepos;
 
-void DrawString(int x, int y, char* s) {
+void DrawString(int x, int y, const char* s) {
     while (*s) {
         re.DrawChar(x, y, *s);
         x += 8;
@@ -38,7 +38,7 @@ void DrawString(int x, int y, char* s) {
     }
 }
 
-void DrawAltString(int x, int y, char* s) {
+void DrawAltString(int x, int y, const char* s) {
     while (*s) {
         re.DrawChar(x, y, *s ^ 0x80);
         x += 8;
@@ -403,7 +403,6 @@ The input line scrolls horizontally if typing goes beyond the right edge
 ================
 */
 void Con_DrawInput(void) {
-    int y;
     int i;
     char* text;
 
@@ -426,8 +425,6 @@ void Con_DrawInput(void) {
         text += 1 + key_linepos - con.linewidth;
 
     // draw it
-    y = con.vislines - 16;
-
     for (i = 0; i < con.linewidth; i++)
         re.DrawChar((i + 1) << 3, con.vislines - 22, text[i]);
 

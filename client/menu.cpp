@@ -28,9 +28,9 @@ static int m_main_cursor;
 
 #define NUM_CURSOR_FRAMES 15
 
-static char* menu_in_sound = "misc/menu1.wav";
-static char* menu_move_sound = "misc/menu2.wav";
-static char* menu_out_sound = "misc/menu3.wav";
+static const char* menu_in_sound = "misc/menu1.wav";
+static const char* menu_move_sound = "misc/menu2.wav";
+static const char* menu_out_sound = "misc/menu3.wav";
 
 void M_Menu_Main_f(void);
 void M_Menu_Game_f(void);
@@ -71,7 +71,7 @@ typedef struct
 menulayer_t m_layers[MAX_MENU_DEPTH];
 int m_menudepth;
 
-static void M_Banner(char* name) {
+static void M_Banner(const char* name) {
     int w, h;
 
     re.DrawGetPicSize(&w, &h, name);
@@ -251,7 +251,7 @@ void M_DrawCharacter(int cx, int cy, int num) {
     re.DrawChar(cx + ((viddef.width - 320) >> 1), cy + ((viddef.height - 240) >> 1), num);
 }
 
-void M_Print(int cx, int cy, char* str) {
+void M_Print(int cx, int cy, const char* str) {
     while (*str) {
         M_DrawCharacter(cx, cy, (*str) + 128);
         str++;
@@ -352,9 +352,8 @@ void M_Main_Draw(void) {
     int ystart;
     int xoffset;
     int widest = -1;
-    int totalheight = 0;
     char litname[80];
-    char* names[] =
+    const char* names[] =
         {
             "m_main_game",
             "m_main_multiplayer",
@@ -368,7 +367,6 @@ void M_Main_Draw(void) {
 
         if (w > widest)
             widest = w;
-        totalheight += (h + 12);
     }
 
     ystart = (viddef.height / 2 - 110);
@@ -525,7 +523,7 @@ KEYS MENU
 
 =======================================================================
 */
-char* bindnames[][2] =
+const char* bindnames[][2] =
     {
         {"+attack", "attack"},
         {"weapnext", "next weapon"},
@@ -583,7 +581,7 @@ static menuaction_s s_keys_inv_next_action;
 
 static menuaction_s s_keys_help_computer_action;
 
-static void M_UnbindCommand(char* command) {
+static void M_UnbindCommand(const char* command) {
     int j;
     int l;
     char* b;
@@ -599,7 +597,7 @@ static void M_UnbindCommand(char* command) {
     }
 }
 
-static void M_FindKeysForCommand(char* command, int* twokeys) {
+static void M_FindKeysForCommand(const char* command, int* twokeys) {
     int count;
     int j;
     int l;
@@ -938,7 +936,6 @@ CONTROLS MENU
 
 =======================================================================
 */
-static cvar_t* win_noalttab;
 extern cvar_t* in_joystick;
 
 static menuframework_s s_options_menu;
@@ -946,7 +943,6 @@ static menuaction_s s_options_defaults_action;
 static menuaction_s s_options_customize_options_action;
 static menuslider_s s_options_sensitivity_slider;
 static menulist_s s_options_freelook_box;
-static menulist_s s_options_noalttab_box;
 static menulist_s s_options_alwaysrun_box;
 static menulist_s s_options_invertmouse_box;
 static menulist_s s_options_lookspring_box;
@@ -983,10 +979,6 @@ static void MouseSpeedFunc(void* unused) {
     Cvar_SetValue("sensitivity", s_options_sensitivity_slider.curvalue / 2.0F);
 }
 
-static void NoAltTabFunc(void* unused) {
-    Cvar_SetValue("win_noalttab", s_options_noalttab_box.curvalue);
-}
-
 static float ClampCvar(float min, float max, float value) {
     if (value < min) return min;
     if (value > max) return max;
@@ -1018,8 +1010,6 @@ static void ControlsSetMenuItemValues(void) {
 
     Cvar_SetValue("in_joystick", ClampCvar(0, 1, in_joystick->value));
     s_options_joystick_box.curvalue = in_joystick->value;
-
-    s_options_noalttab_box.curvalue = win_noalttab->value;
 }
 
 static void ControlsResetDefaultsFunc(void* unused) {
@@ -1121,8 +1111,6 @@ void Options_MenuInit(void) {
             "angle",
             0};
 
-    win_noalttab = Cvar_Get("win_noalttab", "0", CVAR_ARCHIVE);
-
     /*
     ** configure controls menu and menu items
     */
@@ -1213,14 +1201,7 @@ void Options_MenuInit(void) {
     s_options_crosshair_box.generic.name = "crosshair";
     s_options_crosshair_box.generic.callback = CrosshairFunc;
     s_options_crosshair_box.itemnames = crosshair_names;
-    /*
-            s_options_noalttab_box.generic.type = MTYPE_SPINCONTROL;
-            s_options_noalttab_box.generic.x	= 0;
-            s_options_noalttab_box.generic.y	= 110;
-            s_options_noalttab_box.generic.name	= "disable alt-tab";
-            s_options_noalttab_box.generic.callback = NoAltTabFunc;
-            s_options_noalttab_box.itemnames = yesno_names;
-    */
+
     s_options_joystick_box.generic.type = MTYPE_SPINCONTROL;
     s_options_joystick_box.generic.x = 0;
     s_options_joystick_box.generic.y = 120;
@@ -1802,13 +1783,6 @@ static void CreditsFunc(void* unused) {
 }
 
 void Game_MenuInit(void) {
-    static const char* difficulty_names[] =
-        {
-            "easy",
-            "medium",
-            "hard",
-            0};
-
     s_game_menu.x = viddef.width * 0.50;
     s_game_menu.nitems = 0;
 
@@ -2256,7 +2230,7 @@ void StartServerActionFunc(void* self) {
     int timelimit;
     int fraglimit;
     int maxclients;
-    char* spot;
+    const char* spot;
 
     strcpy(startmap, strchr(mapnames[s_startmap_list.curvalue], '\n') + 1);
 
@@ -3200,7 +3174,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
         // verify the existence of tris.md2
         strcpy(scratch, dirnames[i]);
         strcat(scratch, "/tris.md2");
-        if (!Sys_FindFirst(scratch, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM)) {
+        if (!Sys_FindFirst(scratch, 0, SFF_SUBDIR)) {
             free(dirnames[i]);
             dirnames[i] = 0;
             Sys_FindClose();
@@ -3211,7 +3185,7 @@ static qboolean PlayerConfig_ScanDirectories(void) {
         // verify the existence of at least one pcx skin
         strcpy(scratch, dirnames[i]);
         strcat(scratch, "/*.pcx");
-        pcxnames = FS_ListFiles(scratch, &npcxfiles, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM);
+        pcxnames = FS_ListFiles(scratch, &npcxfiles, 0, SFF_SUBDIR);
 
         if (!pcxnames) {
             free(dirnames[i]);
@@ -3280,6 +3254,8 @@ static qboolean PlayerConfig_ScanDirectories(void) {
     }
     if (dirnames)
         FreeFileList(dirnames, ndirs);
+
+    return kTrue;
 }
 
 static int pmicmpfnc(const void* _a, const void* _b) {
@@ -3304,11 +3280,9 @@ static int pmicmpfnc(const void* _a, const void* _b) {
 
 qboolean PlayerConfig_MenuInit(void) {
     extern cvar_t* name;
-    extern cvar_t* team;
     extern cvar_t* skin;
     char currentdirectory[1024];
     char currentskin[1024];
-    int i = 0;
 
     int currentdirectoryindex = 0;
     int currentskinindex = 0;
@@ -3341,7 +3315,7 @@ qboolean PlayerConfig_MenuInit(void) {
     qsort(s_pmi, s_numplayermodels, sizeof(s_pmi[0]), pmicmpfnc);
 
     memset(s_pmnames, 0, sizeof(s_pmnames));
-    for (i = 0; i < s_numplayermodels; i++) {
+    for (int i = 0; i < s_numplayermodels; i++) {
         s_pmnames[i] = s_pmi[i].displayname;
         if (Q_stricmp(s_pmi[i].directory, currentdirectory) == 0) {
             int j;
@@ -3412,7 +3386,8 @@ qboolean PlayerConfig_MenuInit(void) {
     s_player_handedness_box.curvalue = Cvar_VariableValue("hand");
     s_player_handedness_box.itemnames = handedness;
 
-    for (i = 0; i < sizeof(rate_tbl) / sizeof(*rate_tbl) - 1; i++)
+    std::size_t i = 0;
+    for (; i < sizeof(rate_tbl) / sizeof(*rate_tbl) - 1; i++)
         if (Cvar_VariableValue("rate") == rate_tbl[i])
             break;
 
@@ -3471,7 +3446,6 @@ void PlayerConfig_MenuDraw(void) {
 
     if (s_pmi[s_player_model_box.curvalue].skindisplaynames) {
         static int yaw;
-        int maxframe = 29;
         entity_t entity;
 
         memset(&entity, 0, sizeof(entity));

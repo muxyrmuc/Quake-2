@@ -1209,7 +1209,6 @@ Sets cl.refdef view values
 void CL_CalcViewValues(void) {
     int i;
     float lerp, backlerp;
-    centity_t* ent;
     frame_t* oldframe;
     player_state_t *ps, *ops;
 
@@ -1225,7 +1224,6 @@ void CL_CalcViewValues(void) {
     if (fabs(ops->pmove.origin[0] - ps->pmove.origin[0]) > 256 * 8 || abs(ops->pmove.origin[1] - ps->pmove.origin[1]) > 256 * 8 || abs(ops->pmove.origin[2] - ps->pmove.origin[2]) > 256 * 8)
         ops = ps;  // don't interpolate
 
-    ent = &cl_entities[cl.playernum + 1];
     lerp = cl.lerpfrac;
 
     // calculate the origin

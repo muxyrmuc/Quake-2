@@ -23,10 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <direct.h>
-#include <io.h>
-#include <conio.h>
 #include <chrono>
+#include <filesystem>
 
 //===============================================================================
 
@@ -79,9 +77,8 @@ void Hunk_Free(void* base) {
 //===============================================================================
 
 int Sys_NowMilliseconds() {
-    static_assert(std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den <= 1 / 1000,
-                  "steady_clock precision is too low");
-
+    static_assert(double(std::chrono::steady_clock::period::num) / std::chrono::steady_clock::period::den <= double(1) / 1000,
+                      "steady_clock precision is too low");
     return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 
@@ -105,76 +102,64 @@ int Sys_Milliseconds(void) {
 }
 
 void Sys_Mkdir(char* path) {
-    _mkdir(path);
+    std::filesystem::create_directory(std::filesystem::path(path));
 }
 
 //============================================
 
 char findbase[MAX_OSPATH];
 char findpath[MAX_OSPATH];
-std::intptr_t findhandle;
 
-static qboolean CompareAttributes(unsigned found, unsigned musthave, unsigned canthave) {
-    if ((found & _A_RDONLY) && (canthave & SFF_RDONLY))
-        return kFalse;
-    if ((found & _A_HIDDEN) && (canthave & SFF_HIDDEN))
-        return kFalse;
-    if ((found & _A_SYSTEM) && (canthave & SFF_SYSTEM))
-        return kFalse;
-    if ((found & _A_SUBDIR) && (canthave & SFF_SUBDIR))
-        return kFalse;
-    if ((found & _A_ARCH) && (canthave & SFF_ARCH))
-        return kFalse;
+namespace {
 
-    if ((musthave & SFF_RDONLY) && !(found & _A_RDONLY))
-        return kFalse;
-    if ((musthave & SFF_HIDDEN) && !(found & _A_HIDDEN))
-        return kFalse;
-    if ((musthave & SFF_SYSTEM) && !(found & _A_SYSTEM))
-        return kFalse;
-    if ((musthave & SFF_SUBDIR) && !(found & _A_SUBDIR))
-        return kFalse;
-    if ((musthave & SFF_ARCH) && !(found & _A_ARCH))
-        return kFalse;
+std::filesystem::directory_iterator findhandle;
 
-    return kTrue;
 }
 
-char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave) {
-    struct _finddata_t findinfo;
+static bool CompareAttributes(const std::filesystem::directory_entry& found, unsigned musthave, unsigned canthave) {
+    const bool is_directory = found.is_directory();
 
-    if (findhandle)
+    if (is_directory && (canthave & SFF_SUBDIR))
+        return false;
+
+    if ((musthave & SFF_SUBDIR) && !is_directory)
+        return false;
+
+    return true;
+}
+
+// TODO: does it work as expected? Seems like we're stopping the search in the middle
+// in case there is a file with bad flags in the middle of the loop
+char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave) {
+    if (findhandle != std::filesystem::directory_iterator())
         Sys_Error("Sys_BeginFind without close");
-    findhandle = 0;
 
     COM_FilePath(path, findbase);
-    findhandle = _findfirst(path, &findinfo);
-    if (findhandle == -1)
+    findhandle = std::filesystem::directory_iterator(path);
+    if (findhandle == std::filesystem::directory_iterator())
         return NULL;
-    if (!CompareAttributes(findinfo.attrib, musthave, canthave))
+    if (!CompareAttributes(*findhandle, musthave, canthave))
         return NULL;
-    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findinfo.name);
+    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findhandle->path().string().c_str());
     return findpath;
 }
 
 char* Sys_FindNext(unsigned musthave, unsigned canthave) {
-    struct _finddata_t findinfo;
-
-    if (findhandle == -1)
+    if (findhandle == std::filesystem::directory_iterator()) // default-constructed iterator is the end iterator
         return NULL;
-    if (_findnext(findhandle, &findinfo) == -1)
-        return NULL;
-    if (!CompareAttributes(findinfo.attrib, musthave, canthave))
+    findhandle++;
+    if (++findhandle == std::filesystem::directory_iterator())
         return NULL;
 
-    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findinfo.name);
+    if (!CompareAttributes(*findhandle, musthave, canthave))
+        return NULL;
+
+    Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findhandle->path().string().c_str());
     return findpath;
 }
 
 void Sys_FindClose(void) {
-    if (findhandle != -1)
-        _findclose(findhandle);
-    findhandle = 0;
+    findhandle = std::filesystem::directory_iterator();
 }
 
 //============================================

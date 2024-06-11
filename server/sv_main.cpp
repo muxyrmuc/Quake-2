@@ -431,7 +431,7 @@ connectionless packets.
 */
 void SV_ConnectionlessPacket(void) {
     char* s;
-    char* c;
+    const char* c;
 
     MSG_BeginReading(&net_message);
     MSG_ReadLong(&net_message);  // skip the -1 marker
@@ -740,7 +740,7 @@ into a more C freindly form.
 =================
 */
 void SV_UserinfoChanged(client_t* cl) {
-    char* val;
+    const char* val;
     int i;
 
     // call prog code to allow overrides
@@ -828,7 +828,7 @@ not just stuck on the outgoing message list, because the server is going
 to totally exit after returning from this function.
 ==================
 */
-void SV_FinalMessage(char* message, qboolean reconnect) {
+void SV_FinalMessage(const char* message, qboolean reconnect) {
     int i;
     client_t* cl;
 
@@ -862,7 +862,7 @@ Called when each game quits,
 before Sys_Quit or Sys_Error
 ================
 */
-void SV_Shutdown(char* finalmsg, qboolean reconnect) {
+void SV_Shutdown(const char* finalmsg, qboolean reconnect) {
     if (svs.clients)
         SV_FinalMessage(finalmsg, reconnect);
 

@@ -25,23 +25,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <float.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <direct.h>
-#include <io.h>
-#include <conio.h>
+#include <thread>
+
+#include "../game/game.h"
+
+#include <SDL_messagebox.h>
+#include <SDL_clipboard.h>
+#include <SDL_events.h>
 
 #define MINIMUM_WIN_MEMORY 0x0a00000
 #define MAXIMUM_WIN_MEMORY 0x1000000
 
 int starttime;
-qboolean ActiveApp;
-qboolean Minimized;
+bool ActiveApp;
+bool Minimized;
 
 unsigned sys_msg_time;
 unsigned sys_frame_time;
 
 #define MAX_NUM_ARGVS 128
 int argc;
-char* argv[MAX_NUM_ARGVS];
+char** argv;
 
 /*
 ===============================================================================
@@ -51,7 +55,7 @@ SYSTEM IO
 ===============================================================================
 */
 
-void Sys_Error(char* error, ...) {
+void Sys_Error(const char* error, ...) {
     va_list argptr;
     char text[1024];
 
@@ -62,7 +66,7 @@ void Sys_Error(char* error, ...) {
     vsprintf(text, error, argptr);
     va_end(argptr);
 
-    MessageBox(NULL, text, "Error", 0 /* MB_OK */);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", text, nullptr);
 
     exit(1);
 }
@@ -114,14 +118,14 @@ Send Key_Event calls
 ================
 */
 void Sys_SendKeyEvents(void) {
-    MSG msg;
-
-    while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-        if (!GetMessage(&msg, NULL, 0, 0))
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
             Sys_Quit();
-        sys_msg_time = msg.time;
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        }
+        sys_msg_time = event.common.timestamp;
+
+        MainWndProc(event);
     }
 
     // grab frame time
@@ -135,21 +139,19 @@ Sys_GetClipboardData
 ================
 */
 char* Sys_GetClipboardData(void) {
-    char* data = NULL;
-    char* cliptext;
+    char* data = nullptr;
 
-    if (OpenClipboard(NULL) != 0) {
-        HANDLE hClipboardData;
+    if (!SDL_HasClipboardText()) {
 
-        if ((hClipboardData = GetClipboardData(CF_TEXT)) != 0) {
-            if ((cliptext = static_cast<char*>(GlobalLock(hClipboardData))) != 0) {
-                data = static_cast<char*>(malloc(GlobalSize(hClipboardData) + 1));
-                strcpy(data, cliptext);
-                GlobalUnlock(hClipboardData);
-            }
-        }
-        CloseClipboard();
     }
+
+    char* cliptext = SDL_GetClipboardText();
+    if (cliptext[0] != '\0') {
+        data = static_cast<char*>(malloc(strlen(cliptext) + 1));
+        strcpy(data, cliptext);
+    }
+    SDL_free(cliptext);
+
     return data;
 }
 
@@ -167,8 +169,8 @@ Sys_AppActivate
 =================
 */
 void Sys_AppActivate(void) {
-    ShowWindow(cl_hwnd, SW_RESTORE);
-    SetForegroundWindow(cl_hwnd);
+    SDL_ShowWindow(cl_hwnd);
+    SDL_RaiseWindow(cl_hwnd);
 }
 
 /*
@@ -179,17 +181,13 @@ GAME DLL
 ========================================================================
 */
 
-static HINSTANCE game_library;
-
 /*
 =================
 Sys_UnloadGame
 =================
 */
 void Sys_UnloadGame(void) {
-    if (!FreeLibrary(game_library))
-        Com_Error(ERR_FATAL, "FreeLibrary failed for game library");
-    game_library = NULL;
+    // don't think we need FreeLibrary anymore
 }
 
 /*
@@ -200,90 +198,11 @@ Loads the game dll
 =================
 */
 void* Sys_GetGameAPI(void* parms) {
-    void* (*GetGameAPI)(void*);
-    char name[MAX_OSPATH];
-    char* path;
-    char cwd[MAX_OSPATH];
-
-    const char* gamename = "game.dll";
-
-#ifdef NDEBUG
-    const char* debugdir = "release";
-#else
-    const char* debugdir = "debug";
-#endif
-
-    if (game_library)
-        Com_Error(ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
-
-    // check the current debug directory first for development purposes
-    _getcwd(cwd, sizeof(cwd));
-    Com_sprintf(name, sizeof(name), "%s/%s/%s", cwd, debugdir, gamename);
-    game_library = LoadLibrary(name);
-    if (game_library) {
-        Com_DPrintf("LoadLibrary (%s)\n", name);
-    } else {
-        // check the current directory for other development purposes
-        Com_sprintf(name, sizeof(name), "%s/%s", cwd, gamename);
-        game_library = LoadLibrary(name);
-        if (game_library) {
-            Com_DPrintf("LoadLibrary (%s)\n", name);
-        } else {
-            // now run through the search paths
-            path = NULL;
-            while (1) {
-                path = FS_NextPath(path);
-                if (!path)
-                    return NULL;  // couldn't find one anywhere
-                Com_sprintf(name, sizeof(name), "%s/%s", path, gamename);
-                game_library = LoadLibrary(name);
-                if (game_library) {
-                    Com_DPrintf("LoadLibrary (%s)\n", name);
-                    break;
-                }
-            }
-        }
-    }
-
-    GetGameAPI = (decltype(GetGameAPI))GetProcAddress(game_library, "GetGameAPI");
-    if (!GetGameAPI) {
-        Sys_UnloadGame();
-        return NULL;
-    }
-
-    return GetGameAPI(parms);
+    // don't think we need LoadLibrary anymore
+    return GetGameApi(static_cast<game_import_t*>(parms));
 }
 
 //=======================================================================
-
-/*
-==================
-ParseCommandLine
-
-==================
-*/
-void ParseCommandLine(LPSTR lpCmdLine) {
-    argc = 1;
-    argv[0] = "exe";
-
-    while (*lpCmdLine && (argc < MAX_NUM_ARGVS)) {
-        while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
-            lpCmdLine++;
-
-        if (*lpCmdLine) {
-            argv[argc] = lpCmdLine;
-            argc++;
-
-            while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
-                lpCmdLine++;
-
-            if (*lpCmdLine) {
-                *lpCmdLine = 0;
-                lpCmdLine++;
-            }
-        }
-    }
-}
 
 /*
 ==================
@@ -291,19 +210,12 @@ WinMain
 
 ==================
 */
-HINSTANCE global_hInstance;
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    MSG msg;
+int main(int ac, char** av) {
     int time, oldtime, newtime;
 
-    /* previous instances do not exist in Win32 */
-    if (hPrevInstance)
-        return 0;
-
-    global_hInstance = hInstance;
-
-    ParseCommandLine(lpCmdLine);
+    argc = ac;
+    argv = av;
 
     Qcommon_Init(argc, argv);
     oldtime = Sys_Milliseconds();
@@ -312,24 +224,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     while (1) {
         // if at a full screen console, don't update unless needed
         if (Minimized) {
-            Sleep(1);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
 
-        while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) {
-            if (!GetMessage(&msg, NULL, 0, 0))
-                Com_Quit();
-            sys_msg_time = msg.time;
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                Sys_Quit();
+            }
+            sys_msg_time = event.common.timestamp;
+            MainWndProc();
         }
 
         do {
             newtime = Sys_Milliseconds();
             time = newtime - oldtime;
         } while (time < 1);
-        //			Con_Printf ("time:%5.2f - %5.2f = %5.2f\n", newtime, oldtime, time);
-
-        //	_controlfp( ~( _EM_ZERODIVIDE /*| _EM_INVALID*/ ), _MCW_EM );
 
         // TODO: commented because _MCW_PC is not supported for x86-64
         // _controlfp( _PC_24, _MCW_PC );
@@ -339,5 +249,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     // never gets here
-    return TRUE;
+    return 0;
 }

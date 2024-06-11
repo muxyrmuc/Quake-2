@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 2.6)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(quake2)
+
+find_package(SDL2 REQUIRED)
 
 add_library(ref_gl SHARED
     ref_gl/gl_draw.cpp
@@ -18,7 +20,8 @@ add_library(ref_gl SHARED
     win32/glw_imp.cpp
     win32/q_shwin.cpp
     win32/qgl_win.cpp
-    game/q_shared.cpp)
+    game/q_shared.cpp
+)
 
 add_library(game SHARED
     game/g_ai.cpp
@@ -71,8 +74,7 @@ add_library(game SHARED
     game/q_shared.cpp
 )
 
-# WIN32 means WinMain()
-add_executable(quake2 WIN32
+add_executable(quake2
     client/cl_view.cpp
     client/cl_pred.cpp
     client/cl_input.cpp
@@ -90,7 +92,7 @@ add_executable(quake2 WIN32
     client/menu.cpp
     client/qmenu.cpp
     client/snd_mix.cpp
-    client/snd_dma.cpp
+#    client/snd_dma.cpp
     client/snd_mem.cpp
     
     server/sv_user.cpp
@@ -118,18 +120,35 @@ add_executable(quake2 WIN32
     win32/cd_win.cpp
     win32/net_wins.cpp
     win32/q_shwin.cpp
-    win32/snd_win.cpp
+#    win32/snd_win.cpp
     win32/vid_dll.cpp
     win32/vid_menu.cpp
     win32/sys_win.cpp
     win32/in_win.cpp
 )
 
-# Windows-only, required by timeGetTime
-target_link_libraries(ref_gl winmm.lib)
+target_link_libraries(ref_gl ${SDL2_LIBRARIES})
+target_include_directories(ref_gl PRIVATE ${SDL2_INCLUDE_DIRS})
+target_compile_options(ref_gl PRIVATE
+    -Wall
+    -Wextra)
+
+target_compile_options(game PRIVATE
+    -Wall
+    -Wextra
+    -Wno-unused-parameter
+    -Wno-unused-but-set-variable
+    -Wno-missing-field-initializers)
+
+target_link_libraries(quake2 ${SDL2_LIBRARIES})
+target_include_directories(quake2 PRIVATE ${SDL2_INCLUDE_DIRS})
+target_compile_options(quake2 PRIVATE
+    -Wall
+    -Wextra
+    -Wno-unused-parameter)
 
 # Windows-only, required by mciSendCommand, waveOutOpen and others
-target_link_libraries(quake2 winmm.lib)
+#target_link_libraries(quake2 winmm.lib)
 
 # Windows-only, required by Winsock-related stuff
-target_link_libraries(quake2 ws2_32.lib)
+#target_link_libraries(quake2 ws2_32.lib)

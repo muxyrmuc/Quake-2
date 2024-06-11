@@ -104,7 +104,7 @@ and global variables
 */
 extern "C" {
 
-__declspec(dllexport) game_export_t* GetGameAPI(game_import_t* import) {
+game_export_t* GetGameAPI(game_import_t* import) {
     gi = *import;
 
     globals.apiversion = GAME_API_VERSION;
@@ -148,7 +148,7 @@ void Sys_Error(char* error, ...) {
     gi.error(ERR_FATAL, "%s", text);
 }
 
-void Com_Printf(char* msg, ...) {
+void Com_Printf(const char* msg, ...) {
     va_list argptr;
     char text[1024];
 

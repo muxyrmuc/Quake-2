@@ -26,12 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static void Action_DoEnter(menuaction_s* a);
 static void Action_Draw(menuaction_s* a);
 static void Menu_DrawStatusBar(const char* string);
-static void Menulist_DoEnter(menulist_s* l);
 static void MenuList_Draw(menulist_s* l);
 static void Separator_Draw(menuseparator_s* s);
 static void Slider_DoSlide(menuslider_s* s, int dir);
 static void Slider_Draw(menuslider_s* s);
-static void SpinControl_DoEnter(menulist_s* s);
 static void SpinControl_Draw(menulist_s* s);
 static void SpinControl_DoSlide(menulist_s* s, int dir);
 
@@ -367,7 +365,6 @@ void Menu_Draw(menuframework_s* menu) {
 void Menu_DrawStatusBar(const char* string) {
     if (string) {
         int l = strlen(string);
-        int maxrow = VID_HEIGHT / 8;
         int maxcol = VID_WIDTH / 8;
         int col = maxcol / 2 - l / 2;
 
@@ -428,10 +425,8 @@ qboolean Menu_SelectItem(menuframework_s* s) {
                 Action_DoEnter((menuaction_s*)item);
                 return kTrue;
             case MTYPE_LIST:
-                //			Menulist_DoEnter( ( menulist_s * ) item );
                 return kFalse;
             case MTYPE_SPINCONTROL:
-                //			SpinControl_DoEnter( ( menulist_s * ) item );
                 return kFalse;
         }
     }
@@ -476,17 +471,6 @@ int Menu_TallySlots(menuframework_s* menu) {
     }
 
     return total;
-}
-
-void Menulist_DoEnter(menulist_s* l) {
-    int start;
-
-    start = l->generic.y / 10 + 1;
-
-    l->curvalue = l->generic.parent->cursor - start;
-
-    if (l->generic.callback)
-        l->generic.callback(l);
 }
 
 void MenuList_Draw(menulist_s* l) {
@@ -543,15 +527,6 @@ void Slider_Draw(menuslider_s* s) {
         Draw_Char(RCOLUMN_OFFSET + s->generic.x + i * 8 + s->generic.parent->x + 8, s->generic.y + s->generic.parent->y, 129);
     Draw_Char(RCOLUMN_OFFSET + s->generic.x + i * 8 + s->generic.parent->x + 8, s->generic.y + s->generic.parent->y, 130);
     Draw_Char((int)(8 + RCOLUMN_OFFSET + s->generic.parent->x + s->generic.x + (SLIDER_RANGE - 1) * 8 * s->range), s->generic.y + s->generic.parent->y, 131);
-}
-
-void SpinControl_DoEnter(menulist_s* s) {
-    s->curvalue++;
-    if (s->itemnames[s->curvalue] == 0)
-        s->curvalue = 0;
-
-    if (s->generic.callback)
-        s->generic.callback(s);
 }
 
 void SpinControl_DoSlide(menulist_s* s, int dir) {

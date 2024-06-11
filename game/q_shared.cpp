@@ -759,7 +759,7 @@ void COM_StripExtension(char* in, char* out) {
 COM_FileExtension
 ============
 */
-char* COM_FileExtension(char* in) {
+const char* COM_FileExtension(char* in) {
     static char exten[8];
     int i;
 
@@ -949,7 +949,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char* va(char* format, ...) {
+char* va(const char* format, ...) {
     va_list argptr;
     static char string[1024];
 
@@ -969,7 +969,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char* COM_Parse(char** data_p) {
+const char* COM_Parse(char** data_p) {
     int c;
     int len;
     char* data;
@@ -1061,7 +1061,7 @@ void Com_PageInMemory(byte* buffer, int size) {
 */
 
 // FIXME: replace all Q_stricmp with Q_strcasecmp
-int Q_stricmp(char* s1, char* s2) {
+int Q_stricmp(const char* s1, const char* s2) {
 #if defined(WIN32)
     return _stricmp(s1, s2);
 #else
@@ -1069,7 +1069,7 @@ int Q_stricmp(char* s1, char* s2) {
 #endif
 }
 
-int Q_strncasecmp(char* s1, char* s2, int n) {
+int Q_strncasecmp(const char* s1, const char* s2, int n) {
     int c1, c2;
 
     do {
@@ -1092,11 +1092,11 @@ int Q_strncasecmp(char* s1, char* s2, int n) {
     return 0;  // strings are equal
 }
 
-int Q_strcasecmp(char* s1, char* s2) {
+int Q_strcasecmp(const char* s1, const char* s2) {
     return Q_strncasecmp(s1, s2, 99999);
 }
 
-void Com_sprintf(char* dest, int size, char* fmt, ...) {
+void Com_sprintf(char* dest, int size, const char* fmt, ...) {
     int len;
     va_list argptr;
     char bigbuffer[0x10000];
@@ -1125,7 +1125,7 @@ Searches the string for the given
 key and returns the associated value, or an empty string.
 ===============
 */
-char* Info_ValueForKey(char* s, char* key) {
+const char* Info_ValueForKey(char* s, const char* key) {
     char pkey[512];
     static char value[2][512];  // use two buffers so compares
                                 // work without stomping on each other
@@ -1163,7 +1163,7 @@ char* Info_ValueForKey(char* s, char* key) {
     }
 }
 
-void Info_RemoveKey(char* s, char* key) {
+void Info_RemoveKey(char* s, const char* key) {
     char* start;
     char pkey[512];
     char value[512];
@@ -1221,10 +1221,10 @@ qboolean Info_Validate(char* s) {
     return kTrue;
 }
 
-void Info_SetValueForKey(char* s, char* key, char* value) {
+void Info_SetValueForKey(char* s, const char* key, const char* value) {
     char newi[MAX_INFO_STRING], *v;
     int c;
-    int maxsize = MAX_INFO_STRING;
+    std::size_t maxsize = MAX_INFO_STRING;
 
     if (strstr(key, "\\") || strstr(value, "\\")) {
         Com_Printf("Can't use keys or values with a \\\n");

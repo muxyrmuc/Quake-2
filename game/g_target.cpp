@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "g_local.h"
 
+namespace {
+
+char message_found_secret_area[] = "You have found a secret area.";
+
+}
+
 /*QUAKED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
 Fire an origin based temp entity event to the clients.
 "style"		type byte
@@ -160,7 +166,7 @@ void SP_target_secret(edict_t* ent) {
     level.total_secrets++;
     // map bug hack
     if (!Q_stricmp(level.mapname, "mine3") && ent->s.origin[0] == 280 && ent->s.origin[1] == -2048 && ent->s.origin[2] == -624)
-        ent->message = "You have found a secret area.";
+        ent->message = ::message_found_secret_area;
 }
 
 //==========================================================
@@ -375,15 +381,6 @@ speed	default is 1000
 */
 
 void use_target_blaster(edict_t* self, edict_t* other, edict_t* activator) {
-    int effect;
-
-    if (self->spawnflags & 2)
-        effect = 0;
-    else if (self->spawnflags & 1)
-        effect = EF_HYPERBLASTER;
-    else
-        effect = EF_BLASTER;
-
     fire_blaster(self, self->s.origin, self->movedir, self->dmg, self->speed, EF_BLASTER, kTrue);
     gi.sound(self, CHAN_VOICE, self->noise_index, 1, ATTN_NORM, 0);
 }

@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl_local.h"
 
+#include <cctype>
+
 static vec3_t modelorg;  // relative to viewpoint
 
 msurface_t* r_alpha_surfaces;
@@ -316,7 +318,7 @@ void R_BlendLightmaps(void) {
             qglBlendFunc(GL_ONE, GL_ONE);
         } else {
             if (gl_monolightmap->string[0] != '0') {
-                switch (toupper(gl_monolightmap->string[0])) {
+                switch (std::toupper(gl_monolightmap->string[0])) {
                     case 'I':
                         qglBlendFunc(GL_ZERO, GL_SRC_COLOR);
                         break;
@@ -480,7 +482,7 @@ void R_RenderBrushPoly(msurface_t* fa) {
     }
 
     // dynamic this frame or dynamic previously
-    if ((fa->dlightframe == r_framecount)) {
+    if (fa->dlightframe == r_framecount) {
     dynamic:
         if (gl_dynamic->value) {
             if (!(fa->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP))) {
@@ -645,7 +647,7 @@ static void GL_RenderLightmappedPoly(msurface_t* surf) {
     }
 
     // dynamic this frame or dynamic previously
-    if ((surf->dlightframe == r_framecount)) {
+    if (surf->dlightframe == r_framecount) {
     dynamic:
         if (gl_dynamic->value) {
             if (!(surf->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP))) {
@@ -1436,17 +1438,17 @@ void GL_BeginBuildingLightmaps(model_t* m) {
     ** only alpha lightmaps but that can at least support the GL_ALPHA
     ** format then we should change this code to use real alpha maps.
     */
-    if (toupper(gl_monolightmap->string[0]) == 'A') {
+    if (std::toupper(gl_monolightmap->string[0]) == 'A') {
         gl_lms.internal_format = gl_tex_alpha_format;
     }
     /*
     ** try to do hacked colored lighting with a blended texture
     */
-    else if (toupper(gl_monolightmap->string[0]) == 'C') {
+    else if (std::toupper(gl_monolightmap->string[0]) == 'C') {
         gl_lms.internal_format = gl_tex_alpha_format;
-    } else if (toupper(gl_monolightmap->string[0]) == 'I') {
+    } else if (std::toupper(gl_monolightmap->string[0]) == 'I') {
         gl_lms.internal_format = GL_INTENSITY8;
-    } else if (toupper(gl_monolightmap->string[0]) == 'L') {
+    } else if (std::toupper(gl_monolightmap->string[0]) == 'L') {
         gl_lms.internal_format = GL_LUMINANCE8;
     } else {
         gl_lms.internal_format = gl_tex_solid_format;

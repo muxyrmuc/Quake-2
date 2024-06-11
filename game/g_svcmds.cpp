@@ -71,7 +71,7 @@ int numipfilters;
 StringToFilter
 =================
 */
-static qboolean StringToFilter(char* s, ipfilter_t* f) {
+static qboolean StringToFilter(const char* s, ipfilter_t* f) {
     char num[128];
     int i, j;
     byte b[4];
@@ -113,11 +113,11 @@ static qboolean StringToFilter(char* s, ipfilter_t* f) {
 SV_FilterPacket
 =================
 */
-qboolean SV_FilterPacket(char* from) {
+qboolean SV_FilterPacket(const char* from) {
     int i;
     unsigned in;
     byte m[4];
-    char* p;
+    const char* p;
 
     i = 0;
     p = from;
@@ -260,7 +260,7 @@ of the parameters
 =================
 */
 void ServerCommand(void) {
-    char* cmd;
+    const char* cmd;
 
     cmd = gi.argv(1);
     if (Q_stricmp(cmd, "test") == 0)

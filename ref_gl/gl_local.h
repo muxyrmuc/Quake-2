@@ -262,7 +262,7 @@ extern int registration_sequence;
 
 void V_AddBlend(float r, float g, float b, float a, float* v_blend);
 
-int R_Init(void* hinstance, void* hWnd);
+int R_Init(void* hWnd);
 void R_Shutdown(void);
 
 void R_RenderView(refdef_t* fd);
@@ -301,11 +301,11 @@ char	*va(char *format, ...);
 
 void COM_StripExtension(char* in, char* out);
 
-void Draw_GetPicSize(int* w, int* h, char* name);
-void Draw_Pic(int x, int y, char* name);
-void Draw_StretchPic(int x, int y, int w, int h, char* name);
+void Draw_GetPicSize(int* w, int* h, const char* name);
+void Draw_Pic(int x, int y, const char* name);
+void Draw_StretchPic(int x, int y, int w, int h, const char* name);
 void Draw_Char(int x, int y, int c);
-void Draw_TileClear(int x, int y, int w, int h, char* name);
+void Draw_TileClear(int x, int y, int w, int h, const char* name);
 void Draw_Fill(int x, int y, int w, int h, int c);
 void Draw_FadeScreen(void);
 void Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte* data);
@@ -321,8 +321,8 @@ void GL_ResampleTexture(unsigned* in, int inwidth, int inheight, unsigned* out, 
 struct image_s* R_RegisterSkin(char* name);
 
 void LoadPCX(char* filename, byte** pic, byte** palette, int* width, int* height);
-image_t* GL_LoadPic(char* name, byte* pic, int width, int height, imagetype_t type, int bits);
-image_t* GL_FindImage(char* name, imagetype_t type);
+image_t* GL_LoadPic(const char* name, byte* pic, int width, int height, imagetype_t type, int bits);
+image_t* GL_FindImage(const char* name, imagetype_t type);
 void GL_TextureMode(char* string);
 void GL_ImageList_f(void);
 
@@ -440,7 +440,7 @@ IMPLEMENTATION SPECIFIC FUNCTIONS
 
 void GLimp_BeginFrame(float camera_separation);
 void GLimp_EndFrame(void);
-qboolean GLimp_Init(void* hinstance, void* hWnd);
+qboolean GLimp_Init(void* hWnd);
 void GLimp_Shutdown(void);
 rserr_t GLimp_SetMode(int* pwidth, int* pheight, int mode, qboolean fullscreen);
 void GLimp_AppActivate(qboolean active);

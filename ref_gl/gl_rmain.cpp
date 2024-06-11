@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 #include "gl_local.h"
 
+#include <cctype>
+
 void R_Clear(void);
 
 viddef_t vid;
@@ -132,6 +134,17 @@ cvar_t* gl_3dlabs_broken;
 cvar_t* vid_fullscreen;
 cvar_t* vid_gamma;
 cvar_t* vid_ref;
+
+namespace {
+
+char* Str_Lower(char* str) {
+    for (char* c = str; *c; ++c) {
+        *c = std::tolower(*c);
+    }
+    return str;
+}
+
+}
 
 /*
 =================
@@ -818,44 +831,6 @@ void R_SetGL2D(void) {
     qglColor4f(1, 1, 1, 1);
 }
 
-static void GL_DrawColoredStereoLinePair(float r, float g, float b, float y) {
-    qglColor3f(r, g, b);
-    qglVertex2f(0, y);
-    qglVertex2f(vid.width, y);
-    qglColor3f(0, 0, 0);
-    qglVertex2f(0, y + 1);
-    qglVertex2f(vid.width, y + 1);
-}
-
-static void GL_DrawStereoPattern(void) {
-    int i;
-
-    if (!(gl_config.renderer & GL_RENDERER_INTERGRAPH))
-        return;
-
-    if (!gl_state.stereo_enabled)
-        return;
-
-    R_SetGL2D();
-
-    qglDrawBuffer(GL_BACK_LEFT);
-
-    for (i = 0; i < 20; i++) {
-        qglBegin(GL_LINES);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 0);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 2);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 4);
-        GL_DrawColoredStereoLinePair(1, 0, 0, 6);
-        GL_DrawColoredStereoLinePair(0, 1, 0, 8);
-        GL_DrawColoredStereoLinePair(1, 1, 0, 10);
-        GL_DrawColoredStereoLinePair(1, 1, 0, 12);
-        GL_DrawColoredStereoLinePair(0, 1, 0, 14);
-        qglEnd();
-
-        GLimp_EndFrame();
-    }
-}
-
 /*
 ====================
 R_SetLightLevel
@@ -1022,7 +997,7 @@ qboolean R_SetMode(void) {
 R_Init
 ===============
 */
-int R_Init(void* hinstance, void* hWnd) {
+int R_Init(void* hWnd) {
     char renderer_buffer[1000];
     char vendor_buffer[1000];
     int err;
@@ -1047,7 +1022,7 @@ int R_Init(void* hinstance, void* hWnd) {
     }
 
     // initialize OS-specific parts of OpenGL
-    if (kFalse == GLimp_Init(hinstance, hWnd)) {
+    if (kFalse == GLimp_Init(hWnd)) {
         QGL_Shutdown();
         return -1;
     }
@@ -1077,10 +1052,10 @@ int R_Init(void* hinstance, void* hWnd) {
     ri.Con_Printf(PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string);
 
     strcpy(renderer_buffer, gl_config.renderer_string);
-    strlwr(renderer_buffer);
+    ::Str_Lower(renderer_buffer);
 
     strcpy(vendor_buffer, gl_config.vendor_string);
-    strlwr(vendor_buffer);
+    ::Str_Lower(vendor_buffer);
 
     if (strstr(renderer_buffer, "voodoo")) {
         if (!strstr(renderer_buffer, "rush"))
@@ -1104,7 +1079,7 @@ int R_Init(void* hinstance, void* hWnd) {
     else
         gl_config.renderer = GL_RENDERER_OTHER;
 
-    if (toupper(gl_monolightmap->string[1]) != 'F') {
+    if (std::toupper(gl_monolightmap->string[1]) != 'F') {
         if (gl_config.renderer == GL_RENDERER_PERMEDIA2) {
             ri.Cvar_Set("gl_monolightmap", "A");
             ri.Con_Printf(PRINT_ALL, "...using gl_monolightmap 'a'\n");
@@ -1149,23 +1124,16 @@ int R_Init(void* hinstance, void* hWnd) {
     if (strstr(gl_config.extensions_string, "GL_EXT_compiled_vertex_array") ||
         strstr(gl_config.extensions_string, "GL_SGI_compiled_vertex_array")) {
         ri.Con_Printf(PRINT_ALL, "...enabling GL_EXT_compiled_vertex_array\n");
-        qglLockArraysEXT = reinterpret_cast<decltype(qglLockArraysEXT)>(qwglGetProcAddress("glLockArraysEXT"));
-        qglUnlockArraysEXT = reinterpret_cast<decltype(qglUnlockArraysEXT)>(qwglGetProcAddress("glUnlockArraysEXT"));
+        qglLockArraysEXT = reinterpret_cast<decltype(qglLockArraysEXT)>(SDL_GL_GetProcAddress("glLockArraysEXT"));
+        qglUnlockArraysEXT = reinterpret_cast<decltype(qglUnlockArraysEXT)>(SDL_GL_GetProcAddress("glUnlockArraysEXT"));
     } else {
         ri.Con_Printf(PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n");
     }
 
-    if (strstr(gl_config.extensions_string, "WGL_EXT_swap_control")) {
-        qwglSwapIntervalEXT = (BOOL(WINAPI*)(int))qwglGetProcAddress("wglSwapIntervalEXT");
-        ri.Con_Printf(PRINT_ALL, "...enabling WGL_EXT_swap_control\n");
-    } else {
-        ri.Con_Printf(PRINT_ALL, "...WGL_EXT_swap_control not found\n");
-    }
-
     if (strstr(gl_config.extensions_string, "GL_EXT_point_parameters")) {
         if (gl_ext_pointparameters->value) {
-            qglPointParameterfEXT = (void(APIENTRY*)(GLenum, GLfloat))qwglGetProcAddress("glPointParameterfEXT");
-            qglPointParameterfvEXT = (void(APIENTRY*)(GLenum, const GLfloat*))qwglGetProcAddress("glPointParameterfvEXT");
+            qglPointParameterfEXT = (void(APIENTRY*)(GLenum, GLfloat))SDL_GL_GetProcAddress("glPointParameterfEXT");
+            qglPointParameterfvEXT = (void(APIENTRY*)(GLenum, const GLfloat*))SDL_GL_GetProcAddress("glPointParameterfvEXT");
             ri.Con_Printf(PRINT_ALL, "...using GL_EXT_point_parameters\n");
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_point_parameters\n");
@@ -1178,7 +1146,7 @@ int R_Init(void* hinstance, void* hWnd) {
         strstr(gl_config.extensions_string, "GL_EXT_shared_texture_palette")) {
         if (gl_ext_palettedtexture->value) {
             ri.Con_Printf(PRINT_ALL, "...using GL_EXT_shared_texture_palette\n");
-            qglColorTableEXT = (void(APIENTRY*)(int, int, int, int, int, const void*))qwglGetProcAddress("glColorTableEXT");
+            qglColorTableEXT = (void(APIENTRY*)(int, int, int, int, int, const void*))SDL_GL_GetProcAddress("glColorTableEXT");
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_shared_texture_palette\n");
         }
@@ -1189,8 +1157,8 @@ int R_Init(void* hinstance, void* hWnd) {
     if (strstr(gl_config.extensions_string, "GL_SGIS_multitexture")) {
         if (gl_ext_multitexture->value) {
             ri.Con_Printf(PRINT_ALL, "...using GL_SGIS_multitexture\n");
-            qglMTexCoord2fSGIS = reinterpret_cast<decltype(qglMTexCoord2fSGIS)>(qwglGetProcAddress("glMTexCoord2fSGIS"));
-            qglSelectTextureSGIS = reinterpret_cast<decltype(qglSelectTextureSGIS)>(qwglGetProcAddress("glSelectTextureSGIS"));
+            qglMTexCoord2fSGIS = reinterpret_cast<decltype(qglMTexCoord2fSGIS)>(SDL_GL_GetProcAddress("glMTexCoord2fSGIS"));
+            qglSelectTextureSGIS = reinterpret_cast<decltype(qglSelectTextureSGIS)>(SDL_GL_GetProcAddress("glSelectTextureSGIS"));
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_SGIS_multitexture\n");
         }
@@ -1200,13 +1168,6 @@ int R_Init(void* hinstance, void* hWnd) {
 #endif
 
     GL_SetDefaultState();
-
-    /*
-    ** draw our stereo patterns
-    */
-#if 0  // commented out until H3D pays us the money they owe us
-	GL_DrawStereoPattern();
-#endif
 
     GL_InitImages();
     Mod_Init();
@@ -1453,18 +1414,18 @@ void R_DrawBeam(entity_t* e) {
 //===================================================================
 
 void R_BeginRegistration(char* map);
-struct model_s* R_RegisterModel(char* name);
-struct image_s* R_RegisterSkin(char* name);
-void R_SetSky(char* name, float rotate, vec3_t axis);
+struct model_s* R_RegisterModel(const char* name);
+struct image_s* R_RegisterSkin(const char* name);
+void R_SetSky(const char* name, float rotate, vec3_t axis);
 void R_EndRegistration(void);
 
 void R_RenderFrame(refdef_t* fd);
 
-struct image_s* Draw_FindPic(char* name);
+struct image_s* Draw_FindPic(const char* name);
 
-void Draw_Pic(int x, int y, char* name);
+void Draw_Pic(int x, int y, const char* name);
 void Draw_Char(int x, int y, int c);
-void Draw_TileClear(int x, int y, int w, int h, char* name);
+void Draw_TileClear(int x, int y, int w, int h, const char* name);
 void Draw_Fill(int x, int y, int w, int h, int c);
 void Draw_FadeScreen(void);
 
@@ -1476,7 +1437,7 @@ GetRefAPI
 */
 extern "C" {
 
-__declspec(dllexport) refexport_t GetRefAPI(refimport_t rimp) {
+refexport_t GetRefAPI(refimport_t rimp) {
     refexport_t re;
 
     ri = rimp;
@@ -1531,7 +1492,7 @@ void Sys_Error(char* error, ...) {
     ri.Sys_Error(ERR_FATAL, "%s", text);
 }
 
-void Com_Printf(char* fmt, ...) {
+void Com_Printf(const char* fmt, ...) {
     va_list argptr;
     char text[1024];
 
