@@ -34,14 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../ref_gl/gl_local.h"
 #include "glw_win.h"
 
-int(WINAPI* qwglChoosePixelFormat)(HDC, CONST PIXELFORMATDESCRIPTOR*);
-int(WINAPI* qwglDescribePixelFormat)(HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
-int(WINAPI* qwglGetPixelFormat)(HDC);
-BOOL(WINAPI* qwglSetPixelFormat)
-(HDC, int, CONST PIXELFORMATDESCRIPTOR*);
-BOOL(WINAPI* qwglSwapBuffers)
-(HDC);
-
 PROC(WINAPI* qwglGetProcAddress)
 (LPCSTR);
 
@@ -2625,12 +2617,6 @@ void QGL_Shutdown(void) {
 
     qwglGetProcAddress = NULL;
 
-    qwglChoosePixelFormat = NULL;
-    qwglDescribePixelFormat = NULL;
-    qwglGetPixelFormat = NULL;
-    qwglSetPixelFormat = NULL;
-    qwglSwapBuffers = NULL;
-
     qwglSwapIntervalEXT = NULL;
 }
 
@@ -3000,12 +2986,6 @@ bool QGL_Init(const char* dllname) {
     qglViewport = dllViewport = glViewport;
 
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
-
-    GPA1(qwglChoosePixelFormat, "wglChoosePixelFormat");
-    GPA1(qwglDescribePixelFormat, "wglDescribePixelFormat");
-    GPA1(qwglGetPixelFormat, "wglGetPixelFormat");
-    GPA1(qwglSetPixelFormat, "wglSetPixelFormat");
-    GPA1(qwglSwapBuffers, "wglSwapBuffers");
 
     qwglSwapIntervalEXT = 0;
     qglPointParameterfEXT = 0;
