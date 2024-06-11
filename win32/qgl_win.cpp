@@ -44,8 +44,6 @@ BOOL(WINAPI* qwglSwapBuffers)
 
 HGLRC(WINAPI* qwglCreateContext)
 (HDC);
-BOOL(WINAPI* qwglDeleteContext)
-(HGLRC);
 PROC(WINAPI* qwglGetProcAddress)
 (LPCSTR);
 BOOL(WINAPI* qwglMakeCurrent)
@@ -2630,9 +2628,7 @@ void QGL_Shutdown(void) {
     qglViewport = NULL;
 
     qwglCreateContext = NULL;
-    qwglDeleteContext = NULL;
     qwglGetProcAddress = NULL;
-    qwglMakeCurrent = NULL;
 
     qwglChoosePixelFormat = NULL;
     qwglDescribePixelFormat = NULL;
@@ -3009,9 +3005,7 @@ bool QGL_Init(const char* dllname) {
     qglViewport = dllViewport = glViewport;
 
     GPA1(qwglCreateContext, "wglCreateContext");
-    GPA1(qwglDeleteContext, "wglDeleteContext");
     GPA1(qwglGetProcAddress, "wglGetProcAddress");
-    GPA1(qwglMakeCurrent, "wglMakeCurrent");
 
     GPA1(qwglChoosePixelFormat, "wglChoosePixelFormat");
     GPA1(qwglDescribePixelFormat, "wglDescribePixelFormat");

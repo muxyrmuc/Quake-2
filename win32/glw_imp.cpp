@@ -103,93 +103,20 @@ rserr_t GLimp_SetMode(int* pwidth, int* pheight, int mode, qboolean fullscreen) 
         GLimp_Shutdown();
     }
 
-    // do a CDS if needed
     if (fullscreen) {
-        DEVMODE dm;
+        ri.Con_Printf(PRINT_ALL, "...setting fullscreen mode\n");
 
-        ri.Con_Printf(PRINT_ALL, "...attempting fullscreen\n");
+        *pwidth = width;
+        *pheight = height;
+        // TODO: handle dual-monitor configurations somewhere here
+        if (!VID_CreateWindow(width, height, kTrue))
+            return rserr_invalid_mode;
 
-        memset(&dm, 0, sizeof(dm));
-
-        dm.dmSize = sizeof(dm);
-
-        dm.dmPelsWidth = width;
-        dm.dmPelsHeight = height;
-        dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
-
-        if (gl_bitdepth->value != 0) {
-            dm.dmBitsPerPel = gl_bitdepth->value;
-            dm.dmFields |= DM_BITSPERPEL;
-            ri.Con_Printf(PRINT_ALL, "...using gl_bitdepth of %d\n", (int)gl_bitdepth->value);
-        } else {
-            HDC hdc = GetDC(NULL);
-            int bitspixel = GetDeviceCaps(hdc, BITSPIXEL);
-
-            ri.Con_Printf(PRINT_ALL, "...using desktop display depth of %d\n", bitspixel);
-
-            ReleaseDC(0, hdc);
-        }
-
-        ri.Con_Printf(PRINT_ALL, "...calling CDS: ");
-        if (ChangeDisplaySettings(&dm, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL) {
-            *pwidth = width;
-            *pheight = height;
-
-            gl_state.fullscreen = kTrue;
-
-            ri.Con_Printf(PRINT_ALL, "ok\n");
-
-            if (!VID_CreateWindow(width, height, kTrue))
-                return rserr_invalid_mode;
-
-            return rserr_ok;
-        } else {
-            *pwidth = width;
-            *pheight = height;
-
-            ri.Con_Printf(PRINT_ALL, "failed\n");
-
-            ri.Con_Printf(PRINT_ALL, "...calling CDS assuming dual monitors:");
-
-            dm.dmPelsWidth = width * 2;
-            dm.dmPelsHeight = height;
-            dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
-
-            if (gl_bitdepth->value != 0) {
-                dm.dmBitsPerPel = gl_bitdepth->value;
-                dm.dmFields |= DM_BITSPERPEL;
-            }
-
-            /*
-            ** our first CDS failed, so maybe we're running on some weird dual monitor
-            ** system
-            */
-            if (ChangeDisplaySettings(&dm, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL) {
-                ri.Con_Printf(PRINT_ALL, " failed\n");
-
-                ri.Con_Printf(PRINT_ALL, "...setting windowed mode\n");
-
-                ChangeDisplaySettings(0, 0);
-
-                *pwidth = width;
-                *pheight = height;
-                gl_state.fullscreen = kFalse;
-                if (!VID_CreateWindow(width, height, kFalse))
-                    return rserr_invalid_mode;
-                return rserr_invalid_fullscreen;
-            } else {
-                ri.Con_Printf(PRINT_ALL, " ok\n");
-                if (!VID_CreateWindow(width, height, kTrue))
-                    return rserr_invalid_mode;
-
-                gl_state.fullscreen = kTrue;
-                return rserr_ok;
-            }
-        }
+        ri.Con_Printf(PRINT_ALL, "ok\n");
+        gl_state.fullscreen = kTrue;
+        return rserr_ok;
     } else {
         ri.Con_Printf(PRINT_ALL, "...setting windowed mode\n");
-
-        ChangeDisplaySettings(0, 0);
 
         *pwidth = width;
         *pheight = height;
@@ -211,17 +138,11 @@ rserr_t GLimp_SetMode(int* pwidth, int* pheight, int mode, qboolean fullscreen) 
 **
 */
 void GLimp_Shutdown(void) {
-    if (qwglMakeCurrent && !qwglMakeCurrent(NULL, NULL))
-        ri.Con_Printf(PRINT_ALL, "ref_gl::R_Shutdown() - wglMakeCurrent failed\n");
+    if (SDL_GL_MakeCurrent(nullptr, nullptr) == 0)
+        ri.Con_Printf(PRINT_ALL, "ref_gl::R_Shutdown() - SDL_GL_MakeCurrent failed\n");
     if (glw_state.hGLRC) {
-        if (qwglDeleteContext && !qwglDeleteContext(glw_state.hGLRC))
-            ri.Con_Printf(PRINT_ALL, "ref_gl::R_Shutdown() - wglDeleteContext failed\n");
+        SDL_GL_DeleteContext(glw_state.hGLRC);
         glw_state.hGLRC = NULL;
-    }
-    if (glw_state.hDC) {
-        if (!ReleaseDC(glw_state.hWnd, glw_state.hDC))
-            ri.Con_Printf(PRINT_ALL, "ref_gl::R_Shutdown() - ReleaseDC failed\n");
-        glw_state.hDC = NULL;
     }
     if (glw_state.hWnd) {
         SDL_DestroyWindow(glw_state.hWnd);
@@ -248,32 +169,8 @@ void GLimp_Shutdown(void) {
 ** doing the wgl interface stuff.
 */
 qboolean GLimp_Init(void* hinstance, void* wndproc) {
-#define OSR2_BUILD_NUMBER 1111
-
-    OSVERSIONINFO vinfo;
-
-    vinfo.dwOSVersionInfoSize = sizeof(vinfo);
-
-    glw_state.allowdisplaydepthchange = kFalse;
-
-    if (GetVersionEx(&vinfo)) {
-        if (vinfo.dwMajorVersion > 4) {
-            glw_state.allowdisplaydepthchange = kTrue;
-        } else if (vinfo.dwMajorVersion == 4) {
-            if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-                glw_state.allowdisplaydepthchange = kTrue;
-            } else if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-                if (LOWORD(vinfo.dwBuildNumber) >= OSR2_BUILD_NUMBER) {
-                    glw_state.allowdisplaydepthchange = kTrue;
-                }
-            }
-        }
-    } else {
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - GetVersionEx failed\n");
-        return kFalse;
-    }
-
-    glw_state.hInstance = (HINSTANCE)hinstance;
+    // TODO: assuming true but do we actually need this option at all?
+    glw_state.allowdisplaydepthchange = kTrue;
     glw_state.wndproc = wndproc;
 
     return kTrue;
@@ -302,20 +199,8 @@ qboolean GLimp_InitGL(void) {
             0, 0, 0                         // layer masks ignored
         };
     int pixelformat;
-    cvar_t* stereo;
 
-    stereo = ri.Cvar_Get("cl_stereo", "0", 0);
-
-    /*
-    ** set PFD_STEREO if necessary
-    */
-    if (stereo->value != 0) {
-        ri.Con_Printf(PRINT_ALL, "...attempting to use stereo\n");
-        pfd.dwFlags |= PFD_STEREO;
-        gl_state.stereo_enabled = kTrue;
-    } else {
-        gl_state.stereo_enabled = kFalse;
-    }
+    gl_state.stereo_enabled = kFalse;
 
     /*
     ** Get a DC for the specified window
@@ -337,15 +222,6 @@ qboolean GLimp_InitGL(void) {
         return kFalse;
     }
     DescribePixelFormat(glw_state.hDC, pixelformat, sizeof(pfd), &pfd);
-
-    /*
-    ** report if stereo is desired but unavailable
-    */
-    if (!(pfd.dwFlags & PFD_STEREO) && (stereo->value != 0)) {
-        ri.Con_Printf(PRINT_ALL, "...failed to select stereo pixel format\n");
-        ri.Cvar_SetValue("cl_stereo", 0);
-        gl_state.stereo_enabled = kFalse;
-    }
 
     /*
     ** startup the OpenGL subsystem by creating a context and making
@@ -372,14 +248,10 @@ qboolean GLimp_InitGL(void) {
 
 fail:
     if (glw_state.hGLRC) {
-        qwglDeleteContext(glw_state.hGLRC);
+        SDL_GL_DeleteContext(glw_state.hGLRC);
         glw_state.hGLRC = NULL;
     }
 
-    if (glw_state.hDC) {
-        ReleaseDC(glw_state.hWnd, glw_state.hDC);
-        glw_state.hDC = NULL;
-    }
     return kFalse;
 }
 
@@ -418,8 +290,7 @@ void GLimp_EndFrame(void) {
     assert(err == GL_NO_ERROR);
 
     if (Q_stricmp(gl_drawbuffer->string, "GL_BACK") == 0) {
-        if (!qwglSwapBuffers(glw_state.hDC))
-            ri.Sys_Error(ERR_FATAL, "GLimp_EndFrame() - SwapBuffers() failed!\n");
+        SDL_GL_SwapWindow(glw_state.hWnd);
     }
 }
 

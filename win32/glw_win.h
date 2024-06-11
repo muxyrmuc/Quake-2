@@ -29,7 +29,6 @@ typedef struct
 {
     void* wndproc;
 
-    HDC hDC;      // handle to device context
     SDL_Window* hWnd;    // handle to window
     SDL_GLContext hGLRC;  // handle to GL rendering context
 
