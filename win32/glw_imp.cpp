@@ -166,7 +166,7 @@ void GLimp_Shutdown(void) {
 ** of OpenGL.  Under Win32 this means dealing with the pixelformats and
 ** doing the wgl interface stuff.
 */
-qboolean GLimp_Init(void* hinstance, void* wndproc) {
+qboolean GLimp_Init(void* wndproc) {
     // TODO: assuming true but do we actually need this option at all?
     glw_state.allowdisplaydepthchange = kTrue;
     glw_state.wndproc = wndproc;
@@ -175,7 +175,10 @@ qboolean GLimp_Init(void* hinstance, void* wndproc) {
 }
 
 qboolean GLimp_InitGL(void) {
-    PIXELFORMATDESCRIPTOR pfd =
+
+    // TODO: set gl attributes using SDL_GL_SetAttribute
+    // ATTENTION: it has to be done before creating the window but the current implementation does the opposite
+    /*PIXELFORMATDESCRIPTOR pfd =
         {
             sizeof(PIXELFORMATDESCRIPTOR),  // size of this pfd
             1,                              // version number
@@ -200,20 +203,7 @@ qboolean GLimp_InitGL(void) {
 
     gl_state.stereo_enabled = kFalse;
 
-    if ((glw_state.hDC = GetDC(glw_state.hWnd)) == NULL) {
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - GetDC failed\n");
-        return kFalse;
-    }
-
-    if ((pixelformat = ChoosePixelFormat(glw_state.hDC, &pfd)) == 0) {
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - ChoosePixelFormat failed\n");
-        return kFalse;
-    }
-    if (SetPixelFormat(glw_state.hDC, pixelformat, &pfd) == FALSE) {
-        ri.Con_Printf(PRINT_ALL, "GLimp_Init() - SetPixelFormat failed\n");
-        return kFalse;
-    }
-    DescribePixelFormat(glw_state.hDC, pixelformat, sizeof(pfd), &pfd);
+    setup here*/
 
     /*
     ** startup the OpenGL subsystem by creating a context and making
@@ -234,7 +224,7 @@ qboolean GLimp_InitGL(void) {
     /*
     ** print out PFD specifics
     */
-    ri.Con_Printf(PRINT_ALL, "GL PFD: color(%d-bits) Z(%d-bit)\n", (int)pfd.cColorBits, (int)pfd.cDepthBits);
+    // ri.Con_Printf(PRINT_ALL, "GL PFD: color(%d-bits) Z(%d-bit)\n", (int)pfd.cColorBits, (int)pfd.cDepthBits);
 
     return kTrue;
 

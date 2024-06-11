@@ -23,11 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <assert.h>
 #include <float.h>
 
+#include <SDL_messagebox.h>
+#include <SDL_loadso.h>
+
 #include "../client/client.h"
 #include "winquake.h"
 //#include "zmouse.h"
-
-static HINSTANCE global_hInstance;
 
 // Structure containing functions exported from refresh DLL
 refexport_t re;
@@ -47,7 +48,7 @@ cvar_t* vid_fullscreen;
 
 // Global variables used internally by this module
 viddef_t viddef;           // global video state; used by other modules
-HINSTANCE reflib_library;  // Handle to refresh DLL
+void* reflib_library;  // Handle to refresh DLL
 qboolean reflib_active = kFalse;
 
 SDL_Window* cl_hwnd;  // Main window handle for life of program; used to be HWND
@@ -70,7 +71,6 @@ DLL GLUE
 void VID_Printf(int print_level, const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
-    static qboolean inupdate;
 
     va_start(argptr, fmt);
     vsprintf(msg, fmt, argptr);
@@ -81,15 +81,13 @@ void VID_Printf(int print_level, const char* fmt, ...) {
     } else if (print_level == PRINT_DEVELOPER) {
         Com_DPrintf("%s", msg);
     } else if (print_level == PRINT_ALERT) {
-        MessageBox(0, msg, "PRINT_ALERT", MB_ICONWARNING);
-        OutputDebugString(msg);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "PRINT_ALERT", msg, nullptr);
     }
 }
 
 void VID_Error(int err_level, const char* fmt, ...) {
     va_list argptr;
     char msg[MAXPRINTMSG];
-    static qboolean inupdate;
 
     va_start(argptr, fmt);
     vsprintf(msg, fmt, argptr);
@@ -180,7 +178,7 @@ int MapKey(int key) {
     }
 }
 
-void AppActivate(BOOL fActive, BOOL minimize) {
+void AppActivate(bool fActive, bool minimize) {
     Minimized = minimize ? true : false;
 
     Key_ClearStates();
@@ -210,7 +208,7 @@ MainWndProc
 main window procedure
 ====================
 */
-LONG WINAPI MainWndProc(
+LONG /*WINAPI*/ MainWndProc(
     HWND hWnd,
     UINT uMsg,
     WPARAM wParam,
@@ -439,8 +437,7 @@ void VID_NewWindow(int width, int height) {
 }
 
 void VID_FreeReflib(void) {
-    if (!FreeLibrary(reflib_library))
-        Com_Error(ERR_FATAL, "Reflib FreeLibrary failed");
+    SDL_UnloadObject(reflib_library);
     memset(&re, 0, sizeof(re));
     reflib_library = NULL;
     reflib_active = kFalse;
@@ -462,8 +459,8 @@ qboolean VID_LoadRefresh(char* name) {
 
     Com_Printf("------- Loading %s -------\n", name);
 
-    if ((reflib_library = LoadLibrary(name)) == 0) {
-        Com_Printf("LoadLibrary(\"%s\") failed\n", name);
+    if ((reflib_library = SDL_LoadObject(name)) == nullptr) {
+        Com_Printf("SDL_LoadObject(\"%s\") failed\n", name);
 
         return kFalse;
     }
@@ -485,7 +482,7 @@ qboolean VID_LoadRefresh(char* name) {
     ri.Vid_MenuInit = VID_MenuInit;
     ri.Vid_NewWindow = VID_NewWindow;
 
-    if ((GetRefAPI = (GetRefAPI_t)GetProcAddress(reflib_library, "GetRefAPI")) == 0)
+    if ((GetRefAPI = (GetRefAPI_t)SDL_LoadFunction(reflib_library, "GetRefAPI")) == nullptr)
         Com_Error(ERR_FATAL, "GetProcAddress failed on %s", name);
 
     re = GetRefAPI(ri);
@@ -495,7 +492,7 @@ qboolean VID_LoadRefresh(char* name) {
         Com_Error(ERR_FATAL, "%s has incompatible api_version", name);
     }
 
-    if (re.Init(global_hInstance, MainWndProc) == -1) {
+    if (re.Init(MainWndProc) == -1) {
         re.Shutdown();
         VID_FreeReflib();
         return kFalse;

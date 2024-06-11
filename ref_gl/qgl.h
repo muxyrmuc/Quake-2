@@ -384,14 +384,6 @@ extern void(APIENTRY* qglUnlockArraysEXT)(void);
 extern void(APIENTRY* qglMTexCoord2fSGIS)(GLenum, GLfloat, GLfloat);
 extern void(APIENTRY* qglSelectTextureSGIS)(GLenum);
 
-#ifdef _WIN32
-
-extern PROC(WINAPI* qwglGetProcAddress)(LPCSTR);
-
-extern BOOL(WINAPI* qwglSwapIntervalEXT)(int interval);
-
-#endif
-
 /*
 ** extension constants
 */

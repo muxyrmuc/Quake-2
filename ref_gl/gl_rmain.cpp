@@ -997,7 +997,7 @@ qboolean R_SetMode(void) {
 R_Init
 ===============
 */
-int R_Init(void* hinstance, void* hWnd) {
+int R_Init(void* hWnd) {
     char renderer_buffer[1000];
     char vendor_buffer[1000];
     int err;
@@ -1022,7 +1022,7 @@ int R_Init(void* hinstance, void* hWnd) {
     }
 
     // initialize OS-specific parts of OpenGL
-    if (kFalse == GLimp_Init(hinstance, hWnd)) {
+    if (kFalse == GLimp_Init(hWnd)) {
         QGL_Shutdown();
         return -1;
     }
@@ -1124,23 +1124,16 @@ int R_Init(void* hinstance, void* hWnd) {
     if (strstr(gl_config.extensions_string, "GL_EXT_compiled_vertex_array") ||
         strstr(gl_config.extensions_string, "GL_SGI_compiled_vertex_array")) {
         ri.Con_Printf(PRINT_ALL, "...enabling GL_EXT_compiled_vertex_array\n");
-        qglLockArraysEXT = reinterpret_cast<decltype(qglLockArraysEXT)>(qwglGetProcAddress("glLockArraysEXT"));
-        qglUnlockArraysEXT = reinterpret_cast<decltype(qglUnlockArraysEXT)>(qwglGetProcAddress("glUnlockArraysEXT"));
+        qglLockArraysEXT = reinterpret_cast<decltype(qglLockArraysEXT)>(SDL_GL_GetProcAddress("glLockArraysEXT"));
+        qglUnlockArraysEXT = reinterpret_cast<decltype(qglUnlockArraysEXT)>(SDL_GL_GetProcAddress("glUnlockArraysEXT"));
     } else {
         ri.Con_Printf(PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n");
     }
 
-    if (strstr(gl_config.extensions_string, "WGL_EXT_swap_control")) {
-        qwglSwapIntervalEXT = (BOOL(WINAPI*)(int))qwglGetProcAddress("wglSwapIntervalEXT");
-        ri.Con_Printf(PRINT_ALL, "...enabling WGL_EXT_swap_control\n");
-    } else {
-        ri.Con_Printf(PRINT_ALL, "...WGL_EXT_swap_control not found\n");
-    }
-
     if (strstr(gl_config.extensions_string, "GL_EXT_point_parameters")) {
         if (gl_ext_pointparameters->value) {
-            qglPointParameterfEXT = (void(APIENTRY*)(GLenum, GLfloat))qwglGetProcAddress("glPointParameterfEXT");
-            qglPointParameterfvEXT = (void(APIENTRY*)(GLenum, const GLfloat*))qwglGetProcAddress("glPointParameterfvEXT");
+            qglPointParameterfEXT = (void(APIENTRY*)(GLenum, GLfloat))SDL_GL_GetProcAddress("glPointParameterfEXT");
+            qglPointParameterfvEXT = (void(APIENTRY*)(GLenum, const GLfloat*))SDL_GL_GetProcAddress("glPointParameterfvEXT");
             ri.Con_Printf(PRINT_ALL, "...using GL_EXT_point_parameters\n");
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_point_parameters\n");
@@ -1153,7 +1146,7 @@ int R_Init(void* hinstance, void* hWnd) {
         strstr(gl_config.extensions_string, "GL_EXT_shared_texture_palette")) {
         if (gl_ext_palettedtexture->value) {
             ri.Con_Printf(PRINT_ALL, "...using GL_EXT_shared_texture_palette\n");
-            qglColorTableEXT = (void(APIENTRY*)(int, int, int, int, int, const void*))qwglGetProcAddress("glColorTableEXT");
+            qglColorTableEXT = (void(APIENTRY*)(int, int, int, int, int, const void*))SDL_GL_GetProcAddress("glColorTableEXT");
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_shared_texture_palette\n");
         }
@@ -1164,8 +1157,8 @@ int R_Init(void* hinstance, void* hWnd) {
     if (strstr(gl_config.extensions_string, "GL_SGIS_multitexture")) {
         if (gl_ext_multitexture->value) {
             ri.Con_Printf(PRINT_ALL, "...using GL_SGIS_multitexture\n");
-            qglMTexCoord2fSGIS = reinterpret_cast<decltype(qglMTexCoord2fSGIS)>(qwglGetProcAddress("glMTexCoord2fSGIS"));
-            qglSelectTextureSGIS = reinterpret_cast<decltype(qglSelectTextureSGIS)>(qwglGetProcAddress("glSelectTextureSGIS"));
+            qglMTexCoord2fSGIS = reinterpret_cast<decltype(qglMTexCoord2fSGIS)>(SDL_GL_GetProcAddress("glMTexCoord2fSGIS"));
+            qglSelectTextureSGIS = reinterpret_cast<decltype(qglSelectTextureSGIS)>(SDL_GL_GetProcAddress("glSelectTextureSGIS"));
         } else {
             ri.Con_Printf(PRINT_ALL, "...ignoring GL_SGIS_multitexture\n");
         }

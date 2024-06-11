@@ -34,9 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../ref_gl/gl_local.h"
 #include "glw_win.h"
 
-PROC(WINAPI* qwglGetProcAddress)
-(LPCSTR);
-
 void(APIENTRY* qglAccum)(GLenum op, GLfloat value);
 void(APIENTRY* qglAlphaFunc)(GLenum func, GLclampf ref);
 GLboolean(APIENTRY* qglAreTexturesResident)(GLsizei n, const GLuint* textures, GLboolean* residences);
@@ -377,8 +374,6 @@ void(APIENTRY* qglViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 void(APIENTRY* qglLockArraysEXT)(int, int);
 void(APIENTRY* qglUnlockArraysEXT)(void);
 
-BOOL(WINAPI* qwglSwapIntervalEXT)
-(int interval);
 void(APIENTRY* qglPointParameterfEXT)(GLenum param, GLfloat value);
 void(APIENTRY* qglPointParameterfvEXT)(GLenum param, const GLfloat* value);
 void(APIENTRY* qglColorTableEXT)(int, int, int, int, int, const void*);
@@ -2614,10 +2609,6 @@ void QGL_Shutdown(void) {
     qglVertex4sv = NULL;
     qglVertexPointer = NULL;
     qglViewport = NULL;
-
-    qwglGetProcAddress = NULL;
-
-    qwglSwapIntervalEXT = NULL;
 }
 
 #pragma warning(disable : 4113 4133 4047)
@@ -2985,9 +2976,6 @@ bool QGL_Init(const char* dllname) {
     qglVertexPointer = dllVertexPointer = glVertexPointer;
     qglViewport = dllViewport = glViewport;
 
-    GPA1(qwglGetProcAddress, "wglGetProcAddress");
-
-    qwglSwapIntervalEXT = 0;
     qglPointParameterfEXT = 0;
     qglPointParameterfvEXT = 0;
     qglColorTableEXT = 0;

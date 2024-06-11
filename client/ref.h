@@ -131,7 +131,7 @@ typedef struct
     int api_version;
 
     // called when the library is loaded
-    int (*Init)(void* hinstance, void* wndproc);
+    int (*Init)(void* wndproc);
 
     // called before the library is unloaded
     void (*Shutdown)(void);
@@ -190,7 +190,7 @@ typedef struct
     void (*Cmd_AddCommand)(const char* name, void (*cmd)(void));
     void (*Cmd_RemoveCommand)(const char* name);
     int (*Cmd_Argc)(void);
-    char* (*Cmd_Argv)(int i);
+    const char* (*Cmd_Argv)(int i);
     void (*Cmd_ExecuteText)(int exec_when, char* text);
 
     void (*Con_Printf)(int print_level, const char* str, ...);
