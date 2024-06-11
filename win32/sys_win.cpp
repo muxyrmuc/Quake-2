@@ -125,7 +125,7 @@ void Sys_SendKeyEvents(void) {
         }
         sys_msg_time = event.common.timestamp;
 
-        MainWndProc();
+        MainWndProc(event);
     }
 
     // grab frame time

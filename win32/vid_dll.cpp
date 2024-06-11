@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <SDL_messagebox.h>
 #include <SDL_loadso.h>
+#include <SDL_events.h>
 
 #include "../client/client.h"
 #include "winquake.h"
@@ -32,12 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Structure containing functions exported from refresh DLL
 refexport_t re;
-
-#ifndef WM_MOUSEWHEEL
-#define WM_MOUSEWHEEL (WM_MOUSELAST + 1)  // message that will be supported by the OS
-#endif
-
-static UINT MSH_MOUSEWHEEL;
 
 // Console variables that we need to access from this module
 cvar_t* vid_gamma;
@@ -55,7 +50,7 @@ SDL_Window* cl_hwnd;  // Main window handle for life of program; used to be HWND
 
 #define VID_NUM_MODES (sizeof(vid_modes) / sizeof(vid_modes[0]))
 
-LONG WINAPI MainWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void MainWndProc(const SDL_Event& event);
 
 extern unsigned sys_msg_time;
 
@@ -208,11 +203,16 @@ MainWndProc
 main window procedure
 ====================
 */
-LONG /*WINAPI*/ MainWndProc(
-    HWND hWnd,
-    UINT uMsg,
-    WPARAM wParam,
-    LPARAM lParam) {
+void MainWndProc(const SDL_Event& event) {
+    switch (event.type) {
+        case SDL_MOUSEWHEEL:
+            break;
+
+    }
+
+
+
+
     LONG lRet = 0;
 
     if (uMsg == MSH_MOUSEWHEEL) {
